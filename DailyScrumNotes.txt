@@ -1,0 +1,17 @@
+<< current date goes here >> + (name)
+1. What I have done / not done since last Scrum?
+2. What I plan to do from this scrum to next? (next 24 hours)
+3. Where do I need assistance? What do I need to figure out?
+--- --- --- --- --- --- 
+
+<< Sept/13/2024 >> + (Alex)
+1. What I have done / not done since last Scrum?
+-First meeting: 
+    -created github
+    -co-created, updated, submitted proposal
+    -set up cloud hosting
+2. What I plan to do from this scrum to next? (next 24 hours)
+    -nothing yet. will meet in the morning and organize and divide tasks 
+3. Where do I need assistance? What do I need to figure out?
+    -No
+
