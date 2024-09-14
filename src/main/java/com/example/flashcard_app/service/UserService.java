@@ -4,17 +4,18 @@ import com.example.flashcard_app.model.User;
 import com.example.flashcard_app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+import java.util.*;
+import java.util.UUID;
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     public void registerUser(String username, String password, List<String> roles) {
         User user = new User();

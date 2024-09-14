@@ -1,4 +1,4 @@
-package com.example.flashcard_app.service;
+package com.example.flashcard_app.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +23,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/register", "/login").permitAll()
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()  // Allow static resources
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
-                        .loginPage("/login")
+                        .loginPage("/login")  // Define custom login page
                         .permitAll()
+                        .successHandler((request, response, authentication) -> {
+                            System.out.println("Login page is being used");
+                            response.sendRedirect("/");
+                        })
                 )
+
                 .logout(logout -> logout.permitAll());
 
         return http.build();

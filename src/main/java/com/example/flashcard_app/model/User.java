@@ -1,28 +1,28 @@
 package com.example.flashcard_app.model;
 
-import jakarta.persistence.*;
-import java.util.*;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import java.util.List;
 
-@Entity
+@DynamoDBTable(tableName = "User")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+    private String id;
     private String username;
     private String password;
+    private List<String> roles;  // Ensure the 'roles' field is defined
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles;
-
-    public Long getId() {
+    @DynamoDBHashKey(attributeName = "id")
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
+    @DynamoDBAttribute(attributeName = "username")
     public String getUsername() {
         return username;
     }
@@ -31,6 +31,7 @@ public class User {
         this.username = username;
     }
 
+    @DynamoDBAttribute(attributeName = "password")
     public String getPassword() {
         return password;
     }
@@ -39,6 +40,8 @@ public class User {
         this.password = password;
     }
 
+    // Define the getRoles and setRoles methods for the 'roles' field
+    @DynamoDBAttribute(attributeName = "roles")
     public List<String> getRoles() {
         return roles;
     }
