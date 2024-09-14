@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Setter
-@DynamoDBTable(tableName = "User")
+@DynamoDBTable(tableName = "Users")
 public class User {
 
     private String id;
