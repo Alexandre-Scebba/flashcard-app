@@ -1,4 +1,4 @@
-package com.example.flashcard_app.config;
+package com.example.flashcardtool.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

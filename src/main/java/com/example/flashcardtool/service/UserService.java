@@ -1,14 +1,13 @@
-package com.example.flashcard_app.service;
+package com.example.flashcardtool.service;
 
-import com.example.flashcard_app.model.User;
-import com.example.flashcard_app.repository.UserRepository;
+import com.example.flashcardtool.model.User;
+import com.example.flashcardtool.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.UUID;
+
 @Service
 public class UserService {
     @Autowired
@@ -17,10 +16,12 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void registerUser(String username, String password, List<String> roles) {
+    public void registerUser(String username, String password, String email, List<String> roles) {
         User user = new User();
+        user.setId(UUID.randomUUID().toString());  // UUID oluşturuluyor
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
+        user.setEmail(email);
         user.setRoles(roles);
         userRepository.save(user);
     }

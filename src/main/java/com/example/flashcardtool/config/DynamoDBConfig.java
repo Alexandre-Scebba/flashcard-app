@@ -1,4 +1,4 @@
-package com.example.flashcard_app.config;
+package com.example.flashcardtool.config;
 
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;

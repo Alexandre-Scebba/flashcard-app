@@ -1,10 +1,10 @@
-package com.example.flashcard_app;
+package com.example.flashcardtool;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FlashcardAppApplicationTests {
+class FlashcardtoolApplicationTests {
 
 	@Test
 	void contextLoads() {
