@@ -15,7 +15,7 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerUser(@RequestParam String username, @RequestParam String password) {
-        userService.registerUser(username, password, Arrays.asList("ROLE_STUDENT"));
+        userService.registerUser(username, password, Arrays.asList("ROLE_USER"));
         return "redirect:/login";
     }
 }
