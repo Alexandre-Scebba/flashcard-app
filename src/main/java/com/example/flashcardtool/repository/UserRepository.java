@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -18,11 +19,10 @@ public class UserRepository {
     private DynamoDBMapper dynamoDBMapper;
 
     public void save(User user) {
-        System.out.println("Kaydedilecek kullanıcı: " + user.toString());
+        System.out.println("User to be saved: " + user.toString());
         dynamoDBMapper.save(user);
-        System.out.println("Kullanıcı başarıyla kaydedildi: " + user.getUsername());
+        System.out.println("User successfully saved: " + user.getUsername());
     }
-
 
     public User getUserById(String userId) {
         return dynamoDBMapper.load(User.class, userId);
@@ -32,21 +32,51 @@ public class UserRepository {
         dynamoDBMapper.delete(user);
     }
 
-
     public User getUserByUsername(String username) {
-    Map<String, AttributeValue> eav = new HashMap<>();
-    eav.put(":v1", new AttributeValue().withS(username));
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":v1", new AttributeValue().withS(username));
 
-    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-        .withFilterExpression("username = :v1")
-        .withExpressionAttributeValues(eav);
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("username = :v1")
+                .withExpressionAttributeValues(eav);
 
-    List<User> result = dynamoDBMapper.scan(User.class, scanExpression);
-    if (result != null && !result.isEmpty()) {
-        return result.get(0);
-    } else {
-        return null;
+        List<User> result = dynamoDBMapper.scan(User.class, scanExpression);
+        if (result != null && !result.isEmpty()) {
+            return result.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public User findByEmail(String email) {
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":v1", new AttributeValue().withS(email));
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("email = :v1")
+                .withExpressionAttributeValues(eav);
+
+        List<User> result = dynamoDBMapper.scan(User.class, scanExpression);
+        if (result != null && !result.isEmpty()) {
+            return result.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public Optional<User> findByPasswordResetToken(String token) {
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":v1", new AttributeValue().withS(token));
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("passwordResetToken = :v1")
+                .withExpressionAttributeValues(eav);
+
+        List<User> result = dynamoDBMapper.scan(User.class, scanExpression);
+        if (result != null && !result.isEmpty()) {
+            return Optional.of(result.get(0));
+        } else {
+            return Optional.empty();
+        }
     }
 }
-}
-

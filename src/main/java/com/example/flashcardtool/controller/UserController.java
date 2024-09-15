@@ -32,4 +32,5 @@ public class UserController {
         userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
         return "redirect:/login";
     }
+
 }

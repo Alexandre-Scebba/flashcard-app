@@ -30,7 +30,6 @@ public class User {
     @DynamoDBAttribute
     private String lastName;
 
-    // Getters and setters
 
     public String getId() {
         return id;
@@ -86,5 +85,15 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    private String passwordResetToken;  // Parola sıfırlama token'ı
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
     }
 }

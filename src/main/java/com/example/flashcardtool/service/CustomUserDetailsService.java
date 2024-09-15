@@ -23,7 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
-                // Make sure roles in the database do not contain the "ROLE_" prefix
                 .roles(user.getRoles().stream().map(role -> role.replace("ROLE_", "")).toArray(String[]::new))
                 .build();
     }
