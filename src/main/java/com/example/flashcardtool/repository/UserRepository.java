@@ -18,8 +18,11 @@ public class UserRepository {
     private DynamoDBMapper dynamoDBMapper;
 
     public void save(User user) {
+        System.out.println("Kaydedilecek kullanıcı: " + user.toString());
         dynamoDBMapper.save(user);
+        System.out.println("Kullanıcı başarıyla kaydedildi: " + user.getUsername());
     }
+
 
     public User getUserById(String userId) {
         return dynamoDBMapper.load(User.class, userId);

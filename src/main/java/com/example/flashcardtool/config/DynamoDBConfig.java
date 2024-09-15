@@ -22,20 +22,21 @@ public class DynamoDBConfig {
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "us-east-1"))
                 .build();
     }
+
     @Bean
-    public void createDynamoDBTable(AmazonDynamoDB amazonDynamoDB) {
+    public CreateTableResult createDynamoDBTable() {
+        AmazonDynamoDB dynamoDB = amazonDynamoDB();
+        CreateTableRequest request = new CreateTableRequest()
+                .withTableName("Users")
+                .withAttributeDefinitions(new AttributeDefinition("id", ScalarAttributeType.S))
+                .withKeySchema(new KeySchemaElement("id", KeyType.HASH))
+                .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
+
         try {
-            // Tablo mevcut değilse tablo oluştur
-            amazonDynamoDB.describeTable("Users");
-        } catch (ResourceNotFoundException e) {
-            // Tablo mevcut değilse oluştur
-            CreateTableRequest request = new CreateTableRequest()
-                    .withTableName("Users")
-                    .withKeySchema(new KeySchemaElement("id", KeyType.HASH))
-                    .withAttributeDefinitions(new AttributeDefinition("id", ScalarAttributeType.S))
-                    .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
-            amazonDynamoDB.createTable(request);
+            return dynamoDB.createTable(request);
+        } catch (ResourceInUseException e) {
+            System.out.println("Table already exists.");
+            return null; // Table already exists
         }
     }
-
 }
