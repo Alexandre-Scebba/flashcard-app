@@ -16,7 +16,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void registerUser(String username, String password, String email, List<String> roles) {
+    public void registerUser(String username, String password, String email, List<String> roles, String firstName, String lastName) {
         User user = new User();
         String userId = UUID.randomUUID().toString();  // UUID oluşturuluyor
         user.setId(userId);
@@ -24,6 +24,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
         user.setRoles(roles);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         System.out.println("Yeni oluşturulan kullanıcı ID: " + userId);
         userRepository.save(user);
     }
