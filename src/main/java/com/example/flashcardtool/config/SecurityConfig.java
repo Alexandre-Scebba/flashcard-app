@@ -33,7 +33,11 @@ public class SecurityConfig {
                         })
                 )
 
-                .logout(LogoutConfigurer::permitAll);
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")  // Redirect to login page after logout
+                        .permitAll()
+                );
 
         return http.build();
     }

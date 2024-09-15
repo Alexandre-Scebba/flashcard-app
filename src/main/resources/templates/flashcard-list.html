@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards in Deck</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h1>Flashcards in Deck: <span th:text="${deckName}"></span></h1>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Front Content</th>
+      <th>Back Content</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="flashcard : ${flashcards}">
+      <td th:text="${flashcard.frontContent}"></td>
+      <td th:text="${flashcard.backContent}"></td>
+      <td>
+        <form th:action="@{/flashcards/update}" method="post" class="d-inline">
+          <input type="hidden" name="id" th:value="${flashcard.id}">
+          <textarea name="frontContent" class="form-control d-inline" style="width: 200px;" required th:text="${flashcard.frontContent}"></textarea>
+          <textarea name="backContent" class="form-control d-inline" style="width: 200px;" required th:text="${flashcard.backContent}"></textarea>
+          <button type="submit" class="btn btn-success">Update</button>
+        </form>
+
+        <form th:action="@{/flashcards/delete}" method="post" class="d-inline">
+          <input type="hidden" name="id" th:value="${flashcard.id}">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
