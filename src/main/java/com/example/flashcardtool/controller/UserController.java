@@ -27,8 +27,10 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerUser(@RequestParam String username, @RequestParam String password,
-                               @RequestParam String email, @RequestParam String role) {
-        userService.registerUser(username, password, email, Collections.singletonList(role));
+                               @RequestParam String email, @RequestParam String role,
+                               @RequestParam String firstName, @RequestParam String lastName) {
+        userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
         return "redirect:/login";
     }
+
 }
