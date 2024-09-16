@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Decks</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h1>Manage Decks</h1>
+
+  <!-- Create Deck -->
+  <h3>Create New Deck</h3>
+  <form th:action="@{/decks/create}" method="post">
+    <div class="mb-3">
+      <label for="deckName" class="form-label">Deck Name</label>
+      <input type="text" class="form-control" id="deckName" name="name" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Deck</button>
+  </form>
+
+  <!-- List of Decks -->
+  <h3 class="mt-5">Existing Decks</h3>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Deck Name</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="deck : ${decks}">
+      <td th:text="${deck.name}"></td>
+      <td>
+        <form th:action="@{/decks/update}" method="post" class="d-inline">
+          <input type="hidden" name="id" th:value="${deck.id}">
+          <input type="text" name="name" class="form-control d-inline" style="width: 200px;" th:value="${deck.name}" required>
+          <button type="submit" class="btn btn-success">Update</button>
+        </form>
+
+        <form th:action="@{/decks/delete}" method="post" class="d-inline">
+          <input type="hidden" name="id" th:value="${deck.id}">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

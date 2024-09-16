@@ -5,10 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig {
@@ -20,25 +22,19 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-<<<<<<< Updated upstream
-                        .requestMatchers("/register", "/login","/forgetpassword", "/newpassword","/css/**", "/js/**", "/images/**").permitAll()  // Allow static resources
+                        .requestMatchers("/register", "/login","/forgetpassword", "/newpassword","/teacher-dashboard", "/css/**", "/js/**", "/images/**").permitAll()  // Allow static resources
                         .anyRequest().authenticated()
-=======
-                        .requestMatchers("/register", "/login", "/forgetpassword", "/newpassword", "/css/**", "/js/**", "/images/**").permitAll()  // Allow static resources and public pages
-                        .requestMatchers("/teacher-dashboard").hasRole("TEACHER")  // Restrict teacher-dashboard to TEACHER role
-                        .anyRequest().authenticated()  // Everything else requires authentication
->>>>>>> Stashed changes
                 )
                 .formLogin(login -> login
                         .loginPage("/login")  // Define custom login page
                         .permitAll()
-                        .successHandler((request, response, authentication) -> {
-                            System.out.println("Login page is being used");
-                            response.sendRedirect("/");
-                        })
+                        .defaultSuccessUrl("/determineRedirect", true)  // Yönlendirme işini UserController'a bırak
                 )
-
-                .logout(LogoutConfigurer::permitAll);
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")  // Redirect to login page after logout
+                        .permitAll()
+                );
 
         return http.build();
     }
@@ -52,8 +48,12 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-<<<<<<< Updated upstream
+
+    @Bean
+    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            // Login sonrası kullanıcı rolüne göre yönlendirme yapılacak
+            response.sendRedirect("/login"); // Burası UserController tarafından yönlendirilecek
+        };
+    }
 }
-=======
-}
->>>>>>> Stashed changes

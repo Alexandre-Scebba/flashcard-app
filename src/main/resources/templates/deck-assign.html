@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assign Decks to Students</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h1>Assign Decks to Students</h1>
+
+  <form th:action="@{/decks/assign}" method="post">
+    <div class="mb-3">
+      <label for="deckId" class="form-label">Select Deck</label>
+      <select class="form-select" id="deckId" name="deckId" required>
+        <option th:each="deck : ${decks}" th:value="${deck.id}" th:text="${deck.name}"></option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="studentId" class="form-label">Select Student</label>
+      <select class="form-select" id="studentId" name="studentId" required>
+        <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.name}"></option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Assign Deck</button>
+  </form>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

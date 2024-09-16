@@ -30,11 +30,15 @@
 		<java.version>22</java.version>
 	</properties>
 	<dependencies>
-		<!-- AWS SDK DynamoDB v1 -->
+		<dependency>
+			<groupId>com.github.derjust</groupId>
+			<artifactId>spring-data-dynamodb</artifactId>
+			<version>5.1.0</version>
+		</dependency>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-dynamodb</artifactId>
-			<version>1.12.772</version> <!-- veya daha yeni bir sürüm kullanabilirsiniz -->
+			<version>1.12.772</version>
 		</dependency>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
@@ -103,6 +107,18 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>22</source>
+					<target>22</target>
+					<compilerArgs>--enable-preview
+					</compilerArgs>
 				</configuration>
 			</plugin>
 		</plugins>
