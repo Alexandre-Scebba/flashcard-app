@@ -1,27 +1,42 @@
 package com.example.flashcardtool.model;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-
-import java.util.List;
-
-@Data
-@NoArgsConstructor
+@DynamoDBTable(tableName = "Decks")
 public class Deck {
 
-    @Id
+    @DynamoDBHashKey
     private String id;
 
+    @DynamoDBAttribute
     private String name;
 
-    private String description;
+    @DynamoDBAttribute
+    private String userId; // Owner of the deck (Teacher/Admin)
 
-    private String createdBy;
+    public String getId() {
+        return id;
+    }
 
-    private List<String> flashcardIds;
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    private String createdAt;
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }
