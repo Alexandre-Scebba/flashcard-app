@@ -24,21 +24,16 @@
       <td th:text="${flashcard.frontContent}"></td>
       <td th:text="${flashcard.backContent}"></td>
       <td>
-        <form th:action="@{/flashcards/update}" method="post" class="d-inline">
-          <input type="hidden" name="id" th:value="${flashcard.id}">
-          <textarea name="frontContent" class="form-control d-inline" style="width: 200px;" required th:text="${flashcard.frontContent}"></textarea>
-          <textarea name="backContent" class="form-control d-inline" style="width: 200px;" required th:text="${flashcard.backContent}"></textarea>
-          <button type="submit" class="btn btn-success">Update</button>
-        </form>
-
-        <form th:action="@{/flashcards/delete}" method="post" class="d-inline">
-          <input type="hidden" name="id" th:value="${flashcard.id}">
-          <button type="submit" class="btn btn-danger">Delete</button>
+        <a th:href="@{/flashcards/edit/{id}(id=${flashcard.id})}">Edit</a>
+        <form th:action="@{/flashcards/delete/{id}(id=${flashcard.id})}" method="post">
+          <button type="submit">Delete</button>
         </form>
       </td>
     </tr>
     </tbody>
   </table>
+  <a href="/flashcard-create">Create New Flashcard</a>
+
 </div>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>

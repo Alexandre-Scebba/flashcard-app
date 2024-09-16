@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,9 +25,15 @@ public class DeckService {
     }
 
     public void updateDeck(String id, String name) {
-        Deck deck = deckRepository.findById(id);
-        deck.setName(name);
-        deckRepository.save(deck);
+        Optional<Deck> optionalDeck = deckRepository.findById(id);
+        if (optionalDeck.isPresent()) {
+            Deck deck = optionalDeck.get();  // Get the Deck object from Optional
+            deck.setName(name);
+            deckRepository.save(deck);  // Save the updated Deck object
+        } else {
+            // Handle the case where the deck is not found (e.g., throw an exception or log a message)
+            System.out.println("Deck not found with id: " + id);
+        }
     }
 
     public void deleteDeck(String id) {
@@ -34,10 +41,10 @@ public class DeckService {
     }
 
     public List<Deck> getAllDecks() {
-        return deckRepository.findAll();
+        return deckRepository.findAll();  // Ensure this method exists in your repository
     }
 
-    public Deck getDeckById(String id) {
-        return null;
+    public Optional<Deck> getDeckById(String id) {
+        return deckRepository.findById(id);
     }
 }

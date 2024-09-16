@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/decks")
@@ -51,7 +52,7 @@ public class DeckController {
    // update edit deck
     @GetMapping("/edit/{id}")
     public String editDeck(@PathVariable String id, Model model) {
-        Deck deck = deckService.getDeckById(id);
+        Optional<Deck> deck = deckService.getDeckById(id);
         model.addAttribute("deck", deck);
         return "editDeck";
     }
@@ -59,7 +60,7 @@ public class DeckController {
     // update view deck
     @GetMapping("/view/{id}")
     public String viewDeck(@PathVariable String id, Model model) {
-        Deck deck = deckService.getDeckById(id);
+        Optional<Deck> deck = deckService.getDeckById(id);
         model.addAttribute("deck", deck);
         return "viewDeck";
     }

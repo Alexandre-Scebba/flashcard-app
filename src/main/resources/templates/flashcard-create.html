@@ -10,26 +10,17 @@
 
 <div class="container mt-5">
   <h1>Create Flashcard</h1>
+  <form th:action="@{/flashcards/create}" th:object="${flashcard}" method="post">
+    <label for="frontContent">Front Content</label>
+    <input type="text" th:field="*{frontContent}" placeholder="Enter front content" required>
 
-  <form th:action="@{/flashcards/create}" method="post">
-    <div class="mb-3">
-      <label for="deckId" class="form-label">Select Deck</label>
-      <select class="form-select" id="deckId" name="deckId" required>
-        <option th:each="deck : ${decks}" th:value="${deck.id}" th:text="${deck.name}"></option>
-      </select>
-    </div>
+    <label for="backContent">Back Content</label>
+    <input type="text" th:field="*{backContent}" placeholder="Enter back content" required>
 
-    <div class="mb-3">
-      <label for="frontContent" class="form-label">Front Content</label>
-      <textarea class="form-control" id="frontContent" name="frontContent" rows="3" required></textarea>
-    </div>
+    <label for="deckId">Deck ID</label>
+    <input type="text" th:field="*{deckId}" placeholder="Enter deck ID" required>
 
-    <div class="mb-3">
-      <label for="backContent" class="form-label">Back Content</label>
-      <textarea class="form-control" id="backContent" name="backContent" rows="3" required></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create Flashcard</button>
+    <button type="submit">Save Flashcard</button>
   </form>
 </div>
 
