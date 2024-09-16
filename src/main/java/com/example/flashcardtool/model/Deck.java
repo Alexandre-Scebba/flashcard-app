@@ -14,8 +14,9 @@ public class Deck {
     private String name;
 
     @DynamoDBAttribute
-    private String userId; // Owner of the deck (Teacher/Admin)
+    private String userId;
 
+    // Getters and setters
     public String getId() {
         return id;
     }

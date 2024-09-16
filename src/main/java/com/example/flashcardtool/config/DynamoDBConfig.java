@@ -10,6 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.event.EventListener;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import com.example.flashcardtool.model.Flashcard;
+import com.example.flashcardtool.model.Deck;
+
 
 @Configuration
 public class DynamoDBConfig {
@@ -28,21 +33,31 @@ public class DynamoDBConfig {
                 .build();
     }
 
-    @Bean
-    public CreateTableResult createDynamoDBTable() {
+    @EventListener(ApplicationReadyEvent.class)
+    public void createTables() {
         AmazonDynamoDB dynamoDB = amazonDynamoDB();
-        CreateTableRequest request = new CreateTableRequest()
-                .withTableName("Users")
-                .withAttributeDefinitions(new AttributeDefinition("id", ScalarAttributeType.S))
-                .withKeySchema(new KeySchemaElement("id", KeyType.HASH))
+        DynamoDBMapper mapper = dynamoDBMapper();
+
+        // Create Flashcards Table
+        CreateTableRequest flashcardsTableRequest = mapper.generateCreateTableRequest(Flashcard.class)
+                .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
+
+        // Create Decks Table
+        CreateTableRequest decksTableRequest = mapper.generateCreateTableRequest(Deck.class)
                 .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
 
         try {
-            return dynamoDB.createTable(request);
+            dynamoDB.createTable(flashcardsTableRequest);
+            System.out.println("Flashcards table created.");
         } catch (ResourceInUseException e) {
-            System.out.println("Table already exists.");
-            return null; // Table already exists
+            System.out.println("Flashcards table already exists.");
+        }
+
+        try {
+            dynamoDB.createTable(decksTableRequest);
+            System.out.println("Decks table created.");
+        } catch (ResourceInUseException e) {
+            System.out.println("Decks table already exists.");
         }
     }
-
 }

@@ -22,17 +22,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login","/forgetpassword", "/newpassword","/teacher-dashboard", "/css/**", "/js/**", "/images/**").permitAll()  // Allow static resources
+                        .requestMatchers("/register", "/login", "/forgetpassword", "/newpassword", "/teacher-dashboard", "/deck-create", "/flashcard-create","flashcard-list").permitAll()
                         .anyRequest().authenticated()
                 )
+
                 .formLogin(login -> login
-                        .loginPage("/login")  // Define custom login page
+                        .loginPage("/login")
                         .permitAll()
-                        .defaultSuccessUrl("/determineRedirect", true)  // Yönlendirme işini UserController'a bırak
+                        .defaultSuccessUrl("/determineRedirect", true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")  // Redirect to login page after logout
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
 

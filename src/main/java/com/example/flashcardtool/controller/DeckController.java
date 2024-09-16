@@ -2,7 +2,8 @@ package com.example.flashcardtool.controller;
 
 import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.service.DeckService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,15 +15,33 @@ import java.util.Optional;
 @RequestMapping("/decks")
 public class DeckController {
 
-    @Autowired
-    private DeckService deckService;
+    private final DeckService deckService;
 
-    @GetMapping
-    public String showDeckManagementPage(Model model) {
-        // Load the list of decks for the teacher/admin
-        List<Deck> decks = deckService.getAllDecks();
-        model.addAttribute("decks", decks);
-        return "deckManagement";  // Ensure this corresponds to your Thymeleaf template
+    public DeckController(DeckService deckService) {
+        this.deckService = deckService;
+    }
+
+
+
+    // Yeni deck oluşturma sayfası
+    @GetMapping("/deck-create")
+    public String showCreateDeckForm(Model model) {
+        model.addAttribute("deck", new Deck());
+        return "deck-create";
+    }
+
+    // Yeni deck oluşturma işlemi
+    @PostMapping("/deck-create")
+    public String createDeck(@ModelAttribute Deck deck) {
+        // Authenticated kullanıcı ID'sini al
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();  // Giriş yapmış kullanıcıdan user ID'sini al
+
+        // Deck oluştur ve kullanıcı ID'sini kaydet
+        Deck createdDeck = deckService.createDeck(deck.getName(), userId);
+
+        // Deck oluşturulduktan sonra flashcard ekleme sayfasına yönlendir
+        return "redirect:/flashcards-create?deckId=" + createdDeck.getId();
     }
 
     @PostMapping("/add")
@@ -37,31 +56,23 @@ public class DeckController {
         return "redirect:/decks";
     }
 
-    @PostMapping("/create")
-    public String createDeck(@RequestParam String name, @RequestParam String userId) {
-        deckService.createDeck(name, userId);
-        return "redirect:/decks";
-    }
-
     @PostMapping("/update")
     public String updateDeck(@RequestParam String id, @RequestParam String name) {
         deckService.updateDeck(id, name);
         return "redirect:/decks";
     }
 
-   // update edit deck
     @GetMapping("/edit/{id}")
     public String editDeck(@PathVariable String id, Model model) {
         Optional<Deck> deck = deckService.getDeckById(id);
-        model.addAttribute("deck", deck);
+        model.addAttribute("deck", deck.orElse(new Deck()));
         return "editDeck";
     }
 
-    // update view deck
     @GetMapping("/view/{id}")
     public String viewDeck(@PathVariable String id, Model model) {
         Optional<Deck> deck = deckService.getDeckById(id);
-        model.addAttribute("deck", deck);
+        model.addAttribute("deck", deck.orElse(new Deck()));
         return "viewDeck";
     }
 }
