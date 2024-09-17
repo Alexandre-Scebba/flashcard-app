@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Controller
+@RequestMapping("/")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -52,7 +54,7 @@ public class UserController {
             if (role.equals("ROLE_ADMIN")) {
                 return "redirect:/admin-dashboard";  // Admin dashboard'a yönlendir
             } else if (role.equals("ROLE_TEACHER")) {
-                return "redirect:/teacher-dashboard";  // Öğretmen deck management sayfasına yönlendir
+                return "redirect:/teacher/dashboard";  // Öğretmen deck management sayfasına yönlendir
             } else if (role.equals("ROLE_STUDENT")) {
                 return "redirect:/student-dashboard";  // Öğrenci çalışma sayfasına yönlendir
             }

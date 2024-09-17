@@ -23,21 +23,21 @@ public class FlashcardController {
     }
 
     // Show flashcard creation form
-    @GetMapping("/create")
-    public String showCreateFlashcardForm(@RequestParam Optional<String> deckId, Model model) {
-        model.addAttribute("decks", deckService.getAllDecks());
-        Flashcard flashcard = new Flashcard();
-        deckId.ifPresent(flashcard::setDeckId);
-        model.addAttribute("flashcard", flashcard);
-        return "flashcard-create";  // Points to flashcard-create.html
-    }
+   // @GetMapping("/create")
+   // public String showCreateFlashcardForm(@RequestParam Optional<String> deckId, Model model) {
+   //     model.addAttribute("decks", deckService.getAllDecks());
+    //    Flashcard flashcard = new Flashcard();
+   //     deckId.ifPresent(flashcard::setDeckId);
+    //    model.addAttribute("flashcard", flashcard);
+    //    return "flashcard-create";  // Points to flashcard-create.html
+    //}
 
-    // Create a flashcard
-    @PostMapping("/create")
-    public String createFlashcard(@ModelAttribute Flashcard flashcard) {
-        flashcardService.createFlashcard(flashcard.getFrontContent(), flashcard.getBackContent(), flashcard.getDeckId());
-        return "redirect:/teacher/decks";  // Redirect to the deck list or another appropriate page
-    }
+    // Create a flashcard manage by teachercontroller
+   // @PostMapping("/create")
+    //public String createFlashcard(@ModelAttribute Flashcard flashcard) {
+    //    flashcardService.createFlashcard(flashcard.getFrontContent(), flashcard.getBackContent(), flashcard.getDeckId());
+     //   return "redirect:/teacher/decks";  // Redirect to the deck list or another appropriate page
+   // }
 
     // Edit flashcard
     @GetMapping("/edit/{id}")

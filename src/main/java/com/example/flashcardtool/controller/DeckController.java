@@ -21,14 +21,14 @@ public class DeckController {
     }
 
     // Yeni deck oluşturma sayfası
-    @GetMapping("/deck-create")
+    @GetMapping("/create")
     public String showCreateDeckForm(Model model) {
         model.addAttribute("deck", new Deck());
         return "deck-create";
     }
 
     // Yeni deck oluşturma işlemi
-    @PostMapping("/deck-create")
+    @PostMapping("/create")
     public String createDeck(@ModelAttribute Deck deck) {
         // Authenticated kullanıcı ID'sini al
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
