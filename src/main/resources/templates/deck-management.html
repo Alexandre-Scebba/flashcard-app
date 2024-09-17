@@ -19,6 +19,8 @@
       <input type="text" class="form-control" id="deckName" name="name" required>
     </div>
 
+    <input type="hidden" name="userId" th:value="${#authentication.name}">
+
     <button type="submit" class="btn btn-primary">Create Deck</button>
   </form>
 

@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface DeckRepository extends CrudRepository<Deck, String> {
 
     List<Deck> findAll();
+
+    List<Deck> findByUserId(String userId);
+
 }

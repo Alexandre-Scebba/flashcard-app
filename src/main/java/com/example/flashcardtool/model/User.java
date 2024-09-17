@@ -1,6 +1,7 @@
 package com.example.flashcardtool.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
@@ -29,6 +30,17 @@ public class User {
 
     @DynamoDBAttribute
     private String lastName;
+
+    @DynamoDBAttribute
+    private List<Deck> decks;
+
+    public List<Deck> getDecks() {
+        return decks;
+    }
+
+    public void setDecks(List<Deck> decks) {
+        this.decks = decks;
+    }
 
 
     public String getId() {
@@ -96,4 +108,30 @@ public class User {
     public void setPasswordResetToken(String passwordResetToken) {
         this.passwordResetToken = passwordResetToken;
     }
+
+    @DynamoDBDocument
+    public static class Deck {
+        @DynamoDBAttribute
+        private String deckID;
+
+        @DynamoDBAttribute
+        private String name;
+
+        public String getDeckID() {
+            return deckID;
+        }
+
+        public void setDeckID(String deckID) {
+            this.deckID = deckID;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
 }

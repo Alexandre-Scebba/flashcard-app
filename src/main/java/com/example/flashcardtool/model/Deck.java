@@ -4,6 +4,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
+import java.time.LocalDateTime;
+
 @DynamoDBTable(tableName = "Decks")
 public class Deck {
 
@@ -15,6 +17,12 @@ public class Deck {
 
     @DynamoDBAttribute
     private String userId; // Owner of the deck (Teacher/Admin)
+
+    @DynamoDBAttribute
+    private String description;
+
+    @DynamoDBAttribute
+    private LocalDateTime creationDate;
 
     public String getId() {
         return id;
@@ -39,4 +47,12 @@ public class Deck {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
+
+    public LocalDateTime getCreationDate() { return creationDate; }
+
+    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
 }

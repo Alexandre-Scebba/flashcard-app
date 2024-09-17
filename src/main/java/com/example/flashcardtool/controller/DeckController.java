@@ -1,5 +1,6 @@
 package com.example.flashcardtool.controller;
 
+import org.springframework.security.core.Authentication;
 import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.service.DeckService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,9 @@ public class DeckController {
     private DeckService deckService;
 
     @GetMapping
-    public String showDeckManagementPage(Model model) {
+    public String showDeckManagementPage(Model model, Authentication authentication) {
+        String userId = authentication.getName();
+
         // Load the list of decks for the teacher/admin
         List<Deck> decks = deckService.getAllDecks();
         model.addAttribute("decks", decks);

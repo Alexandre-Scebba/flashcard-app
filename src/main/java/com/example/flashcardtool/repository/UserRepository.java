@@ -79,4 +79,21 @@ public class UserRepository {
             return Optional.empty();
         }
     }
+
+    public User findByUsername(String username) {
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":v1", new AttributeValue().withS(username));
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("username = :v1")
+                .withExpressionAttributeValues(eav);
+
+        List<User> result = dynamoDBMapper.scan(User.class, scanExpression);
+        if (result != null && !result.isEmpty()) {
+            return result.get(0);
+        } else {
+            return null;
+        }
+    }
+
 }

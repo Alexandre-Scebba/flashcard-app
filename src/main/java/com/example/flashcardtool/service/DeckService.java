@@ -47,4 +47,9 @@ public class DeckService {
     public Optional<Deck> getDeckById(String id) {
         return deckRepository.findById(id);
     }
+
+
+    public List<Deck> getDecksByUserId(String userId) {
+        return deckRepository.findByUserId(userId);
+    }
 }
