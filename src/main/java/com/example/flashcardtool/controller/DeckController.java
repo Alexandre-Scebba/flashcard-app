@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -20,8 +19,6 @@ public class DeckController {
     public DeckController(DeckService deckService) {
         this.deckService = deckService;
     }
-
-
 
     // Yeni deck oluşturma sayfası
     @GetMapping("/deck-create")
@@ -41,7 +38,7 @@ public class DeckController {
         Deck createdDeck = deckService.createDeck(deck.getName(), userId);
 
         // Deck oluşturulduktan sonra flashcard ekleme sayfasına yönlendir
-        return "redirect:/flashcards-create?deckId=" + createdDeck.getId();
+        return "redirect:/flashcard-create?deckId=" + createdDeck.getId();
     }
 
     @PostMapping("/add")
