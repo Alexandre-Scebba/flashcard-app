@@ -5,8 +5,10 @@ import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @EnableScan
 public interface DeckRepository extends CrudRepository<Deck, String> {
-    List<Deck> findByUserId(String userId);  // Query decks by the user who created them
+    Optional<Deck> findByName(String name);  // Query deck by its name
 }
+

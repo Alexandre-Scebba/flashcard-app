@@ -67,4 +67,9 @@ public class DeckService {
         return StreamSupport.stream(deckRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }
+
+    public Deck findByName(String name) {
+        return deckRepository.findByName(name).orElse(null);
+    }
+
 }

@@ -24,7 +24,7 @@
             <td th:text="${deck.name}"></td>
             <td>
                 <!-- Add Flashcards action -->
-                <a th:href="@{/teacher/flashcard-create(deckId=${deck.id})}" class="btn btn-sm btn-primary">Add Flashcards</a>
+                <a th:href="@{/teacher/flashcards/create(deckName=${deck.name})}" class="btn btn-sm btn-primary">Add Flashcards</a>
                 <!-- Edit Deck -->
                 <a th:href="@{/decks/edit/{id}(id=${deck.id})}" class="btn btn-sm btn-warning">Edit</a>
                 <!-- Delete Deck -->

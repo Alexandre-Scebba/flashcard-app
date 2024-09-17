@@ -27,6 +27,7 @@ public class FlashcardService {
         return flashcard;
     }
 
+
     // Update an existing flashcard
     public void updateFlashcard(String id, String frontContent, String backContent) {
         Optional<Flashcard> optionalFlashcard = flashcardRepository.findById(id);
@@ -53,5 +54,10 @@ public class FlashcardService {
         List<Flashcard> flashcardList = new ArrayList<>();
         flashcardRepository.findAll().forEach(flashcardList::add);
         return flashcardList;
+    }
+
+    // Get all flashcards for a specific deck
+    public List<Flashcard> getFlashcardsByDeckId(String deckId) {
+        return flashcardRepository.findByDeckId(deckId);  // Query flashcards by deckId
     }
 }
