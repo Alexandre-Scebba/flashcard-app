@@ -18,13 +18,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="/deck-create">Create Decks</a>
+          <!-- Changed to use Thymeleaf dynamic URL -->
+          <a class="nav-link" th:href="@{/teacher/decks/create}">Create Decks</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/deck-assign">Assign Decks</a>
+          <!-- Changed to use Thymeleaf dynamic URL -->
+          <a class="nav-link" th:href="@{/teacher/deck-assign}">Assign Decks</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/logout">Logout</a>
+          <!-- Changed to use Thymeleaf dynamic URL -->
+          <a class="nav-link" th:href="@{/logout}">Logout</a>
         </li>
       </ul>
     </div>
@@ -38,7 +41,7 @@
 
 <!-- Footer -->
 <footer class="bg-dark text-white text-center py-3 mt-5">
-  <p>2024-All Rights Reserved ©</p>
+  <p>2024 - All Rights Reserved ©</p>
 </footer>
 
 <!-- Bootstrap JS -->

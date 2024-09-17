@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deck List</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Deck List</h1>
+
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <!-- Remove # for ID -->
+            <th>Deck Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="deck : ${decks}">
+            <td th:text="${deck.name}"></td>
+            <td>
+                <!-- Add Flashcards action -->
+                <a th:href="@{/teacher/flashcard-create(deckId=${deck.id})}" class="btn btn-sm btn-primary">Add Flashcards</a>
+                <!-- Edit Deck -->
+                <a th:href="@{/decks/edit/{id}(id=${deck.id})}" class="btn btn-sm btn-warning">Edit</a>
+                <!-- Delete Deck -->
+                <form th:action="@{/decks/delete/{id}(id=${deck.id})}" method="post" style="display:inline-block;">
+                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/teacher/decks/create}" class="btn btn-success">Create New Deck</a>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

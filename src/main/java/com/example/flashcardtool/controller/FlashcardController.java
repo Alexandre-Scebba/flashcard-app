@@ -8,8 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @Controller
 @RequestMapping("/teacher/flashcards")
 public class FlashcardController {
@@ -22,22 +20,23 @@ public class FlashcardController {
         this.deckService = deckService;
     }
 
-    // Show flashcard creation form
-   // @GetMapping("/create")
-   // public String showCreateFlashcardForm(@RequestParam Optional<String> deckId, Model model) {
-   //     model.addAttribute("decks", deckService.getAllDecks());
-    //    Flashcard flashcard = new Flashcard();
-   //     deckId.ifPresent(flashcard::setDeckId);
-    //    model.addAttribute("flashcard", flashcard);
-    //    return "flashcard-create";  // Points to flashcard-create.html
-    //}
+    // Show create flashcard form
+    @GetMapping("/create")
+    public String showCreateFlashcardForm(@RequestParam("deckId") String deckId, Model model) {
+        Flashcard flashcard = new Flashcard();
+        flashcard.setDeckId(deckId); // Pre-fill the deck ID
+        model.addAttribute("flashcard", flashcard);
+        model.addAttribute("decks", deckService.findAll()); // Send all decks in case of manual selection
+        return "flashcard-create"; // Points to flashcard-create.html
+    }
 
-    // Create a flashcard manage by teachercontroller
-   // @PostMapping("/create")
-    //public String createFlashcard(@ModelAttribute Flashcard flashcard) {
-    //    flashcardService.createFlashcard(flashcard.getFrontContent(), flashcard.getBackContent(), flashcard.getDeckId());
-     //   return "redirect:/teacher/decks";  // Redirect to the deck list or another appropriate page
-   // }
+    // Create a flashcard
+    @PostMapping("/create")
+    public String createFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
+        flashcard.setDeckId(deckId); // Associate flashcard with the deck
+        flashcardService.createFlashcard(flashcard.getFrontContent(), flashcard.getBackContent(), deckId);
+        return "redirect:/teacher/decks";  // Redirect to the list of decks
+    }
 
     // Edit flashcard
     @GetMapping("/edit/{id}")

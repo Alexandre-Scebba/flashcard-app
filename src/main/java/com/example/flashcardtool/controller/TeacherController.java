@@ -1,23 +1,23 @@
 package com.example.flashcardtool.controller;
 
 import com.example.flashcardtool.model.Deck;
+import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.service.DeckService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.flashcardtool.service.FlashcardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/teacher")
 public class TeacherController {
 
     private final DeckService deckService;
+    private final FlashcardService flashcardService;
 
-    public TeacherController(DeckService deckService) {
+    public TeacherController(DeckService deckService, FlashcardService flashcardService) {
         this.deckService = deckService;
+        this.flashcardService = flashcardService;
     }
 
     // Show teacher dashboard
@@ -35,16 +35,12 @@ public class TeacherController {
 
     // Create a new deck and redirect to flashcard creation
     @PostMapping("/decks/create")
-    public String createDeck(@ModelAttribute Deck deck) {
-        // Get authenticated user ID
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();  // Fetch logged-in user
+    public String createDeck(@ModelAttribute Deck deck, Model model) {
+        // Save the deck
+        deckService.save(deck); // Save the deck
 
-        // Create deck and save the user ID
-        Deck createdDeck = deckService.createDeck(deck.getName(), userId);
-
-        // After creating deck, redirect to flashcard creation page
-        return "redirect:/teacher/flashcards/create?deckId=" + createdDeck.getId();
+        // Redirect to the flashcard creation form with deckId
+        return "redirect:/teacher/flashcards/create?deckId=" + deck.getId();
     }
 
     // Delete a deck

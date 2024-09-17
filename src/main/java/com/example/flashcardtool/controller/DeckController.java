@@ -21,7 +21,7 @@ public class DeckController {
     }
 
     // Yeni deck oluşturma sayfası
-    @GetMapping("/create")
+    @GetMapping("/decks/create")
     public String showCreateDeckForm(Model model) {
         model.addAttribute("deck", new Deck());
         return "deck-create";
@@ -35,30 +35,40 @@ public class DeckController {
         String userId = authentication.getName();  // Giriş yapmış kullanıcıdan user ID'sini al
 
         // Deck oluştur ve kullanıcı ID'sini kaydet
-        Deck createdDeck = deckService.createDeck(deck.getName(), userId);
+        Deck createdDeck = deckService.createDeck(deck.getName(), userId, deck.getDescription());
 
         // Deck oluşturulduktan sonra flashcard ekleme sayfasına yönlendir
-        return "redirect:/flashcard-create?deckId=" + createdDeck.getId();
+        return "redirect:/teacher/flashcard-create?deckId=" + createdDeck.getId();
     }
 
+    // Yeni deck ekleme işlemi
     @PostMapping("/add")
     public String addDeck(@RequestParam String deckName, @RequestParam String deckDescription) {
-        deckService.createDeck(deckName, deckDescription);
+        // Authenticated kullanıcı ID'sini al
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();  // Giriş yapmış kullanıcıdan user ID'sini al
+
+        // Deck oluştur ve kullanıcı ID'sini kaydet
+        deckService.createDeck(deckName, userId, deckDescription);
+
         return "redirect:/decks";
     }
 
+    // Deck silme işlemi
     @PostMapping("/delete/{id}")
     public String deleteDeck(@PathVariable String id) {
         deckService.deleteDeck(id);
         return "redirect:/decks";
     }
 
+    // Deck güncelleme işlemi
     @PostMapping("/update")
     public String updateDeck(@RequestParam String id, @RequestParam String name) {
         deckService.updateDeck(id, name);
         return "redirect:/decks";
     }
 
+    // Deck düzenleme sayfası
     @GetMapping("/edit/{id}")
     public String editDeck(@PathVariable String id, Model model) {
         Optional<Deck> deck = deckService.getDeckById(id);
@@ -66,6 +76,7 @@ public class DeckController {
         return "editDeck";
     }
 
+    // Deck görüntüleme sayfası
     @GetMapping("/view/{id}")
     public String viewDeck(@PathVariable String id, Model model) {
         Optional<Deck> deck = deckService.getDeckById(id);

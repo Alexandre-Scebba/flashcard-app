@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "Decks")
 public class Deck {
 
-    @DynamoDBHashKey
+    @DynamoDBHashKey(attributeName = "id")
     private String id;
 
     @DynamoDBAttribute
@@ -15,6 +15,9 @@ public class Deck {
 
     @DynamoDBAttribute
     private String userId;
+
+    @DynamoDBAttribute
+    private String description;
 
     // Getters and setters
     public String getId() {
@@ -40,4 +43,8 @@ public class Deck {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public String getDescription() {return description;}
+
+    public void setDescription(String description) {this.description = description;}
 }
