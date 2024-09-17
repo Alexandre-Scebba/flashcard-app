@@ -18,16 +18,30 @@ Each member writes down answers to 3 questions in the following format:
 3. Where do I need assistance? What do I need to figure out?
    -
 
---- --- --- ---   --- --- --- ---   --- --- --- ---   
---------------------Scrum meeting #...[4]
-<< Sept-[ENTER DATE]-2024 >>  --Alexandre--
+--- --- --- ---   --- --- --- ---   --- --- --- ---
+
+--------------------Scrum meeting #...[ENTER NUMBER]
+<< Sept-[17]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
-   -finished most deck functions
+    -we lost some scrum notes so we caught up today and changed to a .txt files
+    -completed most deck functions
 2. What I plan to do from this scrum to next? (next 24 hours)
-   -
+    -get  a DB working on my PC so I can test on my own
+   -test deck creation and retrieval, and get file uploads working for flashcards
 3. Where do I need assistance? What do I need to figure out?
    -
---------------------Scrum meeting #...[3]
+
+<< Sept-[17]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+   - Implement flashcard creation, update, and delete functionality templates
+2. What I plan to do from this scrum to next? (next 24 hours)
+   - Implement flashcard creation, update, and delete functionality with form validation (for front and back content).
+- Create a flashcard management page using Thymeleaf where Admin and Teacher can perform CRUD operations.
+3. Where do I need assistance? What do I need to figure out?
+   - Mapping Problem
+
+--- --- --- ---   --- --- --- ---   --- --- --- ---
+--------------------Scrum meeting #...[ENTER NUMBER]
 << Sept-[16]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
    -started deck create/manage etc
@@ -35,6 +49,16 @@ Each member writes down answers to 3 questions in the following format:
    -complete and start student viewing decks
 3. Where do I need assistance? What do I need to figure out?
    -nothing
+
+<< Sept-[16]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+   - Create a user management panel for admins to manage roles (promote/demote users to Admin, Teacher, Student).
+2. What I plan to do from this scrum to next? (next 24 hours)
+   - Update user roles in the database.
+3. Where do I need assistance? What do I need to figure out?
+   - mapping URL
+
+--- --- --- ---   --- --- --- ---   --- --- --- ---
 --------------------Scrum meeting #...[2]
 << Sept-15-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
@@ -43,15 +67,17 @@ Each member writes down answers to 3 questions in the following format:
 2. What I plan to do from this scrum to next? (next 24 hours)
    -implement deck functions
 3. Where do I need assistance? What do I need to figure out?
-   -wondering about addDeck and createDeck functions in DeckController
+   -wondering about addDeck vs createDeck functions in DeckController
 
-<< Sept-[ENTER DATE]-2024 >>  --Mehmet--
+<< Sept-[15]-2024 >>  --Mehmet--
 1. What I have done / not done since last Scrum?
-   -
+   -Implement user registration and login with Spring Security.
+- Set up a user authentication flow for the system, including validation and error handling.
+- Configure password hashing and user roles (Admin, Teacher, Student).
 2. What I plan to do from this scrum to next? (next 24 hours)
    -
 3. Where do I need assistance? What do I need to figure out?
-   -
+   - Redirections problem
 
 
 --------------------Scrum meeting #...[1]
@@ -59,7 +85,7 @@ Each member writes down answers to 3 questions in the following format:
 << Sept-13-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
     -first scrum, just set up project: github, database etc.
-    
+
 2. What I plan to do from this scrum to next? (next 24 hours)
     -start implementing deck functions
 3. Where do I need assistance? What do I need to figure out?
@@ -67,8 +93,10 @@ Each member writes down answers to 3 questions in the following format:
 
 << current date goes here >>  --Mehmet--
 1. What I have done / not done since last Scrum?
-   -
+   - Setup Heroku hosting
+- Created Trello board, finished the UML use case diagram
 2. What I plan to do from this scrum to next? (next 24 hours)
-   -
+   - User registration and Login
+- Reset Password
 3. Where do I need assistance? What do I need to figure out?
-   -
+   - ....
