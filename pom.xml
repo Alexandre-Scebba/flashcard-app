@@ -93,6 +93,7 @@
 			<artifactId>sendgrid-java</artifactId>
 			<version>4.10.2</version>
 		</dependency>
+
 	</dependencies>
 
 	<build>

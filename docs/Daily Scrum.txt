@@ -2,15 +2,15 @@ Each member writes down answers to 3 questions in the following format:
 #Copy/paste this template above the last entry:
 
 --------------------Scrum meeting #...[ENTER NUMBER]
-<< Sept-[ENTER DATE]-2024 >>  --Alexandre--
+<< Sept-[DD]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
-    -
+
 2. What I plan to do from this scrum to next? (next 24 hours)
    -
 3. Where do I need assistance? What do I need to figure out?
    -
 
-<< Sept-[ENTER DATE]-2024 >>  --Mehmet--
+<< Sept-[DD]-2024 >>  --Mehmet--
 1. What I have done / not done since last Scrum?
    -
 2. What I plan to do from this scrum to next? (next 24 hours)
@@ -19,8 +19,26 @@ Each member writes down answers to 3 questions in the following format:
    -
 
 --- --- --- ---   --- --- --- ---   --- --- --- ---
+--------------------Scrum meeting #...[5]
+<< Sept-[18]-2024 >>  --Alexandre--
+1. What I have done / not done since last Scrum?
+    -merged Mehmet's branch into mine to group deck creation, login, flashcard creation for testing
+    -got DDBLocal working
 
---------------------Scrum meeting #...[ENTER NUMBER]
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -deck creation not leading to flashcard create, need to fix.
+3. Where do I need assistance? What do I need to figure out?
+   -nothing right now.
+
+<< Sept-[DD]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+   -
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+--------------------Scrum meeting #...[4]
 << Sept-[17]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
     -we lost some scrum notes so we caught up today and changed to a .txt files
@@ -41,7 +59,7 @@ Each member writes down answers to 3 questions in the following format:
    - Mapping Problem
 
 --- --- --- ---   --- --- --- ---   --- --- --- ---
---------------------Scrum meeting #...[ENTER NUMBER]
+--------------------Scrum meeting #...[3]
 << Sept-[16]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
    -started deck create/manage etc
