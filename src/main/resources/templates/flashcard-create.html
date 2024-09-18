@@ -9,19 +9,37 @@
 <body>
 
 <div class="container mt-5">
-  <h1>Create Flashcard</h1>
-  <form th:action="@{/flashcards/create}" th:object="${flashcard}" method="post">
+  <h1>Create Flashcard for Deck: <span th:text="${deckName}"></span></h1>
+
+  <!-- Flashcard Form -->
+  <form th:action="@{/teacher/flashcards/create}" th:object="${flashcard}" method="post">
+    <input type="hidden" th:field="*{deckId}"/>
+
+    <!-- Hidden field for deckName -->
+    <input type="hidden" name="deckName" th:value="${deckName}"/>
+
+    <!-- Front Content -->
     <label for="frontContent">Front Content</label>
-    <input type="text" th:field="*{frontContent}" placeholder="Enter front content" required>
+    <input type="text" id="frontContent" th:field="*{frontContent}" placeholder="Enter front content" required class="form-control mb-2">
 
+    <!-- Back Content -->
     <label for="backContent">Back Content</label>
-    <input type="text" th:field="*{backContent}" placeholder="Enter back content" required>
+    <input type="text" id="backContent" th:field="*{backContent}" placeholder="Enter back content" required class="form-control mb-2">
 
-    <label for="deckId">Deck ID</label>
-    <input type="text" th:field="*{deckId}" placeholder="Enter deck ID" required>
-
-    <button type="submit">Save Flashcard</button>
+    <!-- Add Flashcard Button -->
+    <button type="submit" class="btn btn-primary">Add Flashcard</button>
   </form>
+
+  <!-- List of Added Flashcards -->
+  <h2 class="mt-5">Added Flashcards</h2>
+  <ul class="list-group">
+    <li class="list-group-item" th:each="flashcard : ${flashcards}">
+      <span th:text="${flashcard.frontContent}"></span> - <span th:text="${flashcard.backContent}"></span>
+    </li>
+  </ul>
+
+  <!-- Done Button -->
+  <a th:href="@{/teacher/decks}" class="btn btn-success mt-3">Done</a>
 </div>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>

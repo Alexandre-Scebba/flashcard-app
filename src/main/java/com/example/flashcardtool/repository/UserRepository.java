@@ -18,20 +18,24 @@ public class UserRepository {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
+    // Save user
     public void save(User user) {
         System.out.println("User to be saved: " + user.toString());
         dynamoDBMapper.save(user);
         System.out.println("User successfully saved: " + user.getUsername());
     }
 
+    // Get user by ID
     public User getUserById(String userId) {
         return dynamoDBMapper.load(User.class, userId);
     }
 
+    // Delete user
     public void delete(User user) {
         dynamoDBMapper.delete(user);
     }
 
+    // Get user by username
     public User getUserByUsername(String username) {
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":v1", new AttributeValue().withS(username));
@@ -48,6 +52,7 @@ public class UserRepository {
         }
     }
 
+    // Find user by email
     public User findByEmail(String email) {
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":v1", new AttributeValue().withS(email));
@@ -64,6 +69,7 @@ public class UserRepository {
         }
     }
 
+    // Find user by password reset token
     public Optional<User> findByPasswordResetToken(String token) {
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":v1", new AttributeValue().withS(token));
@@ -77,6 +83,19 @@ public class UserRepository {
             return Optional.of(result.get(0));
         } else {
             return Optional.empty();
+        }
+    }
+
+    // Get all users (equivalent to findAll)
+    public List<User> findAll() {
+        return dynamoDBMapper.scan(User.class, new DynamoDBScanExpression());
+    }
+
+    // Delete user by ID (equivalent to deleteById)
+    public void deleteById(String userId) {
+        User user = dynamoDBMapper.load(User.class, userId);
+        if (user != null) {
+            dynamoDBMapper.delete(user);
         }
     }
 }
