@@ -56,7 +56,7 @@ public class UserController {
             } else if (role.equals("ROLE_TEACHER")) {
                 return "redirect:/teacher/dashboard";  // Öğretmen deck management sayfasına yönlendir
             } else if (role.equals("ROLE_STUDENT")) {
-                return "redirect:/student-dashboard";  // Öğrenci çalışma sayfasına yönlendir
+                return "redirect:/student/student-dashboard";  // Öğrenci çalışma sayfasına yönlendir
             }
         }
 

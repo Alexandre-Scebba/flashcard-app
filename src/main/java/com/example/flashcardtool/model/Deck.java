@@ -4,6 +4,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
+import java.util.List;
+
 @DynamoDBTable(tableName = "Decks")
 public class Deck {
 
@@ -18,6 +20,7 @@ public class Deck {
 
     @DynamoDBAttribute
     private String description;
+
 
     // Getters and setters
     public String getId() {
@@ -44,7 +47,11 @@ public class Deck {
         this.userId = userId;
     }
 
-    public String getDescription() {return description;}
+    public String getDescription() {
+        return description;
+    }
 
-    public void setDescription(String description) {this.description = description;}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

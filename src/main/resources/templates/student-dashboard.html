@@ -10,11 +10,15 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#" th:text="${studentName} + ' Dashboard'"> Dashboard</a>    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="#" th:text="${studentName} + ' Dashboard'"> Dashboard</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+        <a class="nav-link" href="/student/decks">Deck List</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="/study">Study Flashcards</a>
         </li>
@@ -36,6 +40,40 @@
 <div class="container mt-4">
   <h2 class="text-center">Welcome to Student Dashboard</h2>
   <p class="text-center">Start studying your assigned flashcards or check your progress.</p>
+
+  <form action="/student/search" method="get" class="d-flex mb-3">
+    <input class="form-control me-2" type="search" name="query" placeholder="Search Decks" aria-label="Search">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+  </form>
+
+  <!-- Section for Student's Assigned Decks -->
+  <div class="my-decks mt-5">
+    <h3>Your Decks</h3>
+    <table class="table table-striped table-bordered">
+      <thead>
+      <tr>
+        <th>Deck Name</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="deck : ${decks}">
+        <td th:text="${deck.name}"></td>
+        <td>
+          <!-- Study Deck -->
+          <form th:action="@{/student/study(deckId=${deck.id})}" method="get" style="display:inline-block;">
+            <button class="btn btn-sm btn-primary" type="submit">Study Deck</button>
+          </form>
+          <!-- Add to Favorites -->
+          <form th:action="@{/student/favorites/add}" method="post" style="display:inline-block;">
+            <input type="hidden" name="deckId" th:value="${deck.id}" />
+            <button class="btn btn-sm btn-primary" type="submit">Add to Favorites</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- Footer -->

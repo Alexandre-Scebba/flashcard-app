@@ -1,6 +1,7 @@
 package com.example.flashcardtool.controller;
 
 import com.example.flashcardtool.model.Deck;
+import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.service.DeckService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -83,4 +85,27 @@ public class DeckController {
         model.addAttribute("deck", deck.orElse(new Deck()));
         return "viewDeck";
     }
+
+    @GetMapping("/study/{deckId}")
+    public String startStudyMode(@PathVariable("deckId") String deckId, Model model) {
+        Optional<Deck> optionalDeck = deckService.getDeckById(deckId);
+
+        // Check if the deck is present
+        if (optionalDeck.isPresent()) {
+            Deck deck = optionalDeck.get();  // Now you have the Deck object
+
+            // Get flashcards for the deck
+            List<Flashcard> flashcards = deckService.getFlashcardsForDeck(deck.getId());
+
+            // Add flashcards and deck to the model
+            model.addAttribute("deck", deck);
+            model.addAttribute("flashcards", flashcards);
+
+            return "student/study-mode";
+        } else {
+            throw new IllegalArgumentException("Deck not found");
+        }
+    }
+
+
 }

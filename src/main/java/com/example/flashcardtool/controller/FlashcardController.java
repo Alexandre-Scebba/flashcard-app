@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/teacher/flashcards")
@@ -25,10 +26,13 @@ public class FlashcardController {
     @GetMapping("/create")
     public String showCreateFlashcardForm(@RequestParam("deckName") String deckName, Model model) {
         // Retrieve the deck by name
-        Deck deck = deckService.findByName(deckName);  // Make sure this method is defined in DeckService
-        if (deck == null) {
+        Optional<Deck> optionalDeck = deckService.findByName(deckName);  // Make sure this method is defined in DeckService
+
+        if (!optionalDeck.isPresent()) {
             throw new IllegalArgumentException("Deck not found");
         }
+
+        Deck deck = optionalDeck.get(); // Unwrap the Optional<Deck> safely
 
         // Prepare the Flashcard for creation
         Flashcard flashcard = new Flashcard();
@@ -42,8 +46,9 @@ public class FlashcardController {
         model.addAttribute("flashcards", flashcards); // Display already added flashcards
         model.addAttribute("deckName", deckName); // Keep deckName for reference
 
-        return "/flashcard-create";  // Make sure you have this template file available
+        return "/flashcard-create";  // Ensure this template file exists
     }
+
 
     // Process flashcard creation and return to the same page to add more flashcards
     @PostMapping("/create")
