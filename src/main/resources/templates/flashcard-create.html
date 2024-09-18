@@ -10,17 +10,26 @@
 
 <div class="container mt-5">
   <h1>Create Flashcard</h1>
-  <form th:action="@{/flashcards/create}" th:object="${flashcard}" method="post">
+  <form th:action="@{/teacher/flashcards/create}" th:object="${flashcard}" method="post">
+
+    <!-- Front Content -->
     <label for="frontContent">Front Content</label>
-    <input type="text" th:field="*{frontContent}" placeholder="Enter front content" required>
+    <input type="text" id="frontContent" th:field="*{frontContent}" placeholder="Enter front content" required>
 
+    <!-- Back Content -->
     <label for="backContent">Back Content</label>
-    <input type="text" th:field="*{backContent}" placeholder="Enter back content" required>
+    <input type="text" id="backContent" th:field="*{backContent}" placeholder="Enter back content" required>
 
-    <label for="deckId">Deck ID</label>
-    <input type="text" th:field="*{deckId}" placeholder="Enter deck ID" required>
+    <!-- Deck Selection -->
+    <label for="deckId">Select Deck</label>
+    <select id="deckId" th:field="*{deckId}" required>
+      <option th:if="${deckId != null}" th:value="${deckId}" th:text="|Deck: ${deckId} (Auto-selected)|"></option>
+      <option th:each="deck : ${decks}" th:value="${deck.id}" th:text="${deck.name}"
+              th:selected="${deck.id == deckId}">Select Deck</option>
+    </select>
 
-    <button type="submit">Save Flashcard</button>
+    <!-- Save Flashcard Button -->
+    <button type="submit" class="btn btn-primary mt-3">Save Flashcard</button>
   </form>
 </div>
 

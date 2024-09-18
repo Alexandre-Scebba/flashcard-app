@@ -19,6 +19,7 @@ public class Flashcard {
     @DynamoDBAttribute
     private String deckId;
 
+    // Getters and setters
     public String getId() {
         return id;
     }

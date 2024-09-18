@@ -5,6 +5,7 @@ import com.example.flashcardtool.repository.FlashcardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,7 +16,7 @@ public class FlashcardService {
     @Autowired
     private FlashcardRepository flashcardRepository;
 
-    // Create new flashcard
+    // Create a new flashcard
     public Flashcard createFlashcard(String frontContent, String backContent, String deckId) {
         Flashcard flashcard = new Flashcard();
         flashcard.setId(UUID.randomUUID().toString());
@@ -26,7 +27,7 @@ public class FlashcardService {
         return flashcard;
     }
 
-    // Update existing flashcard
+    // Update an existing flashcard
     public void updateFlashcard(String id, String frontContent, String backContent) {
         Optional<Flashcard> optionalFlashcard = flashcardRepository.findById(id);
         if (optionalFlashcard.isPresent()) {
@@ -37,18 +38,20 @@ public class FlashcardService {
         }
     }
 
-    // Delete flashcard
+    // Delete a flashcard by ID
     public void deleteFlashcard(String id) {
         flashcardRepository.deleteById(id);
     }
 
-    // Get flashcard by ID
+    // Get a flashcard by ID
     public Flashcard getFlashcardById(String id) {
         return flashcardRepository.findById(id).orElse(null);
     }
 
     // Get all flashcards
     public List<Flashcard> getAllFlashcards() {
-        return (List<Flashcard>) flashcardRepository.findAll();
+        List<Flashcard> flashcardList = new ArrayList<>();
+        flashcardRepository.findAll().forEach(flashcardList::add);
+        return flashcardList;
     }
 }

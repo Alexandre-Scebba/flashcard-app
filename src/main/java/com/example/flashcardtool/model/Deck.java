@@ -21,6 +21,8 @@ public class Deck {
     @DynamoDBAttribute
     private String description;
 
+    // Getters and setters
+
     @DynamoDBAttribute
     private LocalDateTime creationDate;
 

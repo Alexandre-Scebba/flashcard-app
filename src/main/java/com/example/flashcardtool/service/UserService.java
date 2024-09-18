@@ -1,4 +1,5 @@
 package com.example.flashcardtool.service;
+
 import com.example.flashcardtool.model.User;
 import com.example.flashcardtool.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // Method to register a new user
     public void registerUser(String username, String password, String email, List<String> roles, String firstName, String lastName) {
         // Check if the user already exists
         if (userRepository.getUserByUsername(username) != null) {
@@ -36,31 +38,30 @@ public class UserService {
     }
 
     public void sendPasswordResetLink(String email) {
-        Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(email));
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            String token = UUID.randomUUID().toString();
-            // Save the token with the user or in a separate password reset token table
-            // For simplicity, let's assume you have a method to save the token
-            savePasswordResetToken(user, token);
+    Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(email));
+    if (userOptional.isPresent()) {
+        User user = userOptional.get();
+        String token = UUID.randomUUID().toString();
+        // Save the token with the user or in a separate password reset token table
+        // For simplicity, let's assume you have a method to save the token
+        savePasswordResetToken(user, token);
 
-            String resetLink = "http://localhost:8080/newpassword?token=" + token;
-            // Send the email with the reset link
-            sendEmail(user.getEmail(), "Password Reset Request", "To reset your password, click the link below:\n" + resetLink);
-        } else {
-            // Handle the case where the email is not found
-            System.out.println("Email not found: " + email);
-        }
+        String resetLink = "http://localhost:8080/newpassword?token=" + token;
+        // Send the email with the reset link
+        sendEmail(user.getEmail(), "Password Reset Request", "To reset your password, click the link below:\n" + resetLink);
+    } else {
+        // Handle the case where the email is not found
+        System.out.println("Email not found: " + email);
     }
+}
 
-    private void savePasswordResetToken(User user, String token) {
-        // Implement this method to save the token
-    }
+private void savePasswordResetToken(User user, String token) {
+    // Implement this method to save the token
+}
 
-    private void sendEmail(String to, String subject, String body) {
-        // Implement this method to send the email
-    }
-
+private void sendEmail(String to, String subject, String body) {
+    // Implement this method to send the email
+}
     public void updatePassword(String token, String password) {
         // Validate the token
         if (validateResetToken(token)) {
@@ -85,8 +86,19 @@ public class UserService {
     }
 
     private boolean validateResetToken(String token) {
-        // Implement this method to validate the token
-        return true; // Temporary validation
+        return true;  // Temporary token validation logic
+    }
+
+    // --------------------- New Methods for Admin Functionality ---------------------
+
+    // Method to get all users (Admin functionality)
+    public List<User> getAllUsers() {
+        return userRepository.findAll();  // Fetch all users from the database
+    }
+
+    // Method to delete a user by ID (Admin functionality)
+    public void deleteUser(String id) {
+        userRepository.deleteById(id);  // Delete user by ID
     }
 
     public User findByUsername(String username) {

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Deck</title>
+</head>
+<body>
+<h1>Create a New Deck</h1>
+<form th:action="@{/teacher/decks/create}" method="post">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <label for="name">Deck Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" required>
+
+    <button type="submit">Create Deck</button>
+</form>
+</body>
+</html>
