@@ -2,17 +2,15 @@ package com.example.flashcardtool.controller;
 
 import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.model.Flashcard;
-import com.example.flashcardtool.repository.DeckRepository;
 import com.example.flashcardtool.service.DeckService;
 import com.example.flashcardtool.service.FlashcardService;
+import com.example.flashcardtool.service.StudentLibraryService;
 import com.example.flashcardtool.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/teacher")
@@ -21,13 +19,13 @@ public class TeacherController {
     private final DeckService deckService;
     private final FlashcardService flashcardService;
     private final UserService userService;
-    private final DeckRepository deckRepository;
+    private final StudentLibraryService studentLibraryService;
 
-    public TeacherController(DeckService deckService, FlashcardService flashcardService, UserService userService, DeckRepository deckRepository) {
+    public TeacherController(DeckService deckService, FlashcardService flashcardService, UserService userService, StudentLibraryService studentLibraryService) {
         this.deckService = deckService;
         this.flashcardService = flashcardService;
         this.userService = userService;
-        this.deckRepository = deckRepository;
+        this.studentLibraryService = studentLibraryService;
     }
 
     // Show teacher dashboard
@@ -57,11 +55,10 @@ public class TeacherController {
         return "redirect:/teacher/dashboard";  // Redirect back to the dashboard after deletion
     }
 
-    // Assign a deck to a student
     @PostMapping("/deck-assign")
     public String assignDeck(@RequestParam String deckId, @RequestParam String studentId) {
-        deckService.assignDeck(deckId, studentId);
-        return "redirect:/teacher/deck-assign";
+        studentLibraryService.addLibrary(studentId, deckId);  // Assign deck to student
+        return "redirect:/teacher/deck-assign";  // Redirect back to the same page after assignment
     }
 
     @GetMapping("/deck-assign")
@@ -108,25 +105,25 @@ public class TeacherController {
     }
 
     // Show the flashcard edit form
-@GetMapping("/flashcards/edit/{id}")
-public String editFlashcard(@PathVariable String id, Model model) {
-    Flashcard flashcard = flashcardService.getFlashcardById(id);
-    model.addAttribute("flashcard", flashcard);
-    return "flashcard-edit";  // Points to flashcard-edit.html
-}
+    @GetMapping("/flashcards/edit/{id}")
+    public String editFlashcard(@PathVariable String id, Model model) {
+        Flashcard flashcard = flashcardService.getFlashcardById(id);
+        model.addAttribute("flashcard", flashcard);
+        return "flashcard-edit";  // Points to flashcard-edit.html
+    }
 
-// Update flashcard and return to the current deck flashcard creation page
-@PostMapping("/flashcards/edit/{id}")
-public String updateFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
-    flashcardService.updateFlashcard(
-        flashcard.getId(),
-        flashcard.getFrontContent(),
-        flashcard.getBackContent(),
-        flashcard.getOption1(),
-        flashcard.getOption2(),
-        flashcard.getOption3(),
-        flashcard.getOption4()
-    );
-    return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Redirect back to the flashcard creation page for the current deck
-}
+    // Update flashcard and return to the current deck flashcard creation page
+    @PostMapping("/flashcards/edit/{id}")
+    public String updateFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
+        flashcardService.updateFlashcard(
+            flashcard.getId(),
+            flashcard.getFrontContent(),
+            flashcard.getBackContent(),
+            flashcard.getOption1(),
+            flashcard.getOption2(),
+            flashcard.getOption3(),
+            flashcard.getOption4()
+        );
+        return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Redirect back to the flashcard creation page for the current deck
+    }
 }

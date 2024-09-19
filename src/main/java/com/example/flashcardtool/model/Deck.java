@@ -4,8 +4,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-import java.util.List;
-
 @DynamoDBTable(tableName = "Decks")
 public class Deck {
 
@@ -65,4 +63,12 @@ public class Deck {
     public void setAssignedStudentId(String assignedStudentId) {
         this.assignedStudentId = assignedStudentId;
     }
+
+   public boolean isEmpty() {
+    return (id == null || id.isEmpty()) &&
+           (name == null || name.isEmpty()) &&
+           (userId == null || userId.isEmpty()) &&
+           (description == null || description.isEmpty()) &&
+           (assignedStudentId == null || assignedStudentId.isEmpty());
+}
 }
