@@ -8,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/teacher/flashcards")
 public class FlashcardController {
@@ -20,22 +23,38 @@ public class FlashcardController {
         this.deckService = deckService;
     }
 
-    // Show create flashcard form
+    // Show the flashcard creation form for a specific deck
     @GetMapping("/create")
     public String showCreateFlashcardForm(@RequestParam("deckId") String deckId, Model model) {
+        // Retrieve the deck by ID
+        Optional<Deck> optionalDeck = deckService.getDeckById(deckId);
+
+        if (!optionalDeck.isPresent()) {
+            throw new IllegalArgumentException("Deck not found");
+        }
+
+        Deck deck = optionalDeck.get();
+
+        // Prepare the Flashcard for creation
         Flashcard flashcard = new Flashcard();
-        flashcard.setDeckId(deckId); // Pre-fill the deck ID
+        flashcard.setDeckId(deck.getId());  // Associate the flashcard with the deck ID
+
+        // Get all flashcards in this deck
+        List<Flashcard> flashcards = flashcardService.getFlashcardsByDeckId(deck.getId());
+
+        // Add attributes to the model for rendering
         model.addAttribute("flashcard", flashcard);
-        model.addAttribute("decks", deckService.findAll()); // Send all decks in case of manual selection
-        return "flashcard-create"; // Points to flashcard-create.html
+        model.addAttribute("flashcards", flashcards);  // Display already added flashcards
+        model.addAttribute("deck", deck);  // Pass the deck information for reference
+
+        return "flashcard-create";  // Ensure this template file exists
     }
 
-    // Create a flashcard
+    // Process flashcard creation and return to the same page to add more flashcards
     @PostMapping("/create")
     public String createFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
-        flashcard.setDeckId(deckId); // Associate flashcard with the deck
         flashcardService.createFlashcard(flashcard.getFrontContent(), flashcard.getBackContent(), deckId);
-        return "redirect:/teacher/decks";  // Redirect to the list of decks
+        return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Stay on flashcard creation page for the same deck
     }
 
     // Edit flashcard
@@ -43,20 +62,34 @@ public class FlashcardController {
     public String editFlashcard(@PathVariable String id, Model model) {
         Flashcard flashcard = flashcardService.getFlashcardById(id);
         model.addAttribute("flashcard", flashcard);
-        return "flashcard-edit";  // Points to flashcard-edit.html
+        return "teacher/flashcard-edit";  // Points to flashcard-edit.html
     }
 
-    // Delete flashcard
+    // Update flashcard and return to the current deck flashcard creation page
+    @PostMapping("/edit/{id}")
+    public String updateFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
+        flashcardService.updateFlashcard(flashcard.getId(), flashcard.getFrontContent(), flashcard.getBackContent());
+        return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Redirect back to the flashcard creation page for the current deck
+    }
+
+    // Delete flashcard and stay on the same flashcard creation page
     @PostMapping("/delete/{id}")
-    public String deleteFlashcard(@PathVariable String id) {
+    public String deleteFlashcard(@PathVariable String id, @RequestParam("deckId") String deckId) {
         flashcardService.deleteFlashcard(id);
-        return "redirect:/teacher/flashcards";  // Redirect to the flashcard list or another appropriate page
+        return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Redirect to the flashcards for the current deck
     }
 
-    // View all flashcards
+    // View all flashcards for a specific deck
+    @GetMapping("/deck/{deckId}")
+    public String listFlashcardsByDeck(@PathVariable String deckId, Model model) {
+        model.addAttribute("flashcards", flashcardService.getFlashcardsByDeckId(deckId));
+        return "teacher/flashcard-list";  // Points to flashcard-list.html for the specific deck
+    }
+
+    // View all flashcards (global list)
     @GetMapping
-    public String listFlashcards(Model model) {
+    public String listAllFlashcards(Model model) {
         model.addAttribute("flashcards", flashcardService.getAllFlashcards());
-        return "flashcard-list";  // Points to flashcard-list.html
+        return "teacher/flashcard-list";  // Points to a global flashcard list
     }
 }

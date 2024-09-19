@@ -24,19 +24,22 @@
             <td th:text="${deck.name}"></td>
             <td>
                 <!-- Add Flashcards action -->
-                <a th:href="@{/teacher/flashcard-create(deckId=${deck.id})}" class="btn btn-sm btn-primary">Add Flashcards</a>
-                <!-- Edit Deck -->
-                <a th:href="@{/decks/edit/{id}(id=${deck.id})}" class="btn btn-sm btn-warning">Edit</a>
+                <form th:action="@{/teacher/flashcards/create}" method="get" style="display:inline-block;">
+                    <!-- Pass the deckId instead of deckName -->
+                    <input type="hidden" name="deckId" th:value="${deck.id}" />
+                    <button class="btn btn-sm btn-primary" type="submit">Update Deck</button>
+                </form>
                 <!-- Delete Deck -->
-                <form th:action="@{/decks/delete/{id}(id=${deck.id})}" method="post" style="display:inline-block;">
+                <form th:action="@{/teacher/decks/delete/{id}(id=${deck.id})}" method="post" style="display:inline-block;">
                     <button class="btn btn-sm btn-danger" type="submit">Delete</button>
                 </form>
             </td>
         </tr>
+
         </tbody>
     </table>
 
-    <a th:href="@{/teacher/decks/create}" class="btn btn-success">Create New Deck</a>
+    <button th:onclick="|window.location.href='@{/teacher/decks/create}'|" class="btn btn-success">Create New Deck</button>
 </div>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>

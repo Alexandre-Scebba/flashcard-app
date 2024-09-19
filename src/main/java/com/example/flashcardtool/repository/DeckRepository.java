@@ -13,4 +13,8 @@ public interface DeckRepository extends CrudRepository<Deck, String> {
     List<Deck> findAll();
 
     List<Deck> findByUserId(String userId);  // Query decks by the user who created them
+
+    List<Deck> findByNameContaining(String name);  // Add this method to search decks by name containing a keyword
+
+    Optional<Deck> findByName(String name);  // Add this method to find a deck by its exact name
 }

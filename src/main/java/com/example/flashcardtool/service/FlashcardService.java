@@ -54,4 +54,8 @@ public class FlashcardService {
         flashcardRepository.findAll().forEach(flashcardList::add);
         return flashcardList;
     }
+    // Get all flashcards for a specific deck by deckId
+    public List<Flashcard> getFlashcardsByDeckId(String deckId) {
+        return flashcardRepository.findByDeckId(deckId); // Using the method from FlashcardRepository
+    }
 }
