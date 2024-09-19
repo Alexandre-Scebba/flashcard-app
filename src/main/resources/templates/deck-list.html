@@ -3,42 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deck List</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <title th:text="${teacherName} + ' - Deck List'">Deck List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:text="'Welcome, ' + ${teacherName}">Teacher Dashboard</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/teacher/dashboard">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/teacher/decks">Manage Decks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Deck List</h1>
+    <h1 class="text-center mb-4" th:text="${teacherName} + ' - Deck List'">Deck List</h1>
 
-    <table class="table table-striped table-bordered">
-        <thead class="thead-dark">
-        <tr>
-            <!-- Remove # for ID -->
-            <th>Deck Name</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="deck : ${decks}">
-            <td th:text="${deck.name}"></td>
-            <td>
-                <!-- Add Flashcards action -->
-                 <form th:action="@{/teacher/flashcards/create(deckName=${deck.name})}" method="get" style="display:inline-block;">
-                    <button class="btn btn-sm btn-primary" type="submit">Update Deck</button>
-                </form>
-                <!-- Delete Deck -->
-                <form th:action="@{/decks/delete/{id}(id=${deck.id})}" method="post" style="display:inline-block;">
-                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>Deck Name</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="deck : ${decks}">
+                <td th:text="${deck.name}"></td>
+                <td>
+                    <!-- Assign Button -->
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" th:attr="data-deck-id=${deck.id}" data-bs-target="#assignModal">Assign</button>
 
-    <button th:onclick="|window.location.href='@{/teacher/decks/create}'|" class="btn btn-success">Create New Deck</button>
+                    <!-- Delete Deck -->
+                    <form th:action="@{/teacher/decks/delete/{id}(id=${deck.id})}" method="post" style="display:inline-block;">
+                        <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <button th:onclick="|window.location.href='@{/teacher/decks/create}'|" class="btn btn-success">Create New Deck</button>
+    </div>
+</div>
+
+<!-- Assign Modal -->
+<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assignModalLabel">Assign Deck to Students</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Search Bar -->
+                <input type="text" class="form-control mb-3" id="searchStudent" placeholder="Search students...">
+
+                <!-- Student List -->
+                <div id="studentList">
+                    <ul class="list-group">
+                        <li class="list-group-item" th:each="student : ${students}">
+                            <input type="checkbox" th:attr="data-student-id=${student.id}"> <span th:text="${student.name}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="assignDeckBtn">Assign</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script>
+    document.getElementById('assignDeckBtn').addEventListener('click', function() {
+        let selectedStudents = [];
+        document.querySelectorAll('#studentList input[type=checkbox]:checked').forEach(function(checkbox) {
+            selectedStudents.push(checkbox.getAttribute('data-student-id'));
+        });
+
+        let deckId = document.querySelector('[data-bs-target="#assignModal"]').getAttribute('data-deck-id');
+
+        // Send POST request to assign deck to selected students
+        fetch('/teacher/decks/assign', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                deckId: deckId,
+                studentIds: selectedStudents
+            })
+        }).then(response => {
+            if (response.ok) {
+                alert('Deck assigned successfully!');
+                location.reload();
+            } else {
+                alert('Error assigning deck.');
+            }
+        });
+    });
+</script>
 </body>
 </html>

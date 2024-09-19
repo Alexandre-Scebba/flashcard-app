@@ -22,90 +22,70 @@ public class DeckController {
         this.deckService = deckService;
     }
 
-    // Yeni deck oluşturma sayfası
-    @GetMapping("/decks/create")
+    // Show create deck form
+    @GetMapping("/create")
     public String showCreateDeckForm(Model model) {
-        model.addAttribute("deck", new Deck());
-        return "deck-create";
+        model.addAttribute("deck", new Deck());  // Bind empty deck object to form
+        return "deck-create";  // Points to deck-create.html
     }
 
-    // Yeni deck oluşturma işlemi
-    @PostMapping("/create")
-    public String createDeck(@ModelAttribute Deck deck) {
-        // Authenticated kullanıcı ID'sini al
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();  // Giriş yapmış kullanıcıdan user ID'sini al
 
-        // Deck oluştur ve kullanıcı ID'sini kaydet
-        Deck createdDeck = deckService.createDeck(deck.getName(), userId, deck.getDescription());
 
-        // Deck oluşturulduktan sonra flashcard ekleme sayfasına yönlendir
-        return "redirect:/teacher/flashcard-create?deckId=" + createdDeck.getId();
-    }
-
-    // Yeni deck ekleme işlemi
-    @PostMapping("/add")
-    public String addDeck(@RequestParam String deckName, @RequestParam String deckDescription) {
-        // Authenticated kullanıcı ID'sini al
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();  // Giriş yapmış kullanıcıdan user ID'sini al
-
-        // Deck oluştur ve kullanıcı ID'sini kaydet
-        deckService.createDeck(deckName, userId, deckDescription);
-
-        return "redirect:/decks";
-    }
-
-    // Deck silme işlemi
+    // Delete a deck by ID
     @PostMapping("/delete/{id}")
     public String deleteDeck(@PathVariable String id) {
-        deckService.deleteDeck(id);
-        return "redirect:/decks";
+        deckService.deleteDeck(id);  // Delete the deck by ID
+        return "redirect:/decks";  // Redirect to the deck list
     }
 
-    // Deck güncelleme işlemi
+    // Update a deck by ID
     @PostMapping("/update")
     public String updateDeck(@RequestParam String id, @RequestParam String name) {
-        deckService.updateDeck(id, name);
-        return "redirect:/decks";
+        deckService.updateDeck(id, name);  // Update the deck name
+        return "redirect:/decks";  // Redirect to the deck list
     }
 
-    // Deck düzenleme sayfası
+    // Edit deck form
     @GetMapping("/edit/{id}")
     public String editDeck(@PathVariable String id, Model model) {
         Optional<Deck> deck = deckService.getDeckById(id);
-        model.addAttribute("deck", deck.orElse(new Deck()));
-        return "editDeck";
+        if (deck.isPresent()) {
+            model.addAttribute("deck", deck.get());  // Add the existing deck to the model
+            return "editDeck";  // Points to editDeck.html
+        } else {
+            throw new IllegalArgumentException("Deck not found");
+        }
     }
 
-    // Deck görüntüleme sayfası
+    // View a specific deck
     @GetMapping("/view/{id}")
     public String viewDeck(@PathVariable String id, Model model) {
         Optional<Deck> deck = deckService.getDeckById(id);
-        model.addAttribute("deck", deck.orElse(new Deck()));
-        return "viewDeck";
+        if (deck.isPresent()) {
+            model.addAttribute("deck", deck.get());  // Add the existing deck to the model
+            return "viewDeck";  // Points to viewDeck.html
+        } else {
+            throw new IllegalArgumentException("Deck not found");
+        }
     }
 
+    // Study mode: view the flashcards of a specific deck
     @GetMapping("/study/{deckId}")
     public String startStudyMode(@PathVariable("deckId") String deckId, Model model) {
         Optional<Deck> optionalDeck = deckService.getDeckById(deckId);
 
         // Check if the deck is present
         if (optionalDeck.isPresent()) {
-            Deck deck = optionalDeck.get();  // Now you have the Deck object
+            Deck deck = optionalDeck.get();  // Retrieve the deck
+            List<Flashcard> flashcards = deckService.getFlashcardsForDeck(deck.getId());  // Get flashcards
 
-            // Get flashcards for the deck
-            List<Flashcard> flashcards = deckService.getFlashcardsForDeck(deck.getId());
-
-            // Add flashcards and deck to the model
+            // Add deck and flashcards to the model
             model.addAttribute("deck", deck);
             model.addAttribute("flashcards", flashcards);
 
-            return "student/study-mode";
+            return "student/study-mode";  // Points to student/study-mode.html
         } else {
             throw new IllegalArgumentException("Deck not found");
         }
     }
-
-
 }

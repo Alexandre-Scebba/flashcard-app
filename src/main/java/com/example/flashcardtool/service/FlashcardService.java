@@ -56,8 +56,15 @@ public class FlashcardService {
         return flashcardList;
     }
 
-    // Get all flashcards for a specific deck
     public List<Flashcard> getFlashcardsByDeckId(String deckId) {
-        return flashcardRepository.findByDeckId(deckId);  // Query flashcards by deckId
+        List<Flashcard> flashcards = flashcardRepository.findByDeckId(deckId);
+        if (flashcards == null || flashcards.isEmpty()) {
+            System.out.println("No flashcards found for deck with ID: " + deckId);
+        } else {
+            System.out.println("Flashcards found for deck with ID: " + deckId);
+            flashcards.forEach(flashcard -> System.out.println(flashcard.getFrontContent()));
+        }
+        return flashcards;
     }
+
 }
