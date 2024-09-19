@@ -18,21 +18,23 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="/deck-management">Manage Decks</a>
+          <!-- Link to Deck List -->
+          <a class="nav-link" th:href="@{/teacher/decks}">Manage Decks</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/flashcard-create">Create Flashcards</a>
+          <a class="nav-link" th:href="@{/teacher/decks/create}">Create Decks</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/deck-assign">Assign Decks</a>
+          <a class="nav-link" th:href="@{/teacher/deck-assign}">Assign Decks</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/logout">Logout</a>
+          <a class="nav-link" th:href="@{/logout}">Logout</a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
+
 
 <div class="container mt-4">
   <h2 class="text-center">Welcome to Teacher Dashboard</h2>
@@ -41,7 +43,7 @@
 
 <!-- Footer -->
 <footer class="bg-dark text-white text-center py-3 mt-5">
-  <p>2024-All Rights Reserved ©</p>
+  <p>2024 - All Rights Reserved ©</p>
 </footer>
 
 <!-- Bootstrap JS -->

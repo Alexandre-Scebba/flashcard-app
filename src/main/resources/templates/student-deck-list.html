@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Available Decks</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" th:text="${studentName} + ' Deck List'"> Deck List</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/student/student-dashboard">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/student/library">My Library</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/student/progress">View Progress</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Available Decks</h2>
+
+  <!-- Search Form -->
+  <form action="/student/search" method="get" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="query" class="form-control" placeholder="Search decks by name..." required>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+  </form>
+
+  <!-- Deck List -->
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Deck Name</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="deck : ${decks}">
+      <td th:text="${deck.name}"></td>
+      <td th:text="${deck.description}"></td>
+      <td>
+        <!-- Study Deck Action -->
+        <a th:href="@{/student/study/{id}(id=${deck.id})}" class="btn btn-sm btn-success">Study</a>
+
+        <!-- Add to Favorites -->
+        <form th:action="@{/student/library/add}" method="post" style="display:inline-block;">
+          <input type="hidden" name="deckId" th:value="${deck.id}">
+          <button class="btn btn-sm btn-primary" type="submit">Add to Library</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
