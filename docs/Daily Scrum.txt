@@ -19,6 +19,25 @@ Each member writes down answers to 3 questions in the following format:
    -
 
 --- --- --- ---   --- --- --- ---   --- --- --- ---
+--------------------Scrum meeting 6...[ENTER NUMBER]
+<< Sept-[DD]-2024 >>  --Alexandre--
+1. What I have done / not done since last Scrum?
+
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+<< Sept-[19]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+   - fixed some page navigation buttons, orginazed deck list page
+2. What I plan to do from this scrum to next? (next 24 hours)
+   - Create a user interface where Admins/Teachers can manage decks and assign them to students.
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+--- --- --- ---   --- --- --- ---   --- --- --- ---
+
 --------------------Scrum meeting #...[5]
 << Sept-[18]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
