@@ -30,13 +30,13 @@ Each member writes down answers to 3 questions in the following format:
 3. Where do I need assistance? What do I need to figure out?
    -nothing right now.
 
-<< Sept-[DD]-2024 >>  --Mehmet--
+<< Sept-[18]-2024 >>  --Mehmet--
 1. What I have done / not done since last Scrum?
-   -
+   - nothing finish yet
 2. What I plan to do from this scrum to next? (next 24 hours)
-   -
+   - Create a user interface where Admins/Teachers can manage decks and assign them to students.
 3. Where do I need assistance? What do I need to figure out?
-   -
+   - student list will be placed at the same time on the deck list page
 
 --------------------Scrum meeting #...[4]
 << Sept-[17]-2024 >>  --Alexandre--
