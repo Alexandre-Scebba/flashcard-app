@@ -1,13 +1,16 @@
 package com.example.flashcardtool.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.example.flashcardtool.converter.DeckListConverter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @DynamoDBTable(tableName = "Users")
-public class User {
+public class User implements UserDetails {
     @DynamoDBHashKey
     private String id;
 
@@ -30,7 +33,14 @@ public class User {
     @DynamoDBAttribute
     private String lastName;
 
+    @DynamoDBAttribute
+    private String passwordResetToken;  // Parola sıfırlama token'ı
 
+    @DynamoDBTypeConverted(converter = DeckListConverter.class)
+    @DynamoDBAttribute
+    private List<Deck> assignedDecks = new ArrayList<>(); // Assigned decks
+
+    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -87,13 +97,48 @@ public class User {
         this.lastName = lastName;
     }
 
-    private String passwordResetToken;  // Parola sıfırlama token'ı
-
     public String getPasswordResetToken() {
         return passwordResetToken;
     }
 
     public void setPasswordResetToken(String passwordResetToken) {
         this.passwordResetToken = passwordResetToken;
+    }
+
+    public List<Deck> getAssignedDecks() {
+        return assignedDecks;
+    }
+
+    public void setAssignedDecks(List<Deck> assignedDecks) {
+        this.assignedDecks = assignedDecks;
+    }
+
+    // UserDetails interface methods
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Convert roles to GrantedAuthority
+        return roles.stream()
+                .map(role -> (GrantedAuthority) () -> role)
+                .toList();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

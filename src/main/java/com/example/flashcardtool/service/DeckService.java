@@ -2,14 +2,14 @@ package com.example.flashcardtool.service;
 
 import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.model.Flashcard;
+import com.example.flashcardtool.model.User;
 import com.example.flashcardtool.repository.DeckRepository;
 import com.example.flashcardtool.repository.FlashcardRepository;
+import com.example.flashcardtool.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -23,16 +23,16 @@ public class DeckService {
     private FlashcardRepository flashcardRepository;
 
     @Autowired
-    private StudentLibraryService studentLibraryService; // Injecting the service
+    private UserRepository userRepository; // Inject UserRepository
 
     // Create a new deck
     public Deck createDeck(String name, String userId, String description) {
         Deck deck = new Deck();
-        deck.setId(UUID.randomUUID().toString());  // Ensure the ID is set
+        deck.setId(UUID.randomUUID().toString());
         deck.setName(name);
         deck.setUserId(userId);
         deck.setDescription(description);
-        return deckRepository.save(deck);  // Save the deck with a generated ID
+        return deckRepository.save(deck);
     }
 
     // Update an existing deck by ID
@@ -56,7 +56,7 @@ public class DeckService {
 
     // Retrieve all flashcards for a specific deck
     public List<Flashcard> getFlashcardsForDeck(String deckId) {
-        return flashcardRepository.findByDeckId(deckId);  // Find flashcards by deck ID
+        return flashcardRepository.findByDeckId(deckId);
     }
 
     // Get a deck by its ID
@@ -65,11 +65,11 @@ public class DeckService {
     }
 
     // Save a deck
-    public Deck save(Deck deck) {
+    public void save(Deck deck) {
         if (deck.getId() == null || deck.getId().isEmpty()) {
-            deck.setId(UUID.randomUUID().toString());  // Ensure the ID is set
+            deck.setId(UUID.randomUUID().toString());
         }
-        return deckRepository.save(deck);
+        deckRepository.save(deck);
     }
 
     // Search decks by name containing a search term
@@ -82,10 +82,20 @@ public class DeckService {
         return deckRepository.findByName(name);
     }
 
-    // Assign deck to multiple students
-    public void assignDeckToStudents(String deckId, List<String> studentIds) {
-        for (String studentId : studentIds) {
-            studentLibraryService.addLibrary(studentId, deckId); // Use the instance method
+    // Assign a deck to a student
+    public void assignDeck(String deckId, String studentId) {
+        Optional<Deck> deckOpt = deckRepository.findById(deckId);
+        Optional<User> studentOpt = userRepository.findById(studentId); // Use instance method
+
+        if (deckOpt.isPresent() && studentOpt.isPresent()) {
+            Deck deck = deckOpt.get();
+            User student = studentOpt.get();
+            // ensure the collection is modifiable
+            if (student.getAssignedDecks().getClass() == Collections.unmodifiableList(Collections.emptyList()).getClass()) {
+                student.setAssignedDecks(new ArrayList<>(student.getAssignedDecks()));
+            }
+            student.getAssignedDecks().add(deck);
+            userRepository.save(student); // Use instance method
         }
     }
 }

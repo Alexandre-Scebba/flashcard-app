@@ -11,6 +11,7 @@
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
+        <!-- Display the teacher's name dynamically in the navbar -->
         <a class="navbar-brand" th:text="'Welcome, ' + ${teacherName}">Teacher Dashboard</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -22,6 +23,12 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/teacher/decks">Manage Decks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/teacher/progress">View Progress</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/decks/assign">Assign Deck</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Logout</a>
@@ -47,9 +54,11 @@
             <tr th:each="deck : ${decks}">
                 <td th:text="${deck.name}"></td>
                 <td>
-                    <!-- Assign Button -->
-                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" th:attr="data-deck-id=${deck.id}" data-bs-target="#assignModal">Assign</button>
-
+                    <!-- Add Flashcards action -->
+                    <form th:action="@{/teacher/flashcards/create}" method="get" style="display:inline-block;">
+                        <input type="hidden" name="deckId" th:value="${deck.id}" />
+                        <button class="btn btn-sm btn-primary" type="submit">Update Deck</button>
+                    </form>
                     <!-- Delete Deck -->
                     <form th:action="@{/teacher/decks/delete/{id}(id=${deck.id})}" method="post" style="display:inline-block;">
                         <button class="btn btn-sm btn-danger" type="submit">Delete</button>
@@ -65,63 +74,6 @@
     </div>
 </div>
 
-<!-- Assign Modal -->
-<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="assignModalLabel">Assign Deck to Students</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Search Bar -->
-                <input type="text" class="form-control mb-3" id="searchStudent" placeholder="Search students...">
-
-                <!-- Student List -->
-                <div id="studentList">
-                    <ul class="list-group">
-                        <li class="list-group-item" th:each="student : ${students}">
-                            <input type="checkbox" th:attr="data-student-id=${student.id}"> <span th:text="${student.name}"></span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="assignDeckBtn">Assign</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<script>
-    document.getElementById('assignDeckBtn').addEventListener('click', function() {
-        let selectedStudents = [];
-        document.querySelectorAll('#studentList input[type=checkbox]:checked').forEach(function(checkbox) {
-            selectedStudents.push(checkbox.getAttribute('data-student-id'));
-        });
-
-        let deckId = document.querySelector('[data-bs-target="#assignModal"]').getAttribute('data-deck-id');
-
-        // Send POST request to assign deck to selected students
-        fetch('/teacher/decks/assign', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                deckId: deckId,
-                studentIds: selectedStudents
-            })
-        }).then(response => {
-            if (response.ok) {
-                alert('Deck assigned successfully!');
-                location.reload();
-            } else {
-                alert('Error assigning deck.');
-            }
-        });
-    });
-</script>
 </body>
 </html>

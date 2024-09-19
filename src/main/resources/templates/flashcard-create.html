@@ -8,7 +8,31 @@
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Flashcards Create</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <!-- Link to Deck List -->
+          <a class="nav-link" th:href="@{/teacher/decks}">Manage Decks</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/teacher/decks/create}">Create Decks</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/teacher/deck-assign}">Assign Decks</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/logout}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 <div class="container mt-5">
   <h1>Create Flashcard for Deck: <span th:text="${deckName}"></span></h1>
 

@@ -1,15 +1,12 @@
 package com.example.flashcardtool.controller;
 
 import com.example.flashcardtool.model.Deck;
-import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.service.DeckService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.flashcardtool.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -17,32 +14,32 @@ import java.util.Optional;
 public class DeckController {
 
     private final DeckService deckService;
+    private final UserService userService;
 
-    public DeckController(DeckService deckService) {
+    public DeckController(DeckService deckService, UserService userService) {
         this.deckService = deckService;
+        this.userService = userService;
     }
 
     // Show create deck form
     @GetMapping("/create")
     public String showCreateDeckForm(Model model) {
-        model.addAttribute("deck", new Deck());  // Bind empty deck object to form
-        return "deck-create";  // Points to deck-create.html
+        model.addAttribute("deck", new Deck());
+        return "deck-create";
     }
-
-
 
     // Delete a deck by ID
     @PostMapping("/delete/{id}")
     public String deleteDeck(@PathVariable String id) {
-        deckService.deleteDeck(id);  // Delete the deck by ID
-        return "redirect:/decks";  // Redirect to the deck list
+        deckService.deleteDeck(id);
+        return "redirect:/decks";
     }
 
     // Update a deck by ID
     @PostMapping("/update")
     public String updateDeck(@RequestParam String id, @RequestParam String name) {
-        deckService.updateDeck(id, name);  // Update the deck name
-        return "redirect:/decks";  // Redirect to the deck list
+        deckService.updateDeck(id, name);
+        return "redirect:/decks";
     }
 
     // Edit deck form
@@ -50,8 +47,8 @@ public class DeckController {
     public String editDeck(@PathVariable String id, Model model) {
         Optional<Deck> deck = deckService.getDeckById(id);
         if (deck.isPresent()) {
-            model.addAttribute("deck", deck.get());  // Add the existing deck to the model
-            return "editDeck";  // Points to editDeck.html
+            model.addAttribute("deck", deck.get());
+            return "editDeck";
         } else {
             throw new IllegalArgumentException("Deck not found");
         }
@@ -62,8 +59,8 @@ public class DeckController {
     public String viewDeck(@PathVariable String id, Model model) {
         Optional<Deck> deck = deckService.getDeckById(id);
         if (deck.isPresent()) {
-            model.addAttribute("deck", deck.get());  // Add the existing deck to the model
-            return "viewDeck";  // Points to viewDeck.html
+            model.addAttribute("deck", deck.get());
+            return "viewDeck";
         } else {
             throw new IllegalArgumentException("Deck not found");
         }
@@ -73,19 +70,15 @@ public class DeckController {
     @GetMapping("/study/{deckId}")
     public String startStudyMode(@PathVariable("deckId") String deckId, Model model) {
         Optional<Deck> optionalDeck = deckService.getDeckById(deckId);
-
-        // Check if the deck is present
         if (optionalDeck.isPresent()) {
-            Deck deck = optionalDeck.get();  // Retrieve the deck
-            List<Flashcard> flashcards = deckService.getFlashcardsForDeck(deck.getId());  // Get flashcards
-
-            // Add deck and flashcards to the model
+            Deck deck = optionalDeck.get();
             model.addAttribute("deck", deck);
-            model.addAttribute("flashcards", flashcards);
-
-            return "student/study-mode";  // Points to student/study-mode.html
+            model.addAttribute("flashcards", deckService.getFlashcardsForDeck(deck.getId()));
+            return "student/study-mode";
         } else {
             throw new IllegalArgumentException("Deck not found");
         }
     }
+
+
 }

@@ -18,7 +18,7 @@ public class StudentLibraryService {
         StudentLibrary library = new StudentLibrary();
         library.setStudentId(studentId);
         library.setDeckId(deckId);
-        studentLibraryRepository.save(library); // Save to the repository
+        studentLibraryRepository.save(library);
     }
 
     // Fetch decks in the student library
