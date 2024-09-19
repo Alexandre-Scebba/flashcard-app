@@ -37,29 +37,49 @@
   <h1>Create Flashcard for Deck: <span th:text="${deckName}"></span></h1>
 
   <!-- Flashcard Form -->
-  <form th:action="@{/teacher/flashcards/create}" th:object="${flashcard}" method="post">
-    <input type="hidden" th:field="*{deckId}"/>
+<form th:action="@{/teacher/flashcards/create}" th:object="${flashcard}" method="post">
+  <input type="hidden" th:field="*{deckId}"/>
 
-    <!-- Hidden field for deckName -->
-    <input type="hidden" name="deckName" th:value="${deckName}"/>
+  <!-- Front Content -->
+  <label for="frontContent">Front Content</label>
+  <input type="text" id="frontContent" th:field="*{frontContent}" placeholder="Enter front content" required class="form-control mb-2">
 
-    <!-- Front Content -->
-    <label for="frontContent">Front Content</label>
-    <input type="text" id="frontContent" th:field="*{frontContent}" placeholder="Enter front content" required class="form-control mb-2">
+  <!-- Back Content -->
+  <label for="backContent">Back Content</label>
+  <input type="text" id="backContent" th:field="*{backContent}" placeholder="Enter back content" required class="form-control mb-2">
 
-    <!-- Back Content -->
-    <label for="backContent">Back Content</label>
-    <input type="text" id="backContent" th:field="*{backContent}" placeholder="Enter back content" required class="form-control mb-2">
+  <!-- Option 1 -->
+  <label for="option1">Option 1</label>
+  <input type="text" id="option1" th:field="*{option1}" placeholder="Enter option 1" required class="form-control mb-2">
 
-    <!-- Add Flashcard Button -->
-    <button type="submit" class="btn btn-primary">Add Flashcard</button>
-  </form>
+  <!-- Option 2 -->
+  <label for="option2">Option 2</label>
+  <input type="text" id="option2" th:field="*{option2}" placeholder="Enter option 2" required class="form-control mb-2">
+
+  <!-- Option 3 -->
+  <label for="option3">Option 3</label>
+  <input type="text" id="option3" th:field="*{option3}" placeholder="Enter option 3" required class="form-control mb-2">
+
+  <!-- Option 4 -->
+  <label for="option4">Option 4</label>
+  <input type="text" id="option4" th:field="*{option4}" placeholder="Enter option 4" required class="form-control mb-2">
+
+  <!-- Add Flashcard Button -->
+  <button type="submit" class="btn btn-primary">Add Flashcard</button>
+</form>
 
   <!-- List of Added Flashcards -->
   <h2 class="mt-5">Added Flashcards</h2>
   <ul class="list-group">
     <li class="list-group-item" th:each="flashcard : ${flashcards}">
       <span th:text="${flashcard.frontContent}"></span> - <span th:text="${flashcard.backContent}"></span>
+      <form th:action="@{/teacher/flashcards/edit/{id}(id=${flashcard.id})}" method="get" class="d-inline">
+        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+      </form>
+      <form th:action="@{/teacher/flashcards/delete/{id}(id=${flashcard.id})}" method="post" class="d-inline">
+        <input type="hidden" name="deckId" th:value="${flashcard.deckId}"/>
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+      </form>
     </li>
   </ul>
 

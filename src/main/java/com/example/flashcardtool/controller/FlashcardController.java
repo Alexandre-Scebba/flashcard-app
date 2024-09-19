@@ -53,23 +53,8 @@ public class FlashcardController {
     // Process flashcard creation and return to the same page to add more flashcards
     @PostMapping("/create")
     public String createFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
-        flashcardService.createFlashcard(flashcard.getFrontContent(), flashcard.getBackContent(), deckId);
+        flashcardService.createFlashcard(flashcard.getFrontContent(), flashcard.getBackContent(), deckId, flashcard.getOption1(), flashcard.getOption2(), flashcard.getOption3(), flashcard.getOption4());
         return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Stay on flashcard creation page for the same deck
-    }
-
-    // Edit flashcard
-    @GetMapping("/edit/{id}")
-    public String editFlashcard(@PathVariable String id, Model model) {
-        Flashcard flashcard = flashcardService.getFlashcardById(id);
-        model.addAttribute("flashcard", flashcard);
-        return "teacher/flashcard-edit";  // Points to flashcard-edit.html
-    }
-
-    // Update flashcard and return to the current deck flashcard creation page
-    @PostMapping("/edit/{id}")
-    public String updateFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
-        flashcardService.updateFlashcard(flashcard.getId(), flashcard.getFrontContent(), flashcard.getBackContent());
-        return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Redirect back to the flashcard creation page for the current deck
     }
 
     // Delete flashcard and stay on the same flashcard creation page

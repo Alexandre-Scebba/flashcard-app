@@ -17,24 +17,31 @@ public class FlashcardService {
     private FlashcardRepository flashcardRepository;
 
     // Create a new flashcard
-    public Flashcard createFlashcard(String frontContent, String backContent, String deckId) {
+    public Flashcard createFlashcard(String frontContent, String backContent, String deckId, String option1, String option2, String option3, String option4) {
         Flashcard flashcard = new Flashcard();
         flashcard.setId(UUID.randomUUID().toString());
         flashcard.setFrontContent(frontContent);
         flashcard.setBackContent(backContent);
         flashcard.setDeckId(deckId);
+        flashcard.setOption1(option1);
+        flashcard.setOption2(option2);
+        flashcard.setOption3(option3);
+        flashcard.setOption4(option4);
         flashcardRepository.save(flashcard);
         return flashcard;
     }
 
-
     // Update an existing flashcard
-    public void updateFlashcard(String id, String frontContent, String backContent) {
+    public void updateFlashcard(String id, String frontContent, String backContent, String option1, String option2, String option3, String option4) {
         Optional<Flashcard> optionalFlashcard = flashcardRepository.findById(id);
         if (optionalFlashcard.isPresent()) {
             Flashcard flashcard = optionalFlashcard.get();
             flashcard.setFrontContent(frontContent);
             flashcard.setBackContent(backContent);
+            flashcard.setOption1(option1);
+            flashcard.setOption2(option2);
+            flashcard.setOption3(option3);
+            flashcard.setOption4(option4);
             flashcardRepository.save(flashcard);
         }
     }
@@ -66,5 +73,4 @@ public class FlashcardService {
         }
         return flashcards;
     }
-
 }

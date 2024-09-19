@@ -1,6 +1,7 @@
 package com.example.flashcardtool.controller;
 
 import com.example.flashcardtool.model.Deck;
+import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.repository.DeckRepository;
 import com.example.flashcardtool.service.DeckService;
 import com.example.flashcardtool.service.FlashcardService;
@@ -105,4 +106,27 @@ public class TeacherController {
     public String logout() {
         return "login";
     }
+
+    // Show the flashcard edit form
+@GetMapping("/flashcards/edit/{id}")
+public String editFlashcard(@PathVariable String id, Model model) {
+    Flashcard flashcard = flashcardService.getFlashcardById(id);
+    model.addAttribute("flashcard", flashcard);
+    return "flashcard-edit";  // Points to flashcard-edit.html
+}
+
+// Update flashcard and return to the current deck flashcard creation page
+@PostMapping("/flashcards/edit/{id}")
+public String updateFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
+    flashcardService.updateFlashcard(
+        flashcard.getId(),
+        flashcard.getFrontContent(),
+        flashcard.getBackContent(),
+        flashcard.getOption1(),
+        flashcard.getOption2(),
+        flashcard.getOption3(),
+        flashcard.getOption4()
+    );
+    return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Redirect back to the flashcard creation page for the current deck
+}
 }
