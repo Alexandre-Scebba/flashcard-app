@@ -31,6 +31,13 @@ public class User {
     private String lastName;
 
 
+<<<<<<< Updated upstream
+=======
+    @DynamoDBAttribute
+    private List<String> assignedDeckIds = new ArrayList<>(); // Only store deck IDs
+
+    // Getters and setters
+>>>>>>> Stashed changes
     public String getId() {
         return id;
     }
@@ -96,4 +103,44 @@ public class User {
     public void setPasswordResetToken(String passwordResetToken) {
         this.passwordResetToken = passwordResetToken;
     }
+<<<<<<< Updated upstream
+=======
+
+    public List<String> getAssignedDeckIds() {
+        return assignedDeckIds;
+    }
+
+    public void setAssignedDeckIds(List<String> assignedDeckIds) {
+        this.assignedDeckIds = assignedDeckIds;
+    }
+
+    // UserDetails interface methods
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream()
+                .map(role -> (GrantedAuthority) () -> role)
+                .toList();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+>>>>>>> Stashed changes
 }

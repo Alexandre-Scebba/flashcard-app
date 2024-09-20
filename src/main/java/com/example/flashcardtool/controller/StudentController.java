@@ -51,6 +51,7 @@ public class StudentController {
         model.addAttribute("decks", deckService.getAllDecks());
         return "student-deck-list";  // Points to student-deck-list.html
     }
+<<<<<<< Updated upstream
 
     // Search for decks
     @GetMapping("/search")
@@ -61,25 +62,46 @@ public class StudentController {
     }
 
     // View the student's library
+=======
+>>>>>>> Stashed changes
     @GetMapping("/library")
     public String viewLibrary(Model model) {
         String studentId = getAuthenticatedStudentId();
+
+        // Öğrencinin kütüphanesindeki deck'leri alıyoruz
         List<StudentLibrary> studentLibrary = studentLibraryService.getLibraryByStudent(studentId);
+
+        // Deck'leri alıp debug mesajı ekliyoruz
         List<Deck> libraryDecks = studentLibrary.stream()
-                .map(library -> deckService.getDeckById(library.getDeckId()).orElse(new Deck()))
+                .map(library -> {
+                    Deck deck = deckService.getDeckById(library.getDeckId()).orElse(new Deck());
+                    System.out.println("Deck found: " + deck.getName() + ", Description: " + deck.getDescription());
+                    return deck;
+                })
                 .collect(Collectors.toList());
+
+        // Deck'leri modele ekliyoruz
         model.addAttribute("libraryDecks", libraryDecks);
+
         return "student-library";  // Ensure this view exists
     }
+<<<<<<< Updated upstream
     // Add deck to student's library
+=======
+
+
+>>>>>>> Stashed changes
     @PostMapping("/library/add")
     public String addLibrary(@RequestParam("deckId") String deckId) {
         String studentId = getAuthenticatedStudentId(); // Get the logged-in student ID
         studentLibraryService.addLibrary(studentId, deckId);
         return "redirect:/student/library"; // Redirect to the library page
     }
+<<<<<<< Updated upstream
 
     // Remove deck from student's library
+=======
+>>>>>>> Stashed changes
     @PostMapping("/library/remove")
     public String removeLibrary(@RequestParam("deckId") String deckId) {
         String studentId = getAuthenticatedStudentId(); // Get the logged-in student ID

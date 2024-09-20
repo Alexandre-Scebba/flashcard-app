@@ -61,7 +61,9 @@ public class DeckService {
 
     // Get a deck by its ID
     public Optional<Deck> getDeckById(String deckId) {
-        return deckRepository.findById(deckId);
+        Optional<Deck> deck = deckRepository.findById(deckId);
+        System.out.println("Deck ID: " + deckId + " found: " + deck.isPresent());
+        return deck;
     }
 
     public Deck save(Deck deck) {
@@ -80,4 +82,28 @@ public class DeckService {
     public Optional<Deck> findByName(String name) {
         return deckRepository.findByName(name);
     }
+<<<<<<< Updated upstream
 }
+=======
+    public void assignDeck(String deckId, String studentId, String teacherName) {
+        Optional<User> studentOpt = userRepository.findById(studentId); // Öğrenciyi bul
+
+        if (studentOpt.isPresent()) {
+            User student = studentOpt.get();
+
+            // Eğer deck daha önce atanmadıysa, assignedDeckIds listesine ekle
+            if (!student.getAssignedDeckIds().contains(deckId)) {
+                student.getAssignedDeckIds().add(deckId); // Sadece Deck ID'yi ekle
+                userRepository.save(student); // Öğrenciyi kaydet
+                System.out.println("Deck başarıyla öğrenciye atandı.");
+            } else {
+                System.out.println("Deck zaten öğrenciye atanmış.");
+            }
+        } else {
+            System.out.println("Öğrenci bulunamadı.");
+        }
+    }
+
+
+}
+>>>>>>> Stashed changes

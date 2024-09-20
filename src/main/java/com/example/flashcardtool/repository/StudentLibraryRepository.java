@@ -14,4 +14,7 @@ public interface StudentLibraryRepository extends CrudRepository<StudentLibrary,
     // Add method to delete by studentId and deckId
     void deleteByStudentIdAndDeckId(String studentId, String deckId);
 
+boolean existsByStudentIdAndDeckId(String studentId, String deckId);
+
+   List<String> findDeckIdsByStudentId(String studentId);
 }

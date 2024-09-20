@@ -13,6 +13,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.model.Deck;
+import com.example.flashcardtool.model.StudentLibrary;
 
 import java.util.List;
 
@@ -65,5 +66,17 @@ public class DynamoDBConfig {
         ListTablesRequest request = new ListTablesRequest();
         ListTablesResult result = dynamoDB.listTables(request);
         return result.getTableNames().contains(tableName);
+    }
+
+    public void createTableIfNotExists() {
+        try {
+            DynamoDBMapper mapper = dynamoDBMapper();
+            AmazonDynamoDB dynamoDB = amazonDynamoDB();
+            CreateTableRequest createTableRequest = mapper.generateCreateTableRequest(StudentLibrary.class);
+            dynamoDB.createTable(createTableRequest);
+            System.out.println("Table created: StudentLibrary");
+        } catch (ResourceInUseException e) {
+            System.out.println("Table already exists.");
+        }
     }
 }
