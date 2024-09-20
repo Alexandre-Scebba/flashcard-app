@@ -19,6 +19,38 @@ public class Flashcard {
     @DynamoDBAttribute
     private String deckId;
 
+    @DynamoDBAttribute
+    private String option1;
+
+    @DynamoDBAttribute
+    private String option2;
+
+    @DynamoDBAttribute
+    private String option3;
+
+    @DynamoDBAttribute
+    private String option4;
+
+    // Default constructor
+    public Flashcard() {
+        this.option1 = "";
+        this.option2 = "";
+        this.option3 = "";
+        this.option4 = "";
+    }
+
+    // Parameterized constructor
+    public Flashcard(String id, String frontContent, String backContent, String deckId, String option1, String option2, String option3, String option4) {
+        this.id = id;
+        this.frontContent = frontContent;
+        this.backContent = backContent;
+        this.deckId = deckId;
+        this.option1 = option1 != null ? option1 : "";
+        this.option2 = option2 != null ? option2 : "";
+        this.option3 = option3 != null ? option3 : "";
+        this.option4 = option4 != null ? option4 : "";
+    }
+
     // Getters and setters
     public String getId() {
         return id;
@@ -50,5 +82,37 @@ public class Flashcard {
 
     public void setDeckId(String deckId) {
         this.deckId = deckId;
+    }
+
+    public String getOption1() {
+        return option1;
+    }
+
+    public void setOption1(String option1) {
+        this.option1 = option1;
+    }
+
+    public String getOption2() {
+        return option2;
+    }
+
+    public void setOption2(String option2) {
+        this.option2 = option2;
+    }
+
+    public String getOption3() {
+        return option3;
+    }
+
+    public void setOption3(String option3) {
+        this.option3 = option3;
+    }
+
+    public String getOption4() {
+        return option4;
+    }
+
+    public void setOption4(String option4) {
+        this.option4 = option4;
     }
 }

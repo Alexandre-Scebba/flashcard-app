@@ -1,13 +1,15 @@
 package com.example.flashcardtool.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 
-import java.util.List;
+import java.util.*;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @DynamoDBTable(tableName = "Users")
-public class User {
+public class User implements UserDetails {
+
     @DynamoDBHashKey
     private String id;
 
@@ -23,21 +25,23 @@ public class User {
     @DynamoDBAttribute
     private List<String> roles;
 
-    // New fields
     @DynamoDBAttribute
     private String firstName;
 
     @DynamoDBAttribute
     private String lastName;
 
+    @DynamoDBAttribute
+    private String passwordResetToken;
 
-<<<<<<< Updated upstream
-=======
     @DynamoDBAttribute
     private List<String> assignedDeckIds = new ArrayList<>(); // Only store deck IDs
 
+    // Optionally, store metadata about the assignment (e.g., teacher name)
+    @DynamoDBAttribute
+    private Map<String, String> deckAssignments = new HashMap<>(); // Store deck ID -> teacher name
+
     // Getters and setters
->>>>>>> Stashed changes
     public String getId() {
         return id;
     }
@@ -94,8 +98,6 @@ public class User {
         this.lastName = lastName;
     }
 
-    private String passwordResetToken;  // Parola sıfırlama token'ı
-
     public String getPasswordResetToken() {
         return passwordResetToken;
     }
@@ -103,8 +105,6 @@ public class User {
     public void setPasswordResetToken(String passwordResetToken) {
         this.passwordResetToken = passwordResetToken;
     }
-<<<<<<< Updated upstream
-=======
 
     public List<String> getAssignedDeckIds() {
         return assignedDeckIds;
@@ -142,5 +142,12 @@ public class User {
         return true;
     }
 
->>>>>>> Stashed changes
+
+    public Map<String, String> getDeckAssignments() {
+        return deckAssignments;
+    }
+
+    public void setDeckAssignments(Map<String, String> deckAssignments) {
+        this.deckAssignments = deckAssignments;
+    }
 }

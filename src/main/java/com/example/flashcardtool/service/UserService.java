@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -20,7 +22,7 @@ public class UserService {
     // Method to register a new user
     public void registerUser(String username, String password, String email, List<String> roles, String firstName, String lastName) {
         User user = new User();
-        String userId = UUID.randomUUID().toString();  // Generate UUID
+        String userId = UUID.randomUUID().toString();
         user.setId(userId);
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
@@ -28,7 +30,6 @@ public class UserService {
         user.setRoles(roles);
         user.setFirstName(firstName);
         user.setLastName(lastName);
-        System.out.println("New user created with ID: " + userId);
         userRepository.save(user);
     }
 
@@ -42,8 +43,6 @@ public class UserService {
 
             String resetLink = "http://localhost:8080/newpassword?token=" + token;
             sendEmail(user.getEmail(), "Password Reset Request", "To reset your password, click the link below:\n" + resetLink);
-        } else {
-            System.out.println("Email not found: " + email);
         }
     }
 
@@ -62,13 +61,9 @@ public class UserService {
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 user.setPassword(passwordEncoder.encode(password));
-                user.setPasswordResetToken(null);  // Clear the reset token
+                user.setPasswordResetToken(null);
                 userRepository.save(user);
-            } else {
-                System.out.println("User not found for token: " + token);
             }
-        } else {
-            System.out.println("Invalid token: " + token);
         }
     }
 
@@ -76,15 +71,18 @@ public class UserService {
         return true;  // Temporary token validation logic
     }
 
-    // --------------------- New Methods for Admin Functionality ---------------------
-
     // Method to get all users (Admin functionality)
     public List<User> getAllUsers() {
-        return userRepository.findAll();  // Fetch all users from the database
+        return userRepository.findAll();
     }
 
     // Method to delete a user by ID (Admin functionality)
     public void deleteUser(String id) {
-        userRepository.deleteById(id);  // Delete user by ID
+        userRepository.deleteById(id);
+    }
+
+    // Method to find all students
+    public List<User> findAllStudents() {
+        return userRepository.findAll();  // Adjust this method to filter only students if needed
     }
 }

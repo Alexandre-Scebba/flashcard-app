@@ -1,14 +1,16 @@
-
 package com.example.flashcardtool.controller;
 
 import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.service.DeckService;
 import com.example.flashcardtool.service.FlashcardService;
+import com.example.flashcardtool.service.StudentLibraryService;
+import com.example.flashcardtool.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/teacher")
@@ -16,10 +18,14 @@ public class TeacherController {
 
     private final DeckService deckService;
     private final FlashcardService flashcardService;
+    private final UserService userService;
+    private final StudentLibraryService studentLibraryService;
 
-    public TeacherController(DeckService deckService, FlashcardService flashcardService) {
+    public TeacherController(DeckService deckService, FlashcardService flashcardService, UserService userService, StudentLibraryService studentLibraryService) {
         this.deckService = deckService;
         this.flashcardService = flashcardService;
+        this.userService = userService;
+        this.studentLibraryService = studentLibraryService;
     }
 
     // Show teacher dashboard
@@ -38,10 +44,7 @@ public class TeacherController {
     // Create a new deck and redirect to flashcard creation
     @PostMapping("/decks/create")
     public String createDeck(@ModelAttribute Deck deck, Model model) {
-        // Save the deck
         deckService.save(deck); // Save the deck
-
-        // Redirect to the flashcard creation form with deckId
         return "redirect:/teacher/flashcards/create?deckId=" + deck.getId();
     }
 
@@ -52,28 +55,11 @@ public class TeacherController {
         return "redirect:/teacher/dashboard";  // Redirect back to the dashboard after deletion
     }
 
-<<<<<<< Updated upstream
-    // View all decks for the teacher
-=======
     @PostMapping("/deck-assign")
-    public String assignDeck(@RequestParam String deckId, @RequestParam String studentId, RedirectAttributes redirectAttributes) {
-        String teacherName = getAuthenticatedTeacherName(); // Get the authenticated teacher's name
-        try {
-            if (studentLibraryService.isDeckAlreadyAssigned(studentId, deckId)) {
-                redirectAttributes.addFlashAttribute("message", "Deck is already assigned to the student.");
-                redirectAttributes.addFlashAttribute("alertClass", "alert-warning");
-            } else {
-                studentLibraryService.assignDeckToStudent(studentId, deckId); // Actual assignment
-                redirectAttributes.addFlashAttribute("message", "Deck successfully assigned to the student.");
-                redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            }
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Failed to assign deck.");
-            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
-        }
-        return "redirect:/teacher/deck-assign";
+    public String assignDeck(@RequestParam String deckId, @RequestParam String studentId) {
+        studentLibraryService.addLibrary(studentId, deckId);  // Assign deck to student
+        return "redirect:/teacher/deck-assign";  // Redirect back to the same page after assignment
     }
-
 
     @GetMapping("/deck-assign")
     public String showAssignDeckForm(Model model) {
@@ -89,15 +75,55 @@ public class TeacherController {
     }
 
     // View all decks
->>>>>>> Stashed changes
     @GetMapping("/decks")
     public String viewAllDecks(Model model) {
+        String teacherName = getAuthenticatedTeacherName();
+        model.addAttribute("teacherName", teacherName);
         model.addAttribute("decks", deckService.getAllDecks());
         return "deck-list";  // Points to deck-list.html
+    }
+
+    // Create a new deck
+    @PostMapping("/create")
+    public String createDeck(@ModelAttribute Deck deck) {
+        String userId = getAuthenticatedTeacherName();
+        Deck createdDeck = deckService.createDeck(deck.getName(), userId, deck.getDescription());
+        return "redirect:/teacher/flashcards/create?deckId=" + createdDeck.getId();
+    }
+
+    // Add a new deck
+    @PostMapping("/add")
+    public String addDeck(@RequestParam String deckName, @RequestParam String deckDescription) {
+        String userId = getAuthenticatedTeacherName();
+        deckService.createDeck(deckName, userId, deckDescription);
+        return "redirect:/decks";  // Redirect to the deck list
     }
 
     @GetMapping("/logout")
     public String logout() {
         return "login";
+    }
+
+    // Show the flashcard edit form
+    @GetMapping("/flashcards/edit/{id}")
+    public String editFlashcard(@PathVariable String id, Model model) {
+        Flashcard flashcard = flashcardService.getFlashcardById(id);
+        model.addAttribute("flashcard", flashcard);
+        return "flashcard-edit";  // Points to flashcard-edit.html
+    }
+
+    // Update flashcard and return to the current deck flashcard creation page
+    @PostMapping("/flashcards/edit/{id}")
+    public String updateFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
+        flashcardService.updateFlashcard(
+            flashcard.getId(),
+            flashcard.getFrontContent(),
+            flashcard.getBackContent(),
+            flashcard.getOption1(),
+            flashcard.getOption2(),
+            flashcard.getOption3(),
+            flashcard.getOption4()
+        );
+        return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Redirect back to the flashcard creation page for the current deck
     }
 }

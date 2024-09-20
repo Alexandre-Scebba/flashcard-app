@@ -3,115 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Mode</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .card-flip {
-      position: relative;
-      width: 100%;
-      height: 200px;
-      perspective: 1000px;
-    }
-
-    .card-flip-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.6s;
-      transform-style: preserve-3d;
-    }
-
-    .card-front, .card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-    }
-
-    .card-back {
-      transform: rotateY(180deg);
-    }
-  </style>
+  <title>Study Flashcards</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Study Flashcards</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/student/decks}">My Decks</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/logout}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 <div class="container mt-5">
-  <h1 class="text-center mb-4" th:text="${deck.name} + ' Study Mode'">Deck Name</h1>
+  <h1>Study Flashcards</h1>
 
-  <!-- Card Flip Container -->
-  <div class="card-flip" id="flashcard">
-    <div class="card-flip-inner" id="flipCard">
-      <!-- Front Side of the Card -->
-      <div class="card-front bg-light p-4 text-center">
-        <h4 id="card-front-content">Front Content</h4>
-      </div>
-      <!-- Back Side of the Card -->
-      <div class="card-back bg-light p-4 text-center">
-        <h4 id="card-back-content">Back Content</h4>
+  <!-- Flashcard Display -->
+  <div th:each="flashcard : ${flashcards}">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title" th:text="${flashcard.frontContent}"></h5>
+        <form th:action="@{/student/flashcards/submit}" method="post">
+          <input type="hidden" name="flashcardId" th:value="${flashcard.id}"/>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="option" id="option1" th:value="${flashcard.option1}">
+            <label class="form-check-label" for="option1" th:text="${flashcard.option1}"></label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="option" id="option2" th:value="${flashcard.option2}">
+            <label class="form-check-label" for="option2" th:text="${flashcard.option2}"></label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="option" id="option3" th:value="${flashcard.option3}">
+            <label class="form-check-label" for="option3" th:text="${flashcard.option3}"></label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="option" id="option4" th:value="${flashcard.option4}">
+            <label class="form-check-label" for="option4" th:text="${flashcard.option4}"></label>
+          </div>
+          <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </form>
+        <div class="mt-3" th:if="${flashcard.showAnswer}">
+          <h5>Correct Answer:</h5>
+          <p th:text="${flashcard.backContent}"></p>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Flip Button -->
-  <div class="text-center mt-4">
-    <button class="btn btn-primary" id="flipButton">Flip Card</button>
-  </div>
-
-  <!-- Navigation Buttons -->
-  <div class="d-flex justify-content-between mt-4">
-    <button class="btn btn-secondary" id="previousCard">Previous</button>
-    <button class="btn btn-secondary" id="nextCard">Next</button>
-  </div>
 </div>
 
-<!-- JS for flipping and navigation -->
-<script>
-  let currentIndex = 0;
-  let isFlipped = false;
-
-  const flashcards = /*[[${flashcards}]]*/ [[${flashcards}]]; // Thymeleaf'ten gelen flashcard verisi
-  const totalFlashcards = flashcards.length;
-
-  function showFlashcard(index) {
-    const frontContent = document.getElementById('card-front-content');
-    const backContent = document.getElementById('card-back-content');
-
-    // Kartın ön ve arka yüzündeki içerikleri güncelle
-    frontContent.textContent = flashcards[index].frontContent;
-    backContent.textContent = flashcards[index].backContent;
-
-    // Kartı her yeni flashcard gösterildiğinde ön tarafa döndür
-    document.getElementById('flipCard').style.transform = 'rotateY(0deg)';
-    isFlipped = false;
-  }
-
-  // Kartı döndür
-  document.getElementById('flipButton').addEventListener('click', () => {
-    const flipCard = document.getElementById('flipCard');
-    if (isFlipped) {
-      flipCard.style.transform = 'rotateY(0deg)';
-    } else {
-      flipCard.style.transform = 'rotateY(180deg)';
-    }
-    isFlipped = !isFlipped;
-  });
-
-  // Önceki karta git
-  document.getElementById('previousCard').addEventListener('click', () => {
-    currentIndex = (currentIndex === 0) ? totalFlashcards - 1 : currentIndex - 1;
-    showFlashcard(currentIndex);
-  });
-
-  // Sonraki karta git
-  document.getElementById('nextCard').addEventListener('click', () => {
-    currentIndex = (currentIndex === totalFlashcards - 1) ? 0 : currentIndex + 1;
-    showFlashcard(currentIndex);
-  });
-
-  // İlk kartın gösterilmesi
-  showFlashcard(currentIndex);
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
