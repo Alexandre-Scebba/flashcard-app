@@ -2,7 +2,6 @@ package com.example.flashcardtool.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.example.flashcardtool.converter.DeckListConverter;
-import com.example.flashcardtool.converter.RolesConverter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,11 +23,8 @@ public class User implements UserDetails {
     @DynamoDBAttribute
     private String email;
 
-    //@DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.SS)
-    @DynamoDBTypeConverted(converter = RolesConverter.class)
     @DynamoDBAttribute
     private List<String> roles;
-
 
     // New fields
     @DynamoDBAttribute
@@ -40,11 +36,15 @@ public class User implements UserDetails {
     @DynamoDBAttribute
     private String passwordResetToken;  // Parola sıfırlama token'ı
 
-//    @DynamoDBTypeConverted(converter = DeckListConverter.class)
-//    @DynamoDBAttribute
-//    private List<Deck> assignedDecks = new ArrayList<>(); // Assigned decks
+    @DynamoDBTypeConverted(converter = DeckListConverter.class)
+    @DynamoDBAttribute
+    private List<Deck> assignedDecks = new ArrayList<>(); // Assigned decks
 
-    // Getters and Setters
+    // Optionally, store metadata about the assignment (e.g., teacher name)
+    @DynamoDBAttribute
+    private Map<String, String> deckAssignments = new HashMap<>(); // Store deck ID -> teacher name
+
+    // Getters and setters
     public String getId() {
         return id;
     }
@@ -109,13 +109,13 @@ public class User implements UserDetails {
         this.passwordResetToken = passwordResetToken;
     }
 
-//    public List<Deck> getAssignedDecks() {
-//        return assignedDecks;
-//    }
-//
-//    public void setAssignedDecks(List<Deck> assignedDecks) {
-//        this.assignedDecks = assignedDecks;
-//    }
+    public List<Deck> getAssignedDecks() {
+        return assignedDecks;
+    }
+
+    public void setAssignedDecks(List<Deck> assignedDecks) {
+        this.assignedDecks = assignedDecks;
+    }
 
     // UserDetails interface methods
     @Override
@@ -144,5 +144,14 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+    public Map<String, String> getDeckAssignments() {
+        return deckAssignments;
+    }
+
+    public void setDeckAssignments(Map<String, String> deckAssignments) {
+        this.deckAssignments = deckAssignments;
     }
 }

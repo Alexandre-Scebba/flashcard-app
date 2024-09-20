@@ -87,15 +87,15 @@ public class DeckService {
         Optional<Deck> deckOpt = deckRepository.findById(deckId);
         Optional<User> studentOpt = userRepository.findById(studentId); // Use instance method
 
-//        if (deckOpt.isPresent() && studentOpt.isPresent()) {
-//            Deck deck = deckOpt.get();
-//            User student = studentOpt.get();
-//            // ensure the collection is modifiable
-//            if (student.getAssignedDecks().getClass() == Collections.unmodifiableList(Collections.emptyList()).getClass()) {
-//                student.setAssignedDecks(new ArrayList<>(student.getAssignedDecks()));
-//            }
-//            student.getAssignedDecks().add(deck);
-//            userRepository.save(student); // Use instance method
-//        }
+        if (deckOpt.isPresent() && studentOpt.isPresent()) {
+            Deck deck = deckOpt.get();
+            User student = studentOpt.get();
+            // ensure the collection is modifiable
+            if (student.getAssignedDecks().getClass() == Collections.unmodifiableList(Collections.emptyList()).getClass()) {
+                student.setAssignedDecks(new ArrayList<>(student.getAssignedDecks()));
+            }
+            student.getAssignedDecks().add(deck);
+            userRepository.save(student); // Use instance method
+        }
     }
 }
