@@ -2,11 +2,8 @@ package com.example.flashcardtool.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import java.util.*;
-<<<<<<< HEAD
 
 import com.example.flashcardtool.converter.RolesConverter;
-=======
->>>>>>> ea375a7d397c66f1b7bccca574423fa84368fbe4
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -25,14 +22,11 @@ public class User implements UserDetails {
     @DynamoDBAttribute
     private String email;
 
-<<<<<<< HEAD
-    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.SS)
+ //@DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.SS)
     @DynamoDBTypeConverted(converter = RolesConverter.class)
-    @DynamoDBAttribute
-=======
-    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.L)
->>>>>>> ea375a7d397c66f1b7bccca574423fa84368fbe4
-    private List<String> roles;
+   // @DynamoDBAttribute
+//    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.L)
+  private List<String> roles;
 
 
     @DynamoDBAttribute
