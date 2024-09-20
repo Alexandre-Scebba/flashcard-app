@@ -32,8 +32,8 @@ public class DynamoDBConfig {
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         // Heroku'daki çevre değişkenlerinden AWS kimlik bilgilerini alın
-        String accessKey = System.getenv("AWS_ACCESS_KEY_ID");
-        String secretKey = System.getenv("AWS_SECRET_ACCESS_KEY");
+        String accessKey = System.getenv("AKIA2RP6IIYHEW6AYFVK");
+        String secretKey = System.getenv("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");
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
 
         return AmazonDynamoDBClientBuilder.standard()
