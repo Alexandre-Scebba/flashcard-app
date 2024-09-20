@@ -1,4 +1,3 @@
-// UserRepository.java
 package com.example.flashcardtool.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -9,7 +8,10 @@ import com.example.flashcardtool.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -124,18 +126,8 @@ public class UserRepository {
         if (userOptional.isPresent() && deckOptional.isPresent()) {
             User user = userOptional.get();
             Deck deck = deckOptional.get();
-
-            // If the user's assignedDeckIds list is null, initialize it
-            if (user.getAssignedDeckIds() == null) {
-                user.setAssignedDeckIds(new ArrayList<>());
-            }
-
-            // Add the deck ID to the user's assigned decks if it's not already there
-            if (!user.getAssignedDeckIds().contains(deck.getId())) {
-                user.getAssignedDeckIds().add(deck.getId());
-            }
-
-            save(user); // Save the updated user with the new assigned deck
+            user.getAssignedDecks().add(deck);
+            save(user);
         } else {
             throw new IllegalArgumentException("User or Deck not found");
         }

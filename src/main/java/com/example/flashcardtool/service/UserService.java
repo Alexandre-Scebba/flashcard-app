@@ -30,7 +30,14 @@ public class UserService {
         user.setRoles(roles);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        // Print out user details for debugging
+        System.out.println("Attempting to register user: " + user);
+
+        // Save user
         userRepository.save(user);
+
+        // Print success message
+        System.out.println("User registered successfully: " + username);
     }
 
     // Method to send password reset link

@@ -1,15 +1,16 @@
 package com.example.flashcardtool.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-
-import java.util.*;
-
+import com.example.flashcardtool.converter.DeckListConverter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @DynamoDBTable(tableName = "Users")
 public class User implements UserDetails {
-
     @DynamoDBHashKey
     private String id;
 
@@ -25,6 +26,7 @@ public class User implements UserDetails {
     @DynamoDBAttribute
     private List<String> roles;
 
+    // New fields
     @DynamoDBAttribute
     private String firstName;
 
@@ -32,10 +34,11 @@ public class User implements UserDetails {
     private String lastName;
 
     @DynamoDBAttribute
-    private String passwordResetToken;
+    private String passwordResetToken;  // Parola sıfırlama token'ı
 
+    @DynamoDBTypeConverted(converter = DeckListConverter.class)
     @DynamoDBAttribute
-    private List<String> assignedDeckIds = new ArrayList<>(); // Only store deck IDs
+    private List<Deck> assignedDecks = new ArrayList<>(); // Assigned decks
 
     // Optionally, store metadata about the assignment (e.g., teacher name)
     @DynamoDBAttribute
@@ -106,17 +109,18 @@ public class User implements UserDetails {
         this.passwordResetToken = passwordResetToken;
     }
 
-    public List<String> getAssignedDeckIds() {
-        return assignedDeckIds;
+    public List<Deck> getAssignedDecks() {
+        return assignedDecks;
     }
 
-    public void setAssignedDeckIds(List<String> assignedDeckIds) {
-        this.assignedDeckIds = assignedDeckIds;
+    public void setAssignedDecks(List<Deck> assignedDecks) {
+        this.assignedDecks = assignedDecks;
     }
 
     // UserDetails interface methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Convert roles to GrantedAuthority
         return roles.stream()
                 .map(role -> (GrantedAuthority) () -> role)
                 .toList();
