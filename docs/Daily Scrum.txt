@@ -19,6 +19,28 @@ Each member writes down answers to 3 questions in the following format:
    -
 
 --- --- --- ---   --- --- --- ---   --- --- --- ---
+
+--------------------Scrum meeting #...[ENTER NUMBER]
+<< Sept-[DD]-2024 >>  --Alexandre--
+1. What I have done / not done since last Scrum?
+
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+<< Sept-[20]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+   - I finished assign deck to student function on teacher side
+   - I installed AWS & Heroku 
+2. What I plan to do from this scrum to next? (next 24 hours)
+   - Finish the assigned deck on the student side 
+   - Study mode on the student side
+3. Where do I need assistance? What do I need to figure out?
+   - I have to figure out cards flip with animations on the study mode
+
+--- --- --- ---   --- --- --- ---   --- --- --- ---
+
 --------------------Scrum meeting 6...[ENTER NUMBER]
 << Sept-[DD]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
