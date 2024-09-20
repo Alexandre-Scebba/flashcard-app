@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/teacher")
@@ -107,10 +108,18 @@ public class TeacherController {
     // Show the flashcard edit form
     @GetMapping("/flashcards/edit/{id}")
     public String editFlashcard(@PathVariable String id, Model model) {
-        Flashcard flashcard = flashcardService.getFlashcardById(id);
-        model.addAttribute("flashcard", flashcard);
+        Optional<Flashcard> optionalFlashcard = flashcardService.getFlashcardById(id);
+
+        // Handle the case where flashcard might not be present
+        if (optionalFlashcard.isPresent()) {
+            model.addAttribute("flashcard", optionalFlashcard.get());
+        } else {
+            // Handle the case where the flashcard is not found, perhaps redirect to an error page or set an error message
+            return "redirect:/teacher/flashcards";  // Redirecting to the flashcard list or an appropriate page
+        }
         return "flashcard-edit";  // Points to flashcard-edit.html
     }
+
 
     // Update flashcard and return to the current deck flashcard creation page
     @PostMapping("/flashcards/edit/{id}")

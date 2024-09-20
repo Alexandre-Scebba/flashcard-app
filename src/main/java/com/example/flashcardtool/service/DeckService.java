@@ -23,12 +23,12 @@ public class DeckService {
     private FlashcardRepository flashcardRepository;
 
     @Autowired
-    private UserRepository userRepository; // Inject UserRepository
+    private UserRepository userRepository;
 
     // Create a new deck
     public Deck createDeck(String name, String userId, String description) {
         Deck deck = new Deck();
-        deck.setId(UUID.randomUUID().toString());
+        deck.setId(UUID.randomUUID().toString()); // UUID oluşturma doğrudan yapılabilir
         deck.setName(name);
         deck.setUserId(userId);
         deck.setDescription(description);
@@ -66,6 +66,7 @@ public class DeckService {
 
     // Save a deck
     public void save(Deck deck) {
+        // UUID ataması her durumda yapılabilir
         if (deck.getId() == null || deck.getId().isEmpty()) {
             deck.setId(UUID.randomUUID().toString());
         }
@@ -82,18 +83,16 @@ public class DeckService {
         return deckRepository.findByName(name);
     }
 
+    // Assign a deck to a student with teacher reference
     public void assignDeck(String deckId, String studentId, String teacherName) {
-        Optional<User> studentOpt = userRepository.findById(studentId); // Fetch the student
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + studentId));
 
-        if (studentOpt.isPresent()) {
-            User student = studentOpt.get();
-            if (!student.getAssignedDeckIds().contains(deckId)) {
-                student.getAssignedDeckIds().add(deckId); // Add deck ID to the student's library
-                student.getDeckAssignments().put(deckId, teacherName); // Optionally, store the teacher's name
-                userRepository.save(student); // Save the student with updated deck assignments
-            }
+        // Öğrenciye deck atanmışsa tekrar atama yapma
+        if (!student.getAssignedDeckIds().contains(deckId)) {
+            student.getAssignedDeckIds().add(deckId); // Deck'i öğrencinin assignedDeckIds listesine ekle
+            student.getDeckAssignments().put(deckId, teacherName); // Öğretmen adını isteğe bağlı olarak ekle
+            userRepository.save(student); // Öğrenciyi güncellenmiş atamalarla kaydet
         }
     }
-
-
 }

@@ -1,10 +1,12 @@
 package com.example.flashcardtool.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-
 import java.util.*;
+<<<<<<< HEAD
 
 import com.example.flashcardtool.converter.RolesConverter;
+=======
+>>>>>>> ea375a7d397c66f1b7bccca574423fa84368fbe4
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -23,9 +25,13 @@ public class User implements UserDetails {
     @DynamoDBAttribute
     private String email;
 
+<<<<<<< HEAD
     @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.SS)
     @DynamoDBTypeConverted(converter = RolesConverter.class)
     @DynamoDBAttribute
+=======
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.L)
+>>>>>>> ea375a7d397c66f1b7bccca574423fa84368fbe4
     private List<String> roles;
 
 
@@ -38,12 +44,11 @@ public class User implements UserDetails {
     @DynamoDBAttribute
     private String passwordResetToken;
 
-    @DynamoDBAttribute
-    private List<String> assignedDeckIds = new ArrayList<>(); // Only store deck IDs
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.L)
+    private List<String> assignedDeckIds = new ArrayList<>();
 
-    // Optionally, store metadata about the assignment (e.g., teacher name)
-    @DynamoDBAttribute
-    private Map<String, String> deckAssignments = new HashMap<>(); // Store deck ID -> teacher name
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.M)
+    private Map<String, String> deckAssignments = new HashMap<>();
 
     // Getters and setters
     public String getId() {
@@ -118,6 +123,14 @@ public class User implements UserDetails {
         this.assignedDeckIds = assignedDeckIds;
     }
 
+    public Map<String, String> getDeckAssignments() {
+        return deckAssignments;
+    }
+
+    public void setDeckAssignments(Map<String, String> deckAssignments) {
+        this.deckAssignments = deckAssignments;
+    }
+
     // UserDetails interface methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -144,14 +157,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-
-    public Map<String, String> getDeckAssignments() {
-        return deckAssignments;
-    }
-
-    public void setDeckAssignments(Map<String, String> deckAssignments) {
-        this.deckAssignments = deckAssignments;
     }
 }

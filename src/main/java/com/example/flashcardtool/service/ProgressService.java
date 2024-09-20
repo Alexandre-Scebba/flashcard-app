@@ -17,11 +17,13 @@ public class ProgressService {
 
     // Fetch progress for a specific student
     public List<Progress> getStudentProgress(String studentId) {
-        return (List<Progress>) progressRepository.findByStudentId(studentId);
+        // Directly return the result from the repository, casting isn't necessary
+        return progressRepository.findByStudentId(studentId);
     }
 
     // Save or update student progress
     public Progress saveProgress(Progress progress) {
+        // If necessary, you can check for progress null values before saving
         return progressRepository.save(progress);
     }
 }

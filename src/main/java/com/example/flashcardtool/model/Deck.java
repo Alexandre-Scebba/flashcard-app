@@ -22,7 +22,6 @@ public class Deck {
     @DynamoDBAttribute
     private String assignedStudentId;
 
-
     // Getters and setters
     public String getId() {
         return id;
@@ -64,11 +63,11 @@ public class Deck {
         this.assignedStudentId = assignedStudentId;
     }
 
-   public boolean isEmpty() {
-    return (id == null || id.isEmpty()) &&
-           (name == null || name.isEmpty()) &&
-           (userId == null || userId.isEmpty()) &&
-           (description == null || description.isEmpty()) &&
-           (assignedStudentId == null || assignedStudentId.isEmpty());
-}
+    public boolean isEmpty() {
+        return (id == null || id.isEmpty()) &&
+                (name == null || name.isEmpty()) &&
+                (userId == null || userId.isEmpty()) &&
+                (description == null || description.isEmpty()) &&
+                (assignedStudentId == null || assignedStudentId.isEmpty());
+    }
 }
