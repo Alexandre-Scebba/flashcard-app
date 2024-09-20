@@ -1,4 +1,3 @@
-// UserRepository.java
 package com.example.flashcardtool.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -28,8 +27,8 @@ public class UserRepository {
     }
 
     // Get user by ID
-    public User getUserById(String userId) {
-        return dynamoDBMapper.load(User.class, userId);
+    public Optional<User> getUserById(String userId) {
+        return Optional.ofNullable(dynamoDBMapper.load(User.class, userId));
     }
 
     // Delete user
@@ -38,7 +37,7 @@ public class UserRepository {
     }
 
     // Get user by username
-    public User getUserByUsername(String username) {
+    public Optional<User> getUserByUsername(String username) {
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":v1", new AttributeValue().withS(username));
 
@@ -47,15 +46,11 @@ public class UserRepository {
                 .withExpressionAttributeValues(eav);
 
         List<User> result = dynamoDBMapper.scan(User.class, scanExpression);
-        if (result != null && !result.isEmpty()) {
-            return result.get(0);
-        } else {
-            return null;
-        }
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     // Find user by email
-    public User findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":v1", new AttributeValue().withS(email));
 
@@ -64,11 +59,7 @@ public class UserRepository {
                 .withExpressionAttributeValues(eav);
 
         List<User> result = dynamoDBMapper.scan(User.class, scanExpression);
-        if (result != null && !result.isEmpty()) {
-            return result.get(0);
-        } else {
-            return null;
-        }
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     // Find user by password reset token
@@ -81,11 +72,7 @@ public class UserRepository {
                 .withExpressionAttributeValues(eav);
 
         List<User> result = dynamoDBMapper.scan(User.class, scanExpression);
-        if (result != null && !result.isEmpty()) {
-            return Optional.of(result.get(0));
-        } else {
-            return Optional.empty();
-        }
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
     // Get all users (equivalent to findAll)
@@ -117,6 +104,7 @@ public class UserRepository {
         }
     }
 
+    // Assign a deck to a student
     public void assignDeck(String deckId, String studentId) {
         Optional<User> userOptional = findById(studentId);
         Optional<Deck> deckOptional = deckRepository.findById(deckId);
@@ -125,15 +113,8 @@ public class UserRepository {
             User user = userOptional.get();
             Deck deck = deckOptional.get();
 
-            // If the user's assignedDeckIds list is null, initialize it
-            if (user.getAssignedDeckIds() == null) {
-                user.setAssignedDeckIds(new ArrayList<>());
-            }
-
-            // Add the deck ID to the user's assigned decks if it's not already there
-            if (!user.getAssignedDeckIds().contains(deck.getId())) {
-                user.getAssignedDeckIds().add(deck.getId());
-            }
+            // Add the deck ID to the user's assigned decks
+            user.getAssignedDeckIds().add(deck.getId());
 
             save(user); // Save the updated user with the new assigned deck
         } else {
@@ -141,6 +122,7 @@ public class UserRepository {
         }
     }
 
+    // Find user by student ID
     public Optional<User> findById(String studentId) {
         return Optional.ofNullable(dynamoDBMapper.load(User.class, studentId));
     }

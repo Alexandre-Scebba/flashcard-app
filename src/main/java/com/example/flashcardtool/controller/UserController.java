@@ -36,7 +36,9 @@ public class UserController {
     public String registerUser(@RequestParam String username, @RequestParam String password,
                                @RequestParam String email, @RequestParam String role,
                                @RequestParam String firstName, @RequestParam String lastName) {
+        System.out.println("Registering user: " + username);
         userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
+        System.out.println("User registered successfully.");
         return "redirect:/login";
     }
 

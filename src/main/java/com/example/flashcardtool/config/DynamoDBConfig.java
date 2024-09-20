@@ -1,7 +1,5 @@
 package com.example.flashcardtool.config;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -31,14 +29,9 @@ public class DynamoDBConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        // Heroku'daki çevre değişkenlerinden AWS kimlik bilgilerini alın
-        String accessKey = System.getenv("AKIA2RP6IIYHEW6AYFVK");
-        String secretKey = System.getenv("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");
-        BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
-
+        // Use the default credential provider chain which checks environment variables, etc.
         return AmazonDynamoDBClientBuilder.standard()
-                .withRegion("us-east-1")  // AWS bölgenizi doğru şekilde ayarlayın
-                .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+                .withRegion("us-east-1")  // Adjust the region as necessary
                 .build();
     }
 

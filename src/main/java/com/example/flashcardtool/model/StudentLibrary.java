@@ -6,24 +6,22 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 import java.util.UUID;
 
-@DynamoDBTable(tableName = "StudentLibrary") // Ensure the table name matches your DynamoDB table
+@DynamoDBTable(tableName = "StudentLibrary")
 public class StudentLibrary {
 
     @DynamoDBHashKey(attributeName = "id")
     private String id;
 
     @DynamoDBAttribute(attributeName = "studentId")
-    private String studentId;  // Store student ID directly
+    private String studentId;
 
     @DynamoDBAttribute(attributeName = "deckId")
-    private String deckId;  // Store deck ID directly
+    private String deckId;
 
-    // Constructor
     public StudentLibrary() {
-        this.id = UUID.randomUUID().toString();  // Generate ID automatically
+        this.id = UUID.randomUUID().toString();
     }
 
-    // Getters and setters
     public String getId() {
         return id;
     }

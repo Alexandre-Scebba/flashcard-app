@@ -19,7 +19,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Method to register a new user
+    // Register a new user
     public void registerUser(String username, String password, String email, List<String> roles, String firstName, String lastName) {
         User user = new User();
         String userId = UUID.randomUUID().toString();
@@ -33,9 +33,9 @@ public class UserService {
         userRepository.save(user);
     }
 
-    // Method to send password reset link
+    // Send password reset link
     public void sendPasswordResetLink(String email) {
-        Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(email));
+        Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             String token = UUID.randomUUID().toString();
@@ -43,46 +43,62 @@ public class UserService {
 
             String resetLink = "http://localhost:8080/newpassword?token=" + token;
             sendEmail(user.getEmail(), "Password Reset Request", "To reset your password, click the link below:\n" + resetLink);
+        } else {
+            System.out.println("User with email " + email + " not found.");
         }
     }
 
+
+    // Save password reset token
     private void savePasswordResetToken(User user, String token) {
-        // Implement logic to save the token
+        user.setPasswordResetToken(token);
+        userRepository.save(user); // Save user with the reset token
     }
 
+    // Send email logic (mock implementation)
     private void sendEmail(String to, String subject, String body) {
-        // Implement logic to send email
+        // Implement actual email-sending logic here
+        System.out.println("Sending email to: " + to);
+        System.out.println("Subject: " + subject);
+        System.out.println("Body: " + body);
     }
 
-    // Method to update password after validating reset token
+    // Update password after validating reset token
     public void updatePassword(String token, String password) {
         if (validateResetToken(token)) {
             Optional<User> userOptional = userRepository.findByPasswordResetToken(token);
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 user.setPassword(passwordEncoder.encode(password));
-                user.setPasswordResetToken(null);
+                user.setPasswordResetToken(null); // Clear the token once the password is updated
                 userRepository.save(user);
+                System.out.println("Password updated for user: " + user.getUsername());
+            } else {
+                System.out.println("Invalid token.");
             }
+        } else {
+            System.out.println("Token validation failed.");
         }
     }
 
+    // Validate the password reset token
     private boolean validateResetToken(String token) {
-        return true;  // Temporary token validation logic
+        // Logic to validate the token (e.g., check expiration)
+        return token != null && !token.isEmpty();
     }
 
-    // Method to get all users (Admin functionality)
+    // Get all users (Admin functionality)
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Method to delete a user by ID (Admin functionality)
+    // Delete a user by ID (Admin functionality)
     public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
 
-    // Method to find all students
+    // Find all students (Filtering for role-based queries)
     public List<User> findAllStudents() {
-        return userRepository.findAll();  // Adjust this method to filter only students if needed
+        return userRepository.findAllStudents(); // Assumes a repository method that filters students based on roles
     }
 }

@@ -8,5 +8,6 @@ import java.util.List;
 
 @EnableScan
 public interface FlashcardRepository extends CrudRepository<Flashcard, String> {
+    // Query flashcards by deck
     List<Flashcard> findByDeckId(String deckId);  // Query flashcards by deck
 }
