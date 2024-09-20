@@ -37,7 +37,7 @@ public class DynamoDBConfig {
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
 
         return AmazonDynamoDBClientBuilder.standard()
-                .withRegion("us-east-1")  // Bölgenizi ihtiyaçlarınıza göre ayarlayın
+                .withRegion("us-east-1")  // AWS bölgenizi doğru şekilde ayarlayın
                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                 .build();
     }
