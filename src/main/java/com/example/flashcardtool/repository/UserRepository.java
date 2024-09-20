@@ -24,9 +24,16 @@ public class UserRepository {
 
     // Save user
     public void save(User user) {
-        System.out.println("User to be saved: " + user.toString());
-        dynamoDBMapper.save(user);
-        System.out.println("User successfully saved: " + user.getUsername());
+        try {
+            // Log the roles before saving
+            System.out.println("User roles before saving: " + user.getRoles());
+            System.out.println("User to be saved: " + user.toString());
+            dynamoDBMapper.save(user);
+            System.out.println("User successfully saved: " + user.getUsername());
+        } catch (Exception e) {
+            System.err.println("Error while saving user: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     // Get user by ID
@@ -119,19 +126,19 @@ public class UserRepository {
         }
     }
 
-    public void assignDeck(String deckId, String studentId) {
-        Optional<User> userOptional = findById(studentId);
-        Optional<Deck> deckOptional = deckRepository.findById(deckId);
-
-        if (userOptional.isPresent() && deckOptional.isPresent()) {
-            User user = userOptional.get();
-            Deck deck = deckOptional.get();
-            user.getAssignedDecks().add(deck);
-            save(user);
-        } else {
-            throw new IllegalArgumentException("User or Deck not found");
-        }
-    }
+//    public void assignDeck(String deckId, String studentId) {
+//        Optional<User> userOptional = findById(studentId);
+//        Optional<Deck> deckOptional = deckRepository.findById(deckId);
+//
+//        if (userOptional.isPresent() && deckOptional.isPresent()) {
+//            User user = userOptional.get();
+//            Deck deck = deckOptional.get();
+//            user.getAssignedDecks().add(deck);
+//            save(user);
+//        } else {
+//            throw new IllegalArgumentException("User or Deck not found");
+//        }
+//    }
 
     public Optional<User> findById(String studentId) {
         return Optional.ofNullable(dynamoDBMapper.load(User.class, studentId));

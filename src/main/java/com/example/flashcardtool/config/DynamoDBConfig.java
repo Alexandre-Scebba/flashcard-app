@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.*;
+import com.example.flashcardtool.model.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -29,7 +30,7 @@ public class DynamoDBConfig {
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         return AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "us-east-1"))
+                .withRegion( "us-east-1")
                 .build();
     }
 
@@ -37,6 +38,16 @@ public class DynamoDBConfig {
     public void createTables() {
         AmazonDynamoDB dynamoDB = amazonDynamoDB();
         DynamoDBMapper mapper = dynamoDBMapper();
+
+        // Check and create User table
+        if (!tableExists("Users", dynamoDB)) {
+            CreateTableRequest usersTableRequest = mapper.generateCreateTableRequest(User.class)
+                    .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
+            dynamoDB.createTable(usersTableRequest);
+            System.out.println("Users table created.");
+        } else {
+            System.out.println("Users table already exists.");
+        }
 
         // Check if Flashcards Table exists
         if (!tableExists("Flashcards", dynamoDB)) {
