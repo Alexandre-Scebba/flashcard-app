@@ -64,14 +64,5 @@ public class Deck {
         this.assignedStudentId = assignedStudentId;
     }
 
-<<<<<<< Updated upstream
-   public boolean isEmpty() {
-    return (id == null || id.isEmpty()) &&
-           (name == null || name.isEmpty()) &&
-           (userId == null || userId.isEmpty()) &&
-           (description == null || description.isEmpty()) &&
-           (assignedStudentId == null || assignedStudentId.isEmpty());
-}
-=======
->>>>>>> Stashed changes
+
 }

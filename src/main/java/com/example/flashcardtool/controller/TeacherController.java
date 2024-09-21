@@ -84,7 +84,6 @@ public class TeacherController {
         return "deck-list";  // Points to deck-list.html
     }
 
-<<<<<<< Updated upstream
     // Create a new deck
     @PostMapping("/create")
     public String createDeck(@ModelAttribute Deck deck) {
@@ -93,16 +92,7 @@ public class TeacherController {
         return "redirect:/teacher/flashcards/create?deckId=" + createdDeck.getId();
     }
 
-    // Add a new deck
-    @PostMapping("/add")
-    public String addDeck(@RequestParam String deckName, @RequestParam String deckDescription) {
-        String userId = getAuthenticatedTeacherName();
-        deckService.createDeck(deckName, userId, deckDescription);
-        return "redirect:/decks";  // Redirect to the deck list
-    }
 
-=======
->>>>>>> Stashed changes
     @GetMapping("/logout")
     public String logout() {
         return "login";
