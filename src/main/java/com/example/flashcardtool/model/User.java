@@ -1,9 +1,7 @@
 package com.example.flashcardtool.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-
 import java.util.*;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -22,7 +20,7 @@ public class User implements UserDetails {
     @DynamoDBAttribute
     private String email;
 
-    @DynamoDBAttribute
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.L)
     private List<String> roles;
 
     @DynamoDBAttribute
@@ -34,12 +32,11 @@ public class User implements UserDetails {
     @DynamoDBAttribute
     private String passwordResetToken;
 
-    @DynamoDBAttribute
-    private List<String> assignedDeckIds = new ArrayList<>(); // Only store deck IDs
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.L)
+    private List<String> assignedDeckIds = new ArrayList<>();
 
-    // Optionally, store metadata about the assignment (e.g., teacher name)
-    @DynamoDBAttribute
-    private Map<String, String> deckAssignments = new HashMap<>(); // Store deck ID -> teacher name
+    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.M)
+    private Map<String, String> deckAssignments = new HashMap<>();
 
     // Getters and setters
     public String getId() {
@@ -114,6 +111,14 @@ public class User implements UserDetails {
         this.assignedDeckIds = assignedDeckIds;
     }
 
+    public Map<String, String> getDeckAssignments() {
+        return deckAssignments;
+    }
+
+    public void setDeckAssignments(Map<String, String> deckAssignments) {
+        this.deckAssignments = deckAssignments;
+    }
+
     // UserDetails interface methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -140,14 +145,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-
-    public Map<String, String> getDeckAssignments() {
-        return deckAssignments;
-    }
-
-    public void setDeckAssignments(Map<String, String> deckAssignments) {
-        this.deckAssignments = deckAssignments;
     }
 }

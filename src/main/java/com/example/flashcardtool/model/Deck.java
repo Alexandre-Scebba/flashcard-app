@@ -22,7 +22,6 @@ public class Deck {
     @DynamoDBAttribute
     private String assignedStudentId;
 
-
     // Getters and setters
     public String getId() {
         return id;
@@ -63,6 +62,5 @@ public class Deck {
     public void setAssignedStudentId(String assignedStudentId) {
         this.assignedStudentId = assignedStudentId;
     }
-
 
 }

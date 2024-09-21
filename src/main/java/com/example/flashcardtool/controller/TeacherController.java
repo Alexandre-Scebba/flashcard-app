@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/teacher")
@@ -84,15 +85,6 @@ public class TeacherController {
         return "deck-list";  // Points to deck-list.html
     }
 
-    // Create a new deck
-    @PostMapping("/create")
-    public String createDeck(@ModelAttribute Deck deck) {
-        String userId = getAuthenticatedTeacherName();
-        Deck createdDeck = deckService.createDeck(deck.getName(), userId, deck.getDescription());
-        return "redirect:/teacher/flashcards/create?deckId=" + createdDeck.getId();
-    }
-
-
     @GetMapping("/logout")
     public String logout() {
         return "login";
@@ -101,8 +93,15 @@ public class TeacherController {
     // Show the flashcard edit form
     @GetMapping("/flashcards/edit/{id}")
     public String editFlashcard(@PathVariable String id, Model model) {
-        Flashcard flashcard = flashcardService.getFlashcardById(id);
-        model.addAttribute("flashcard", flashcard);
+        Optional<Flashcard> optionalFlashcard = flashcardService.getFlashcardById(id);
+
+        // Handle the case where flashcard might not be present
+        if (optionalFlashcard.isPresent()) {
+            model.addAttribute("flashcard", optionalFlashcard.get());
+        } else {
+            // Handle the case where the flashcard is not found, perhaps redirect to an error page or set an error message
+            return "redirect:/teacher/flashcards";  // Redirecting to the flashcard list or an appropriate page
+        }
         return "flashcard-edit";  // Points to flashcard-edit.html
     }
 

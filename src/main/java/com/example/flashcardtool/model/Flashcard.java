@@ -39,18 +39,6 @@ public class Flashcard {
         this.option4 = "";
     }
 
-    // Parameterized constructor
-    public Flashcard(String id, String frontContent, String backContent, String deckId, String option1, String option2, String option3, String option4) {
-        this.id = id;
-        this.frontContent = frontContent;
-        this.backContent = backContent;
-        this.deckId = deckId;
-        this.option1 = option1 != null ? option1 : "";
-        this.option2 = option2 != null ? option2 : "";
-        this.option3 = option3 != null ? option3 : "";
-        this.option4 = option4 != null ? option4 : "";
-    }
-
     // Getters and setters
     public String getId() {
         return id;

@@ -6,24 +6,38 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 import java.util.UUID;
 
-@DynamoDBTable(tableName = "StudentLibrary") // Ensure the table name matches your DynamoDB table
+@DynamoDBTable(tableName = "StudentLibrary")
 public class StudentLibrary {
 
     @DynamoDBHashKey(attributeName = "id")
     private String id;
 
     @DynamoDBAttribute(attributeName = "studentId")
-    private String studentId;  // Store student ID directly
+    private String studentId;
 
     @DynamoDBAttribute(attributeName = "deckId")
-    private String deckId;  // Store deck ID directly
+    private String deckId;
 
-    // Constructor
+    // Parametresiz yapıcı (default constructor)
     public StudentLibrary() {
-        this.id = UUID.randomUUID().toString();  // Generate ID automatically
+        this.id = UUID.randomUUID().toString();
     }
 
-    // Getters and setters
+    // Parametreli yapıcı
+    public StudentLibrary(String studentId, String deckId) {
+        this.studentId = studentId;
+        this.deckId = deckId;
+        this.id = UUID.randomUUID().toString(); // Eğer id sağlanmazsa, otomatik oluşturulur
+    }
+
+    // Parametreli yapıcı (id ile birlikte)
+    public StudentLibrary(String studentId, String deckId, String id) {
+        this.studentId = studentId;
+        this.deckId = deckId;
+        this.id = id != null ? id : UUID.randomUUID().toString(); // Eğer id null ise, UUID ile oluştur
+    }
+
+    // Getter ve Setter metodları
     public String getId() {
         return id;
     }
