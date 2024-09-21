@@ -3,17 +3,18 @@ package com.example.flashcardtool.controller;
 import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.model.StudentLibrary;
-import com.example.flashcardtool.service.DeckService;
-import com.example.flashcardtool.service.FlashcardService;
-import com.example.flashcardtool.service.ProgressService;
-import com.example.flashcardtool.service.StudentLibraryService;
+import com.example.flashcardtool.model.User;
+import com.example.flashcardtool.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -50,6 +51,12 @@ public class StudentController {
         return authentication.getName(); // Assuming the student's ID is their username
     }
 
+    private String getAuthenticatedUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName(); // Oturum açmış kullanıcının kullanıcı adını döndürür
+    }
+
+
     @GetMapping("/student-dashboard")
     public String showStudentDashboard(Model model) {
         setStudentName(model); // Add studentName to the model
@@ -71,17 +78,37 @@ public class StudentController {
         return "student-library";  // Use the library view to show results and library
     }
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/library")
     public String viewLibrary(Model model) {
         setStudentName(model); // Add studentName to the model
-        String studentId = getAuthenticatedStudentId();
-        List<StudentLibrary> studentLibrary = studentLibraryService.getLibraryByStudent(studentId);
-        List<Deck> libraryDecks = studentLibrary.stream()
-                .map(library -> deckService.getDeckById(library.getDeckId()).orElse(new Deck()))
-                .collect(Collectors.toList());
-        model.addAttribute("libraryDecks", libraryDecks);
+
+        // Oturum açmış kullanıcının kullanıcı adını almak için
+        String username = getAuthenticatedUsername();
+
+        // UserService örneğini kullanarak, username ile user'ı buluyoruz
+
+        Optional<User> user = userService.findByUsername(username);
+
+        if (user.isPresent()) {
+            String studentId = user.get().getId();  // Kullanıcının studentId'sini alıyoruz
+
+            // AWS sorgusu studentId ile yapılacak
+            List<StudentLibrary> studentLibrary = studentLibraryService.getLibraryByStudent(studentId);
+            List<Deck> libraryDecks = studentLibrary.stream()
+                    .map(library -> deckService.getDeckById(library.getDeckId()).orElse(new Deck()))
+                    .collect(Collectors.toList());
+            model.addAttribute("libraryDecks", libraryDecks);
+        } else {
+            System.out.println("User not found for username: " + username);
+            model.addAttribute("libraryDecks", Collections.emptyList()); // Kullanıcı bulunmazsa boş liste döndürülür
+        }
+
         return "student-library";  // Ensure this view exists
     }
+
 
     @PostMapping("/library/add")
     public String addLibrary(@RequestParam("deckId") String deckId) {
