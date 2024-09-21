@@ -5,10 +5,7 @@ import com.example.flashcardtool.repository.FlashcardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class FlashcardService {
@@ -70,5 +67,20 @@ public class FlashcardService {
             flashcards.forEach(flashcard -> System.out.println(flashcard.getFrontContent()));
         }
         return flashcards;
+    }
+
+    // Method to shuffle the options for a flashcard
+    public List<String> getShuffledOptions(Flashcard flashcard) {
+        // Collect the answer options
+        List<String> options = Arrays.asList(
+                flashcard.getOption1(),
+                flashcard.getOption2(),
+                flashcard.getOption3(),
+                flashcard.getOption4()
+        );
+
+        // Shuffle the options
+        Collections.shuffle(options);
+        return options;
     }
 }

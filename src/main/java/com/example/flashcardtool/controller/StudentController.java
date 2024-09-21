@@ -112,8 +112,16 @@ public class StudentController {
 
     @PostMapping("/library/add")
     public String addLibrary(@RequestParam("deckId") String deckId) {
-        String studentId = getAuthenticatedStudentId(); // Get the logged-in student ID
-        studentLibraryService.addLibrary(studentId, deckId);
+        // Username yerine studentId'yi almak için doğru kullanıcı ID'sini çekiyoruz.
+        String username = getAuthenticatedUsername(); // Kullanıcı adı alınıyor
+        Optional<User> user = userService.findByUsername(username); // Kullanıcıyı buluyoruz
+
+        if (user.isPresent()) {
+            String studentId = user.get().getId(); // Kullanıcının gerçek student ID'sini alıyoruz
+            studentLibraryService.addLibrary(studentId, deckId); // Deck'i library'ye ekliyoruz
+        } else {
+            System.out.println("User not found for username: " + username);
+        }
         return "redirect:/student/library"; // Redirect to the library page
     }
 
@@ -130,11 +138,58 @@ public class StudentController {
         Deck deck = deckService.getDeckById(deckId).orElseThrow(() -> new IllegalArgumentException("Deck not found"));
         List<Flashcard> flashcards = flashcardService.getFlashcardsByDeckId(deckId);
 
+        // Initialize the study session by starting with the first flashcard
         model.addAttribute("deck", deck);
         model.addAttribute("flashcards", flashcards);
         model.addAttribute("currentCard", 0); // Start with the first card
+        model.addAttribute("correctAnswers", 0);
+        model.addAttribute("incorrectAnswers", 0);
         model.addAttribute("showFront", true); // Show the front of the card first
+
+        // Shuffle options for the first card and pass them to the model
+        model.addAttribute("flashcardOptions", flashcardService.getShuffledOptions(flashcards.get(0)));
+
         return "study-mode";  // Redirect to study-mode.html
+    }
+
+    @PostMapping("/study/{id}")
+    public String submitAnswer(
+            @PathVariable("id") String deckId,
+            @RequestParam("selectedOption") String selectedOption,
+            @RequestParam("currentCard") int currentCard,
+            @RequestParam("correctAnswers") int correctAnswers,
+            @RequestParam("incorrectAnswers") int incorrectAnswers,
+            Model model) {
+
+        Deck deck = deckService.getDeckById(deckId).orElseThrow(() -> new IllegalArgumentException("Deck not found"));
+        List<Flashcard> flashcards = flashcardService.getFlashcardsByDeckId(deckId);
+
+        // Current flashcard
+        Flashcard currentFlashcard = flashcards.get(currentCard);
+
+        // Check if selected answer matches option1 (correct answer)
+        if (selectedOption.equals(currentFlashcard.getOption1())) {
+            correctAnswers++;
+        } else {
+            incorrectAnswers++;
+        }
+
+        // Move to the next card or finish if it's the last card
+        if (currentCard + 1 < flashcards.size()) {
+            currentCard++;
+            model.addAttribute("currentCard", currentCard);
+            model.addAttribute("flashcardOptions", flashcardService.getShuffledOptions(flashcards.get(currentCard)));
+        } else {
+            // End of study session logic
+            model.addAttribute("studyFinished", true);
+        }
+
+        model.addAttribute("deck", deck);
+        model.addAttribute("flashcards", flashcards);
+        model.addAttribute("correctAnswers", correctAnswers);
+        model.addAttribute("incorrectAnswers", incorrectAnswers);
+
+        return "study-mode";
     }
 
     @GetMapping("/progress")
