@@ -1,14 +1,15 @@
 package com.example.flashcardtool.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.example.flashcardtool.model.User;
 import com.example.flashcardtool.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -18,6 +19,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private DynamoDBMapper dynamoDBMapper;
 
     // Register a new user
     public void registerUser(String username, String password, String email, List<String> roles, String firstName, String lastName) {
@@ -47,7 +51,6 @@ public class UserService {
             System.out.println("User with email " + email + " not found.");
         }
     }
-
 
     // Save password reset token
     private void savePasswordResetToken(User user, String token) {
@@ -97,8 +100,28 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    // Find all students (Filtering for role-based queries)
-    public List<User> findAllStudents() {
-        return userRepository.findAllStudents(); // Assumes a repository method that filters students based on roles
+    public Optional<User> findByUsername(String username) {
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":username", new AttributeValue().withS(username));
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("username = :username")
+                .withExpressionAttributeValues(eav);
+
+        List<User> result = dynamoDBMapper.scan(User.class, scanExpression);
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
+
+    public List<User> findAllStudents() {
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":role", new AttributeValue().withS("ROLE_STUDENT"));
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("contains(roles, :role)")
+                .withExpressionAttributeValues(eav);
+
+        return dynamoDBMapper.scan(User.class, scanExpression);
+    }
+
+
 }

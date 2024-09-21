@@ -52,11 +52,13 @@ public class StudentLibraryService {
 
 
     // Retrieve the library by student ID
+    // Retrieve the library by student ID
     public List<StudentLibrary> getLibraryByStudent(String studentId) {
         if (studentId != null) {
             Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
             expressionAttributeValues.put(":studentId", new AttributeValue().withS(studentId));
 
+            // AWS üzerinde StudentID kullanılarak sorgu yapılıyor
             ScanRequest scanRequest = new ScanRequest()
                     .withTableName("StudentLibrary")
                     .withFilterExpression("StudentID = :studentId")
@@ -80,7 +82,6 @@ public class StudentLibraryService {
             return null;
         }
     }
-
 
     // Remove deck from the student's library by studentId and deckId
     public void removeLibrary(String studentId, String deckId) {
