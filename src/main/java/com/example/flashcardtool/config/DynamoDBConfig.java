@@ -17,6 +17,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.model.StudentLibrary;
+import com.example.flashcardtool.model.Progress;
 
 import java.util.List;
 
@@ -72,6 +73,17 @@ public class DynamoDBConfig {
             System.out.println("Decks table created.");
         } else {
             System.out.println("Decks table already exists.");
+        }
+
+        // Check if Progress Table exists
+        if (!tableExists("Progress", dynamoDB)) {
+            CreateTableRequest progressTableRequest = mapper.generateCreateTableRequest(Progress.class)
+                    .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
+
+            dynamoDB.createTable(progressTableRequest);
+            System.out.println("Progress table created.");
+        } else {
+            System.out.println("Progress table already exists.");
         }
     }
 

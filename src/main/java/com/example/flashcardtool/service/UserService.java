@@ -123,5 +123,10 @@ public class UserService {
         return dynamoDBMapper.scan(User.class, scanExpression);
     }
 
+    public Optional<User> findById(String studentId) {
+        return userRepository.getUserById(studentId);
+    }
+
+
 
 }

@@ -31,21 +31,22 @@ public class StudentLibraryService {
     @Autowired
     private UserService userService;
 
-    // Add deck to student library
     public void addLibrary(String studentId, String deckId) {
         if (studentId != null && deckId != null) {
-            // DynamoDB için öğeyi oluşturuyoruz
-            Map<String, AttributeValue> item = new HashMap<>();
-            item.put("StudentID", new AttributeValue().withS(studentId));  // Partition Key
-            item.put("deckId", new AttributeValue().withS(deckId));        // Sort Key
-            item.put("id", new AttributeValue().withS(UUID.randomUUID().toString()));  // Ekstra bir ID alanı
+            // Burada kullanıcıyı StudentID'yi almak için bir kontrol yapıyoruz
+            Optional<User> userOptional = userService.findById(studentId);  // findByUsername yerine findById kullanıyoruz
+            if (userOptional.isPresent()) {
+                String actualStudentId = userOptional.get().getId(); // Gerçek StudentID
 
-            // DynamoDB'ye veriyi ekliyoruz
-            PutItemRequest putItemRequest = new PutItemRequest()
-                    .withTableName("StudentLibrary")
-                    .withItem(item);
+                Map<String, AttributeValue> itemValues = new HashMap<>();
+                itemValues.put("StudentID", new AttributeValue().withS(actualStudentId));  // Correct StudentID kullanımı
+                itemValues.put("deckId", new AttributeValue().withS(deckId));        // Store deckId
+                itemValues.put("id", new AttributeValue().withS(UUID.randomUUID().toString())); // Create a unique ID
 
-            dynamoDB.putItem(putItemRequest);
+                dynamoDB.putItem(TABLE_NAME, itemValues);
+            } else {
+                System.out.println("User not found for studentId: " + studentId);
+            }
         } else {
             System.out.println("Student ID or Deck ID is null. Cannot add to library.");
         }
