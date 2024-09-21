@@ -44,6 +44,7 @@ public class TeacherController {
     // Create a new deck and redirect to flashcard creation
     @PostMapping("/decks/create")
     public String createDeck(@ModelAttribute Deck deck, Model model) {
+        String userId = getAuthenticatedTeacherName();
         deckService.save(deck); // Save the deck
         return "redirect:/teacher/flashcards/create?deckId=" + deck.getId();
     }
@@ -52,7 +53,7 @@ public class TeacherController {
     @PostMapping("/decks/delete/{id}")
     public String deleteDeck(@PathVariable String id) {
         deckService.deleteDeck(id);
-        return "redirect:/teacher/dashboard";  // Redirect back to the dashboard after deletion
+        return "redirect:/teacher/decks";  // stay same page
     }
 
     @PostMapping("/deck-assign")
@@ -83,6 +84,7 @@ public class TeacherController {
         return "deck-list";  // Points to deck-list.html
     }
 
+<<<<<<< Updated upstream
     // Create a new deck
     @PostMapping("/create")
     public String createDeck(@ModelAttribute Deck deck) {
@@ -99,6 +101,8 @@ public class TeacherController {
         return "redirect:/decks";  // Redirect to the deck list
     }
 
+=======
+>>>>>>> Stashed changes
     @GetMapping("/logout")
     public String logout() {
         return "login";

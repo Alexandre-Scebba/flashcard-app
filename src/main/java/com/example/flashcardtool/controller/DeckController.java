@@ -28,13 +28,6 @@ public class DeckController {
         return "deck-create";
     }
 
-    // Delete a deck by ID
-    @PostMapping("/delete/{id}")
-    public String deleteDeck(@PathVariable String id) {
-        deckService.deleteDeck(id);
-        return "redirect:/decks";
-    }
-
     // Update a deck by ID
     @PostMapping("/update")
     public String updateDeck(@RequestParam String id, @RequestParam String name) {
