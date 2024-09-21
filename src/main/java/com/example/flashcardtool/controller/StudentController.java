@@ -53,11 +53,65 @@ public class StudentController {
         return authentication.getName(); // Oturum açmış kullanıcının kullanıcı adını döndürür
     }
 
-
     @GetMapping("/student-dashboard")
     public String showStudentDashboard(Model model) {
         setStudentName(model); // Add studentName to the model
-        return "student-dashboard";  // Return the correct Thymeleaf view
+
+        // Fetch the latest progress data for the student
+        String studentId = getAuthenticatedStudentId();
+        List<Progress> progressList = progressService.getStudentProgress(studentId);
+
+        if (!progressList.isEmpty()) {
+            Progress latestProgress = progressList.get(progressList.size() - 1); // Latest entry
+            model.addAttribute("studyTime", latestProgress.getStudyTime()); // In milliseconds
+            model.addAttribute("correctAnswers", latestProgress.getCorrectAnswers());
+            model.addAttribute("incorrectAnswers", latestProgress.getIncorrectAnswers());
+        } else {
+            // Default values if no progress found
+            model.addAttribute("studyTime", 0);
+            model.addAttribute("correctAnswers", 0);
+            model.addAttribute("incorrectAnswers", 0);
+        }
+
+        // Fetch the last 3 study sessions
+        List<Progress> recentProgressList = progressList.stream()
+                .sorted((p1, p2) -> p2.getId().compareTo(p1.getId())) // Sort by latest
+                .limit(3) // Limit to 3
+                .collect(Collectors.toList());
+
+        // Add recent progress with Deck names
+        List<ProgressDTO> recentProgressDTOs = recentProgressList.stream().map(progress -> {
+            Deck deck = deckService.getDeckById(progress.getDeckId()).orElse(null);
+            return new ProgressDTO(deck != null ? deck.getName() : "Unknown Deck", progress.getStudyTime());
+        }).collect(Collectors.toList());
+
+        model.addAttribute("recentProgress", recentProgressDTOs);
+
+        // Fetch the recent 3 decks from the student's library
+        Optional<User> user = userService.findByUsername(getAuthenticatedUsername());
+        if (user.isPresent()) {
+            String studentIdFromUser = user.get().getId();
+
+            List<StudentLibrary> studentLibrary = studentLibraryService.getLibraryByStudent(studentIdFromUser);
+
+            // Convert to Deck objects
+            List<Deck> libraryDecks = studentLibrary.stream()
+                    .map(library -> deckService.getDeckById(library.getDeckId()).orElse(new Deck()))
+                    .collect(Collectors.toList());
+
+            // Get the last 3 decks added to the library
+            List<Deck> recentDecks = libraryDecks.stream()
+                    .sorted((d1, d2) -> d2.getId().compareTo(d1.getId())) // Sort by latest added
+                    .limit(3) // Limit to 3 decks
+                    .collect(Collectors.toList());
+
+            model.addAttribute("recentDecks", recentDecks);
+        } else {
+            // No decks if user is not found
+            model.addAttribute("recentDecks", Collections.emptyList());
+        }
+
+        return "student-dashboard"; // Return the correct Thymeleaf view
     }
 
     @GetMapping("/decks")
