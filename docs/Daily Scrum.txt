@@ -20,6 +20,25 @@ Each member writes down answers to 3 questions in the following format:
 
 --- --- --- ---   --- --- --- ---   --- --- --- ---
 
+--------------------Scrum meeting #...[ENTER NUMBER]
+<< Sept-[DD]-2024 >>  --Alexandre--
+1. What I have done / not done since last Scrum?
+   
+2. What I plan to do from this scrum to next? (next 24 hours)
+   - finish to students progress page and teacher progress page
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+<< Sept-[21]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+  - I finished deck assign to students
+2. What I plan to do from this scrum to next? (next 24 hours)
+   - finish to students progress page and teacher progress page
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+--- --- --- ---   --- --- --- ---   --- --- --- ---
+
 --------------------Scrum meeting #...[7]
 << Sept-[20]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
