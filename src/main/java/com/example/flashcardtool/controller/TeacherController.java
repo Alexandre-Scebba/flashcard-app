@@ -84,14 +84,6 @@ public class TeacherController {
         return "deck-list";  // Points to deck-list.html
     }
 
-    // Create a new deck
-    @PostMapping("/create")
-    public String createDeck(@ModelAttribute Deck deck) {
-        String userId = getAuthenticatedTeacherName();
-        Deck createdDeck = deckService.createDeck(deck.getName(), userId, deck.getDescription());
-        return "redirect:/teacher/flashcards/create?deckId=" + createdDeck.getId();
-    }
-
     // Add a new deck
     @PostMapping("/add")
     public String addDeck(@RequestParam String deckName, @RequestParam String deckDescription) {

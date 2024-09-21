@@ -18,10 +18,26 @@ public class StudentLibrary {
     @DynamoDBAttribute(attributeName = "deckId")
     private String deckId;
 
+    // Parametresiz yapıcı (default constructor)
     public StudentLibrary() {
         this.id = UUID.randomUUID().toString();
     }
 
+    // Parametreli yapıcı
+    public StudentLibrary(String studentId, String deckId) {
+        this.studentId = studentId;
+        this.deckId = deckId;
+        this.id = UUID.randomUUID().toString(); // Eğer id sağlanmazsa, otomatik oluşturulur
+    }
+
+    // Parametreli yapıcı (id ile birlikte)
+    public StudentLibrary(String studentId, String deckId, String id) {
+        this.studentId = studentId;
+        this.deckId = deckId;
+        this.id = id != null ? id : UUID.randomUUID().toString(); // Eğer id null ise, UUID ile oluştur
+    }
+
+    // Getter ve Setter metodları
     public String getId() {
         return id;
     }
