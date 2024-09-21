@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Study Complete</title>
+</head>
+<body>
+<h1>Study Complete!</h1>
+<p>You got <span th:text="${correctAnswers}"></span> correct answers.</p>
+<p>You got <span th:text="${incorrectAnswers}"></span> incorrect answers.</p>
+
+<a href="/student/student-dashboard">Return to Dashboard</a>
+</body>
+</html>

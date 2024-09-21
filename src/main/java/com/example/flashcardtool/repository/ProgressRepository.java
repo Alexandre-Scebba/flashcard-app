@@ -35,6 +35,23 @@ public class ProgressRepository {
         return dynamoDBMapper.scan(Progress.class, scanExpression);
     }
 
+    // Find progress by studentId and deckId (to prevent multiple records for the same deck)
+    public Progress findByStudentIdAndDeckId(String studentId, String deckId) {
+        // Prepare the scan expression for both studentId and deckId
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":studentId", new AttributeValue().withS(studentId));
+        eav.put(":deckId", new AttributeValue().withS(deckId));
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression("studentId = :studentId AND deckId = :deckId")
+                .withExpressionAttributeValues(eav);
+
+        List<Progress> results = dynamoDBMapper.scan(Progress.class, scanExpression);
+
+        // Return the first result if any, or null if no match found
+        return results.isEmpty() ? null : results.get(0);
+    }
+
     // Save or update progress
     public Progress save(Progress progress) {
         dynamoDBMapper.save(progress);
