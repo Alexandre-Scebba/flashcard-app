@@ -17,6 +17,9 @@ public class User implements UserDetails {
     @DynamoDBAttribute
     private String password;
 
+    @DynamoDBIgnore
+    private transient String passwordConfirmation;
+
     @DynamoDBAttribute
     private String email;
 
@@ -151,4 +154,18 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
+    public String getPasswordConfirmation() {
+        return passwordConfirmation;
+    }
+
+    public void setPasswordConfirmation(String passwordConfirmation) {
+        this.passwordConfirmation = passwordConfirmation;
+    }
+
+    public boolean isPasswordMatching() {
+        return password.equals(passwordConfirmation);
+    }
+
 }

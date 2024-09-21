@@ -1,5 +1,6 @@
 package com.example.flashcardtool.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.flashcardtool.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.Collections;
 
 @Controller
 @RequestMapping("/")
+@Slf4j
 public class UserController {
     @Autowired
     private UserService userService;
@@ -34,15 +36,47 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestParam String username, @RequestParam String password,
-                               @RequestParam String email, @RequestParam String role,
-                               @RequestParam String firstName, @RequestParam String lastName,
+    public String registerUser(@RequestParam String username,
+                               @RequestParam String password,
+                               @RequestParam String passwordConfirmation,
+                               @RequestParam String email,
+                               @RequestParam String role,
+                               @RequestParam String firstName,
+                               @RequestParam String lastName,
                                RedirectAttributes redirectAttributes) {
-        System.out.println("Registering user: " + username);
-        userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
-        redirectAttributes.addFlashAttribute("message", "User registered successfully");
-        System.out.println("User registered successfully.");
-        return "redirect:/login";
+//        System.out.println("Registering user: " + username);
+//        userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
+//        redirectAttributes.addFlashAttribute("message", "User registered successfully");
+//        System.out.println("User registered successfully.");
+//        return "redirect:/login";
+        if (!password.equals(passwordConfirmation)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Passwords do not match.");
+            return "redirect:/register";
+        }
+
+        try {
+            userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
+            redirectAttributes.addFlashAttribute("successMessage", "Successfully Registered");  // Success message
+            log.info("successfully registered");
+            return "redirect:/login";
+        }
+        catch( UserService.UserAlreadyExistError error) {
+            log.error(error.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "User Already Exists, try a new name");  // Error message
+            return "redirect:/register";
+        }
+        catch(Exception error) {
+            log.error(error.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error");
+            return "redirect:/register";
+        }
+//        if (result.equals("User registered successfully")) {
+//            redirectAttributes.addFlashAttribute("message", result);  // Success message
+//            return "redirect:/login";
+//        } else {
+//            redirectAttributes.addFlashAttribute("errorMessage", result);  // Error message
+//            return "redirect:/register";
+//        }
     }
 
     @GetMapping("/determineRedirect")

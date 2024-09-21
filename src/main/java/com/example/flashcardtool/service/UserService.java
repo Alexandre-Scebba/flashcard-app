@@ -23,8 +23,14 @@ public class UserService {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
+    public static class UserAlreadyExistError extends RuntimeException {}
     // Register a new user
     public void registerUser(String username, String password, String email, List<String> roles, String firstName, String lastName) {
+
+        if (existsByUsername(username)) {
+            throw new UserAlreadyExistError();
+        }
+
         User user = new User();
         String userId = UUID.randomUUID().toString();
         user.setId(userId);
@@ -35,6 +41,10 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         userRepository.save(user);
+    }
+
+    public boolean existsByUsername(String username) {
+        return findByUsername(username).isPresent();
     }
 
     // Send password reset link
