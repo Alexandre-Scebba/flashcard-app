@@ -245,11 +245,19 @@ public class StudentController {
 
     @GetMapping("/progress")
     public String viewProgress(Model model) {
-        setStudentName(model); // Add studentName to the model
         String studentId = getAuthenticatedStudentId();
-        model.addAttribute("progress", progressService.getStudentProgress(studentId));
-        return "progress";  // Points to student-progress.html
+        List<Progress> progressList = progressService.getStudentProgress(studentId);
+
+        if (!progressList.isEmpty()) {
+            Progress latestProgress = progressList.get(progressList.size() - 1); // Latest entry
+            model.addAttribute("correctAnswers", latestProgress.getCorrectAnswers());
+            model.addAttribute("incorrectAnswers", latestProgress.getIncorrectAnswers());
+            model.addAttribute("studyTime", latestProgress.getStudyTime());
+        }
+
+        return "progress"; // Display progress.html
     }
+
 
     @GetMapping("/quiz/{id}")
     public String takeQuiz(@PathVariable String id, Model model) {
