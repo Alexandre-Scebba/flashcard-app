@@ -31,7 +31,7 @@ public class DynamoDBConfig {
     public AmazonDynamoDB amazonDynamoDB() {
         // Use the default credential provider chain which checks environment variables, etc.
         return AmazonDynamoDBClientBuilder.standard()
-                .withRegion("us-east-1")  // Adjust the region as necessary
+                .withRegion("us-east-1")
                 .build();
     }
 
