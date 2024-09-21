@@ -19,6 +19,22 @@ Each member writes down answers to 3 questions in the following format:
    -
 
 --- --- --- ---   --- --- --- ---   --- --- --- ---
+--------------------Scrum meeting #...[8]
+<< Sept-[21]-2024 >>  --Alexandre--
+1. What I have done / not done since last Scrum?
+   -fixed registration issue. DynamoDBignore was missing on non-table data in user model
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -finish flash messages, file uploads for flashcards, spring security updates
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+<< Sept-[DD]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+   -
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -
+3. Where do I need assistance? What do I need to figure out?
+   -
 
 --------------------Scrum meeting #...[7]
 << Sept-[20]-2024 >>  --Alexandre--
