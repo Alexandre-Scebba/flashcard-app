@@ -1,5 +1,6 @@
 package com.example.flashcardtool.controller;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.flashcardtool.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -35,9 +36,11 @@ public class UserController {
     @PostMapping("/register")
     public String registerUser(@RequestParam String username, @RequestParam String password,
                                @RequestParam String email, @RequestParam String role,
-                               @RequestParam String firstName, @RequestParam String lastName) {
+                               @RequestParam String firstName, @RequestParam String lastName,
+                               RedirectAttributes redirectAttributes) {
         System.out.println("Registering user: " + username);
         userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
+        redirectAttributes.addFlashAttribute("message", "User registered successfully");
         System.out.println("User registered successfully.");
         return "redirect:/login";
     }
