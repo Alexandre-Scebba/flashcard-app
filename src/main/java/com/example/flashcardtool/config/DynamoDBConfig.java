@@ -1,10 +1,13 @@
 package com.example.flashcardtool.config;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -21,6 +24,12 @@ import java.util.List;
 @Configuration
 public class DynamoDBConfig {
 
+    @Value("${aws.accessKeyId}")
+    private String accessKeyId;
+
+    @Value("${aws.secretKey}")
+    private String secretKey;
+
     @Bean
     @Primary
     @Qualifier("dynamoDBMapper")
@@ -30,9 +39,12 @@ public class DynamoDBConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        // Use the default credential provider chain which checks environment variables, etc.
+        // Create credentials using the values from application.properties
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretKey);
+
         return AmazonDynamoDBClientBuilder.standard()
-                .withRegion("us-east-1")  // Adjust the region as necessary
+                .withRegion("us-east-1")
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
     }
 
