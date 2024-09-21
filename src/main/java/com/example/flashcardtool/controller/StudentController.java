@@ -1,9 +1,6 @@
 package com.example.flashcardtool.controller;
 
-import com.example.flashcardtool.model.Deck;
-import com.example.flashcardtool.model.Flashcard;
-import com.example.flashcardtool.model.StudentLibrary;
-import com.example.flashcardtool.model.User;
+import com.example.flashcardtool.model.*;
 import com.example.flashcardtool.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -164,6 +161,28 @@ public class StudentController {
         Deck deck = deckService.getDeckById(deckId).orElseThrow(() -> new IllegalArgumentException("Deck not found"));
         List<Flashcard> flashcards = flashcardService.getFlashcardsByDeckId(deckId);
 
+        // Ensure that the currentCard index is within the flashcards list size
+        if (currentCard >= flashcards.size()) {
+            // End of flashcards, display results
+            model.addAttribute("studyFinished", true);
+            model.addAttribute("correctAnswers", correctAnswers);
+            model.addAttribute("incorrectAnswers", incorrectAnswers);
+
+            // Progress verisini kaydedelim
+            Progress progress = new Progress();
+            progress.setStudentId(getAuthenticatedStudentId()); // Oturum açan öğrencinin ID'si
+            progress.setDeckId(deckId);
+            progress.setCorrectAnswers(correctAnswers);
+            progress.setIncorrectAnswers(incorrectAnswers);
+            progress.setStudyTime(calculateStudyTime()); // Çalışma süresi hesaplama
+            progress.setPercentage(calculatePercentage(correctAnswers, incorrectAnswers)); // Yüzdeyi hesapla
+
+            // Progress kaydedelim
+            progressService.saveProgress(progress);
+
+            return "study-results"; // Sonuçları gösterecek bir sayfa oluştur
+        }
+
         // Current flashcard
         Flashcard currentFlashcard = flashcards.get(currentCard);
 
@@ -175,13 +194,30 @@ public class StudentController {
         }
 
         // Move to the next card or finish if it's the last card
-        if (currentCard + 1 < flashcards.size()) {
-            currentCard++;
+        currentCard++;
+
+        if (currentCard < flashcards.size()) {
             model.addAttribute("currentCard", currentCard);
             model.addAttribute("flashcardOptions", flashcardService.getShuffledOptions(flashcards.get(currentCard)));
         } else {
-            // End of study session logic
+            // Study session tamamlandığında
             model.addAttribute("studyFinished", true);
+            model.addAttribute("correctAnswers", correctAnswers);
+            model.addAttribute("incorrectAnswers", incorrectAnswers);
+
+            // Progress verisini kaydedelim
+            Progress progress = new Progress();
+            progress.setStudentId(getAuthenticatedStudentId()); // Oturum açan öğrencinin ID'si
+            progress.setDeckId(deckId);
+            progress.setCorrectAnswers(correctAnswers);
+            progress.setIncorrectAnswers(incorrectAnswers);
+            progress.setStudyTime(calculateStudyTime()); // Çalışma süresi hesaplama
+            progress.setPercentage(calculatePercentage(correctAnswers, incorrectAnswers)); // Yüzdeyi hesapla
+
+            // Progress kaydedelim
+            progressService.saveProgress(progress);
+
+            return "study-complete"; // Sonuçları gösterecek bir sayfa oluştur
         }
 
         model.addAttribute("deck", deck);
@@ -190,6 +226,21 @@ public class StudentController {
         model.addAttribute("incorrectAnswers", incorrectAnswers);
 
         return "study-mode";
+    }
+
+    private long calculateStudyTime() {
+        long startTime = System.currentTimeMillis();
+        // Study mode bittiğinde çalışma süresi hesaplanmalı
+        long endTime = System.currentTimeMillis();
+        return endTime - startTime; // Çalışma süresi milisaniye olarak döndürülür
+    }
+
+    private double calculatePercentage(int correctAnswers, int incorrectAnswers) {
+        int totalAnswers = correctAnswers + incorrectAnswers;
+        if (totalAnswers == 0) {
+            return 0.0;
+        }
+        return ((double) correctAnswers / totalAnswers) * 100;
     }
 
     @GetMapping("/progress")
