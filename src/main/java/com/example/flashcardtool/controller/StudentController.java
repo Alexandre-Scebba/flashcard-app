@@ -1,9 +1,6 @@
 package com.example.flashcardtool.controller;
 
-import com.example.flashcardtool.model.Deck;
-import com.example.flashcardtool.model.Flashcard;
-import com.example.flashcardtool.model.StudentLibrary;
-import com.example.flashcardtool.model.User;
+import com.example.flashcardtool.model.*;
 import com.example.flashcardtool.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -56,12 +53,67 @@ public class StudentController {
         return authentication.getName(); // Oturum açmış kullanıcının kullanıcı adını döndürür
     }
 
-
     @GetMapping("/student-dashboard")
     public String showStudentDashboard(Model model) {
         setStudentName(model); // Add studentName to the model
-        return "student-dashboard";  // Return the correct Thymeleaf view
+
+        // Fetch the latest progress data for the student
+        String studentId = getAuthenticatedStudentId();
+        List<Progress> progressList = progressService.getStudyProgressByStudentId(studentId);  // Correct method call
+
+        if (!progressList.isEmpty()) {
+            Progress latestProgress = progressList.get(progressList.size() - 1); // Latest entry
+            model.addAttribute("studyTime", latestProgress.getStudyTime()); // In milliseconds
+            model.addAttribute("correctAnswers", latestProgress.getCorrectAnswers());
+            model.addAttribute("incorrectAnswers", latestProgress.getIncorrectAnswers());
+        } else {
+            // Default values if no progress found
+            model.addAttribute("studyTime", 0);
+            model.addAttribute("correctAnswers", 0);
+            model.addAttribute("incorrectAnswers", 0);
+        }
+
+        // Fetch the last 3 study sessions
+        List<Progress> recentProgressList = progressList.stream()
+                .sorted((p1, p2) -> p2.getId().compareTo(p1.getId())) // Sort by latest
+                .limit(3) // Limit to 3
+                .collect(Collectors.toList());
+
+        // Add recent progress with Deck names
+        List<ProgressDTO> recentProgressDTOs = recentProgressList.stream().map(progress -> {
+            Deck deck = deckService.getDeckById(progress.getDeckId()).orElse(null);
+            return new ProgressDTO(deck != null ? deck.getName() : "Unknown Deck", progress.getStudyTime());
+        }).collect(Collectors.toList());
+
+        model.addAttribute("recentProgress", recentProgressDTOs);
+
+        // Fetch the recent 3 decks from the student's library
+        Optional<User> user = userService.findByUsername(getAuthenticatedUsername());
+        if (user.isPresent()) {
+            String studentIdFromUser = user.get().getId();
+
+            List<StudentLibrary> studentLibrary = studentLibraryService.getLibraryByStudent(studentIdFromUser);
+
+            // Convert to Deck objects
+            List<Deck> libraryDecks = studentLibrary.stream()
+                    .map(library -> deckService.getDeckById(library.getDeckId()).orElse(new Deck()))
+                    .collect(Collectors.toList());
+
+            // Get the last 3 decks added to the library
+            List<Deck> recentDecks = libraryDecks.stream()
+                    .sorted((d1, d2) -> d2.getId().compareTo(d1.getId())) // Sort by latest added
+                    .limit(3) // Limit to 3 decks
+                    .collect(Collectors.toList());
+
+            model.addAttribute("recentDecks", recentDecks);
+        } else {
+            // No decks if user is not found
+            model.addAttribute("recentDecks", Collections.emptyList());
+        }
+
+        return "student-dashboard"; // Return the correct Thymeleaf view
     }
+
 
     @GetMapping("/decks")
     public String viewDecks(Model model) {
@@ -112,8 +164,16 @@ public class StudentController {
 
     @PostMapping("/library/add")
     public String addLibrary(@RequestParam("deckId") String deckId) {
-        String studentId = getAuthenticatedStudentId(); // Get the logged-in student ID
-        studentLibraryService.addLibrary(studentId, deckId);
+        // Username yerine studentId'yi almak için doğru kullanıcı ID'sini çekiyoruz.
+        String username = getAuthenticatedUsername(); // Kullanıcı adı alınıyor
+        Optional<User> user = userService.findByUsername(username); // Kullanıcıyı buluyoruz
+
+        if (user.isPresent()) {
+            String studentId = user.get().getId(); // Kullanıcının gerçek student ID'sini alıyoruz
+            studentLibraryService.addLibrary(studentId, deckId); // Deck'i library'ye ekliyoruz
+        } else {
+            System.out.println("User not found for username: " + username);
+        }
         return "redirect:/student/library"; // Redirect to the library page
     }
 
@@ -130,19 +190,167 @@ public class StudentController {
         Deck deck = deckService.getDeckById(deckId).orElseThrow(() -> new IllegalArgumentException("Deck not found"));
         List<Flashcard> flashcards = flashcardService.getFlashcardsByDeckId(deckId);
 
+        // Initialize the study session by starting with the first flashcard
         model.addAttribute("deck", deck);
         model.addAttribute("flashcards", flashcards);
         model.addAttribute("currentCard", 0); // Start with the first card
+        model.addAttribute("correctAnswers", 0);
+        model.addAttribute("incorrectAnswers", 0);
         model.addAttribute("showFront", true); // Show the front of the card first
+
+        // Shuffle options for the first card and pass them to the model
+        model.addAttribute("flashcardOptions", flashcardService.getShuffledOptions(flashcards.get(0)));
+
         return "study-mode";  // Redirect to study-mode.html
+    }
+
+    @PostMapping("/study/{id}")
+    public String submitAnswer(
+            @PathVariable("id") String deckId,
+            @RequestParam("selectedOption") String selectedOption,
+            @RequestParam("currentCard") int currentCard,
+            @RequestParam("correctAnswers") int correctAnswers,
+            @RequestParam("incorrectAnswers") int incorrectAnswers,
+            Model model) {
+
+        Deck deck = deckService.getDeckById(deckId).orElseThrow(() -> new IllegalArgumentException("Deck not found"));
+        List<Flashcard> flashcards = flashcardService.getFlashcardsByDeckId(deckId);
+
+        // Ensure that the currentCard index is within the flashcards list size
+        if (currentCard >= flashcards.size()) {
+            // End of flashcards, display results
+            model.addAttribute("studyFinished", true);
+            model.addAttribute("correctAnswers", correctAnswers);
+            model.addAttribute("incorrectAnswers", incorrectAnswers);
+
+            // Progress verisini kaydedelim
+            Progress progress = new Progress();
+            progress.setStudentId(getAuthenticatedStudentId()); // Oturum açan öğrencinin ID'si
+            progress.setDeckId(deckId);
+            progress.setCorrectAnswers(correctAnswers);
+            progress.setIncorrectAnswers(incorrectAnswers);
+            progress.setStudyTime(calculateStudyTime()); // Çalışma süresi hesaplama
+            progress.setPercentage(calculatePercentage(correctAnswers, incorrectAnswers)); // Yüzdeyi hesapla
+
+            // Progress kaydedelim
+            progressService.saveProgress(progress);
+
+            return "study-results"; // Sonuçları gösterecek bir sayfa oluştur
+        }
+
+        // Current flashcard
+        Flashcard currentFlashcard = flashcards.get(currentCard);
+
+        // Check if selected answer matches option1 (correct answer)
+        if (selectedOption.equals(currentFlashcard.getOption1())) {
+            correctAnswers++;
+        } else {
+            incorrectAnswers++;
+        }
+
+        // Move to the next card or finish if it's the last card
+        currentCard++;
+
+        if (currentCard < flashcards.size()) {
+            model.addAttribute("currentCard", currentCard);
+            model.addAttribute("flashcardOptions", flashcardService.getShuffledOptions(flashcards.get(currentCard)));
+        } else {
+            // Study session tamamlandığında
+            model.addAttribute("studyFinished", true);
+            model.addAttribute("correctAnswers", correctAnswers);
+            model.addAttribute("incorrectAnswers", incorrectAnswers);
+
+            // Progress verisini kaydedelim
+            Progress progress = new Progress();
+            progress.setStudentId(getAuthenticatedStudentId()); // Oturum açan öğrencinin ID'si
+            progress.setDeckId(deckId);
+            progress.setCorrectAnswers(correctAnswers);
+            progress.setIncorrectAnswers(incorrectAnswers);
+            progress.setStudyTime(calculateStudyTime()); // Çalışma süresi hesaplama
+            progress.setPercentage(calculatePercentage(correctAnswers, incorrectAnswers)); // Yüzdeyi hesapla
+
+            // Progress kaydedelim
+            progressService.saveProgress(progress);
+
+            return "study-complete"; // Sonuçları gösterecek bir sayfa oluştur
+        }
+
+        model.addAttribute("deck", deck);
+        model.addAttribute("flashcards", flashcards);
+        model.addAttribute("correctAnswers", correctAnswers);
+        model.addAttribute("incorrectAnswers", incorrectAnswers);
+
+        return "study-mode";
+    }
+
+    private long calculateStudyTime() {
+        long startTime = System.currentTimeMillis();
+        // Study mode bittiğinde çalışma süresi hesaplanmalı
+        long endTime = System.currentTimeMillis();
+        return endTime - startTime; // Çalışma süresi milisaniye olarak döndürülür
+    }
+
+    private double calculatePercentage(int correctAnswers, int incorrectAnswers) {
+        int totalAnswers = correctAnswers + incorrectAnswers;
+        if (totalAnswers == 0) {
+            return 0.0;
+        }
+        return ((double) correctAnswers / totalAnswers) * 100;
     }
 
     @GetMapping("/progress")
     public String viewProgress(Model model) {
-        setStudentName(model); // Add studentName to the model
+        setStudentName(model);
         String studentId = getAuthenticatedStudentId();
-        model.addAttribute("progress", progressService.getStudentProgress(studentId));
-        return "progress";  // Points to student-progress.html
+
+        // Fetch all progress for studies
+        List<Progress> studyProgress = progressService.getStudyProgressByStudentId(studentId);
+
+        // Ensure there are study sessions before calculating the average
+        if (!studyProgress.isEmpty()) {
+            int totalCorrectStudy = studyProgress.stream().mapToInt(Progress::getCorrectAnswers).sum();
+            int totalIncorrectStudy = studyProgress.stream().mapToInt(Progress::getIncorrectAnswers).sum();
+            int totalStudySessions = studyProgress.size();
+
+            model.addAttribute("averageCorrectStudy", totalCorrectStudy / totalStudySessions);
+            model.addAttribute("averageIncorrectStudy", totalIncorrectStudy / totalStudySessions);
+
+            // Fetch latest study progress
+            Progress latestStudyProgress = studyProgress.get(studyProgress.size() - 1);
+            model.addAttribute("latestCorrectStudy", latestStudyProgress.getCorrectAnswers());
+            model.addAttribute("latestIncorrectStudy", latestStudyProgress.getIncorrectAnswers());
+        } else {
+            // No study sessions, set default values
+            model.addAttribute("averageCorrectStudy", 0);
+            model.addAttribute("averageIncorrectStudy", 0);
+            model.addAttribute("latestCorrectStudy", 0);
+            model.addAttribute("latestIncorrectStudy", 0);
+        }
+
+        // Fetch quiz progress and apply the same logic
+        List<Progress> quizProgress = progressService.getQuizProgressByStudentId(studentId);
+
+        if (!quizProgress.isEmpty()) {
+            int totalCorrectQuiz = quizProgress.stream().mapToInt(Progress::getCorrectAnswers).sum();
+            int totalIncorrectQuiz = quizProgress.stream().mapToInt(Progress::getIncorrectAnswers).sum();
+            int totalQuizSessions = quizProgress.size();
+
+            model.addAttribute("averageCorrectQuiz", totalCorrectQuiz / totalQuizSessions);
+            model.addAttribute("averageIncorrectQuiz", totalIncorrectQuiz / totalQuizSessions);
+
+            // Fetch latest quiz progress
+            Progress latestQuizProgress = quizProgress.get(quizProgress.size() - 1);
+            model.addAttribute("latestCorrectQuiz", latestQuizProgress.getCorrectAnswers());
+            model.addAttribute("latestIncorrectQuiz", latestQuizProgress.getIncorrectAnswers());
+        } else {
+            // No quiz sessions, set default values
+            model.addAttribute("averageCorrectQuiz", 0);
+            model.addAttribute("averageIncorrectQuiz", 0);
+            model.addAttribute("latestCorrectQuiz", 0);
+            model.addAttribute("latestIncorrectQuiz", 0);
+        }
+
+        return "progress";
     }
 
     @GetMapping("/quiz/{id}")

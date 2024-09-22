@@ -1,10 +1,12 @@
 package com.example.flashcardtool.config;
 
-import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -14,11 +16,18 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.model.StudentLibrary;
+import com.example.flashcardtool.model.Progress;
 
 import java.util.List;
 
 @Configuration
 public class DynamoDBConfig {
+
+    @Value("${aws.accessKeyId}")
+    private String accessKeyId;
+
+    @Value("${aws.secretKey}")
+    private String secretKey;
 
     @Bean
     @Primary
@@ -29,9 +38,12 @@ public class DynamoDBConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        // Use the default credential provider chain which checks environment variables, etc.
+        // Create credentials using the values from application.properties
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretKey);
+
         return AmazonDynamoDBClientBuilder.standard()
-                .withRegion("us-east-1")  // Adjust the region as necessary
+                .withRegion("us-east-1")
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
     }
 
@@ -60,6 +72,17 @@ public class DynamoDBConfig {
             System.out.println("Decks table created.");
         } else {
             System.out.println("Decks table already exists.");
+        }
+
+        // Check if Progress Table exists
+        if (!tableExists("Progress", dynamoDB)) {
+            CreateTableRequest progressTableRequest = mapper.generateCreateTableRequest(Progress.class)
+                    .withProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
+
+            dynamoDB.createTable(progressTableRequest);
+            System.out.println("Progress table created.");
+        } else {
+            System.out.println("Progress table already exists.");
         }
     }
 

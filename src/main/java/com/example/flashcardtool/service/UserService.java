@@ -23,8 +23,14 @@ public class UserService {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
+    public static class UserAlreadyExistError extends RuntimeException {}
     // Register a new user
     public void registerUser(String username, String password, String email, List<String> roles, String firstName, String lastName) {
+
+        if (existsByUsername(username)) {
+            throw new UserAlreadyExistError();
+        }
+
         User user = new User();
         String userId = UUID.randomUUID().toString();
         user.setId(userId);
@@ -35,6 +41,10 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         userRepository.save(user);
+    }
+
+    public boolean existsByUsername(String username) {
+        return findByUsername(username).isPresent();
     }
 
     // Send password reset link
@@ -113,14 +123,45 @@ public class UserService {
     }
 
     public List<User> findAllStudents() {
+        Map<String, String> ean = new HashMap<>();
+        ean.put("#roles", "roles"); // Alias for the reserved keyword 'roles', cant use roles since its ddb keyword
+
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":role", new AttributeValue().withS("ROLE_STUDENT"));
 
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                .withFilterExpression("contains(roles, :role)")
+                .withFilterExpression("contains(#roles, :role)")
+                .withExpressionAttributeNames(ean)
                 .withExpressionAttributeValues(eav);
 
         return dynamoDBMapper.scan(User.class, scanExpression);
+    }
+
+
+    public Optional<User> findById(String studentId) {
+        return userRepository.getUserById(studentId);
+    }
+
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    // Reset user password (Admin functionality)
+    public void resetPassword(String id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            String defaultPassword = "Password@123"; //TODO make this actually random
+            user.setPassword(passwordEncoder.encode(defaultPassword));
+            String resetToken = UUID.randomUUID().toString();
+            user.setPasswordResetToken(resetToken);
+            userRepository.save(user);
+
+            // TODO -> SendPasswordResetEmail(user);
+        } else {
+            throw new RuntimeException("User not found");
+        }
     }
 
 

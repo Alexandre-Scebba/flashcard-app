@@ -121,6 +121,7 @@ public class User implements UserDetails {
 
     // UserDetails interface methods
     @Override
+    @DynamoDBIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
                 .map(role -> (GrantedAuthority) () -> role)
@@ -128,21 +129,25 @@ public class User implements UserDetails {
     }
 
     @Override
+    @DynamoDBIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @DynamoDBIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @DynamoDBIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @DynamoDBIgnore
     public boolean isEnabled() {
         return true;
     }

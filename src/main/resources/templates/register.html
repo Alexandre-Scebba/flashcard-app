@@ -1,42 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head><div class="container">
-    <h2 class="mt-5">Register</h2>
-    <form th:action="@{/register}" method="post" class="mt-3">
-        <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input type="text" class="form-control" id="firstName" name="firstName" required>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-top: 50px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-group label {
+            font-weight: 600;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+        .alert {
+            border-radius: 10px;
+        }
+        .footer-link {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <h2 class="text-center mb-4">Register</h2>
+            <!-- Flash messages -->
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <div th:if="${successMessage}" class="alert alert-success" role="alert">
+                <p th:text="${successMessage}"></p>
+            </div>
+
+            <form th:action="@{/register}" method="post">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter your first name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter your last name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        </div>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordConfirmation">Re-Type Password</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        </div>
+                        <input type="password" class="form-control" id="passwordConfirmation" name="passwordConfirmation" placeholder="Re-type your password" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        </div>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select class="form-control" id="role" name="role">
+                        <option value="ROLE_ADMIN">Admin</option>
+                        <option value="ROLE_STUDENT">Student</option>
+                        <option value="ROLE_TEACHER">Teacher</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Register</button>
+                <a th:href="@{/login}" class="footer-link">Already have an account? <strong>Login here</strong></a>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input type="text" class="form-control" id="lastName" name="lastName" required>
-        </div>
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="role">Role</label>
-            <select class="form-control" id="role" name="role">
-                <option value="ROLE_ADMIN">Admin</option>
-                <option value="ROLE_STUDENT">Student</option>
-                <option value="ROLE_TEACHER">Teacher</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-        <a th:href="@{/login}" class="text-decoration-none">Already have an account?</a>
-    </form>
-</div><script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
