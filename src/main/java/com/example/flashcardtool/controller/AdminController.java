@@ -52,8 +52,10 @@ public class AdminController {
     }
 
     @PostMapping("/users/edit/{id}")
-    public String updateUser(@PathVariable String id, @ModelAttribute User user) {
-        user.setId(id);  // Ensure the user ID is set
+    public String updateUser(@PathVariable String id, @RequestParam String role) {
+       User user = userService.findById(id).orElseThrow(() -> new RuntimeException("User note found"));  // Ensure the user ID is set
+        user.getRoles().clear(); // clear existing role
+        user.getRoles().add(role); // add new only after clearing so you can still log-in
         userService.updateUser(user);
         return "redirect:/admin/users";  // Redirect to user management after update
     }

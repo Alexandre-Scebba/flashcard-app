@@ -93,9 +93,9 @@
                         <div th:each="role : ${allRoles}">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input"
-                                       type="checkbox"
+                                       type="radio"
                                        th:id="'role-' + ${role}"
-                                       th:name="roles"
+                                       th:name="role"
                                        th:value="${role}"
                                        th:checked="${user.roles.contains(role)}">
                                 <label class="form-check-label"
