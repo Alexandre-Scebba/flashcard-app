@@ -43,6 +43,7 @@
             <thead class="table-dark">
             <tr>
                 <th>Username</th>
+                <th>Roles</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -50,6 +51,7 @@
             <!-- Iterate over the users list -->
             <tr th:each="user : ${users}">
                 <td th:text="${user.username}">Username</td>
+                <td th:text="${user.roles}">Roles</td>
                 <td>
                     <!-- Edit Button -->
                     <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn btn-primary btn-sm me-2">

@@ -152,7 +152,7 @@ public class UserService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            String defaultPassword = "Password@123";
+            String defaultPassword = "Password@123"; //TODO make this actually random
             user.setPassword(passwordEncoder.encode(defaultPassword));
             String resetToken = UUID.randomUUID().toString();
             user.setPasswordResetToken(resetToken);
