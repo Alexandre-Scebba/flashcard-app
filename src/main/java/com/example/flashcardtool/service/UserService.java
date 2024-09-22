@@ -23,8 +23,11 @@ public class UserService {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
-    // Register a new user
-    public void registerUser(String username, String password, String email, List<String> roles, String firstName, String lastName) {
+    public void registerUser(String username, String password, String email,
+                             List<String> roles, String firstName, String lastName) throws UserAlreadyExistError {
+        if (userRepository.getUserByUsername(username).isPresent()) { // Updated method name
+            throw new UserAlreadyExistError("User already exists with username: " + username);
+        }
         User user = new User();
         String userId = UUID.randomUUID().toString();
         user.setId(userId);
@@ -35,6 +38,12 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         userRepository.save(user);
+    }
+
+    public static class UserAlreadyExistError extends Exception {
+        public UserAlreadyExistError(String message) {
+            super(message);
+        }
     }
 
     // Send password reset link
@@ -128,5 +137,26 @@ public class UserService {
     }
 
 
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    // Reset user password (Admin functionality) (kontrol et)
+    public void resetPassword(String id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            String defaultPassword = "Password@123"; //TODO make this actually random
+            user.setPassword(passwordEncoder.encode(defaultPassword));
+            String resetToken = UUID.randomUUID().toString();
+            user.setPasswordResetToken(resetToken);
+            userRepository.save(user);
+
+            // TODO -> SendPasswordResetEmail(user);
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
 
 }
