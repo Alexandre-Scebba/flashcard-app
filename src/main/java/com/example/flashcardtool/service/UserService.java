@@ -142,6 +142,27 @@ public class UserService {
         return userRepository.getUserById(studentId);
     }
 
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    // Reset user password (Admin functionality)
+    public void resetPassword(String id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            String defaultPassword = "Password@123";
+            user.setPassword(passwordEncoder.encode(defaultPassword));
+            String resetToken = UUID.randomUUID().toString();
+            user.setPasswordResetToken(resetToken);
+            userRepository.save(user);
+
+            // TODO -> SendPasswordResetEmail(user);
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
 
 
 }
