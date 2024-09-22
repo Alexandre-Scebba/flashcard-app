@@ -19,6 +19,26 @@ Each member writes down answers to 3 questions in the following format:
    -
 
 --- --- --- ---   --- --- --- ---   --- --- --- ---
+
+--------------------Scrum meeting #...[ENTER NUMBER]
+<< Sept-[DD]-2024 >>  --Alexandre--
+1. What I have done / not done since last Scrum?
+
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+<< Sept-[22]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+   - I finished student, quiz mode
+2. What I plan to do from this scrum to next? (next 24 hours)
+   - I'll work on study mode and student dashboard
+3. Where do I need assistance? What do I need to figure out?
+   - show results on graph!
+
+--- --- --- ---   --- --- --- ---   --- --- --- ---
+
 --------------------Scrum meeting #...[8]
 << Sept-[21]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
