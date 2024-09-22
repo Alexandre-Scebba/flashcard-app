@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .loginPage("/login")  // Özel login sayfası
                         .permitAll()
                         .defaultSuccessUrl("/determineRedirect", true) // Giriş sonrası yönlendirme
+                        .failureUrl("/login?error=true") // auth fail redirect for flash-message logic
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
