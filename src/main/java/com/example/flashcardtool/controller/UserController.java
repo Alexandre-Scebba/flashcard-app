@@ -1,20 +1,19 @@
 package com.example.flashcardtool.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.flashcardtool.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -26,7 +25,10 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(@RequestParam(value = "error", required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("errorMessage", "Invalid username or password");
+        }
         return "login";
     }
 
@@ -59,13 +61,11 @@ public class UserController {
             redirectAttributes.addFlashAttribute("successMessage", "Successfully Registered");  // Success message
             log.info("successfully registered");
             return "redirect:/login";
-        }
-        catch( UserService.UserAlreadyExistError error) {
+        } catch (UserService.UserAlreadyExistError error) {
             log.error(error.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "User Already Exists, try a new name");  // Error message
             return "redirect:/register";
-        }
-        catch(Exception error) {
+        } catch (Exception error) {
             log.error(error.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error");
             return "redirect:/register";
