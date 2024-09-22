@@ -22,7 +22,7 @@ public class AdminController {
     // Admin Dashboard
     @GetMapping("/admin-dashboard")
     public String showAdminDashboard() {
-        return "admin/admin-dashboard";  // Points to admin/admin-dashboard.html
+        return "admin-dashboard";  // Points to admin/admin-dashboard.html
     }
 
     // Manage Users
