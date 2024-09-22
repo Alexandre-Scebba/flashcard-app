@@ -59,7 +59,7 @@ public class StudentController {
 
         // Fetch the latest progress data for the student
         String studentId = getAuthenticatedStudentId();
-        List<Progress> progressList = progressService.getStudentProgress(studentId);
+        List<Progress> progressList = progressService.getStudyProgressByStudentId(studentId);  // Correct method call
 
         if (!progressList.isEmpty()) {
             Progress latestProgress = progressList.get(progressList.size() - 1); // Latest entry
@@ -113,6 +113,7 @@ public class StudentController {
 
         return "student-dashboard"; // Return the correct Thymeleaf view
     }
+
 
     @GetMapping("/decks")
     public String viewDecks(Model model) {
@@ -299,19 +300,58 @@ public class StudentController {
 
     @GetMapping("/progress")
     public String viewProgress(Model model) {
+        setStudentName(model);
         String studentId = getAuthenticatedStudentId();
-        List<Progress> progressList = progressService.getStudentProgress(studentId);
 
-        if (!progressList.isEmpty()) {
-            Progress latestProgress = progressList.get(progressList.size() - 1); // Latest entry
-            model.addAttribute("correctAnswers", latestProgress.getCorrectAnswers());
-            model.addAttribute("incorrectAnswers", latestProgress.getIncorrectAnswers());
-            model.addAttribute("studyTime", latestProgress.getStudyTime());
+        // Fetch all progress for studies
+        List<Progress> studyProgress = progressService.getStudyProgressByStudentId(studentId);
+
+        // Ensure there are study sessions before calculating the average
+        if (!studyProgress.isEmpty()) {
+            int totalCorrectStudy = studyProgress.stream().mapToInt(Progress::getCorrectAnswers).sum();
+            int totalIncorrectStudy = studyProgress.stream().mapToInt(Progress::getIncorrectAnswers).sum();
+            int totalStudySessions = studyProgress.size();
+
+            model.addAttribute("averageCorrectStudy", totalCorrectStudy / totalStudySessions);
+            model.addAttribute("averageIncorrectStudy", totalIncorrectStudy / totalStudySessions);
+
+            // Fetch latest study progress
+            Progress latestStudyProgress = studyProgress.get(studyProgress.size() - 1);
+            model.addAttribute("latestCorrectStudy", latestStudyProgress.getCorrectAnswers());
+            model.addAttribute("latestIncorrectStudy", latestStudyProgress.getIncorrectAnswers());
+        } else {
+            // No study sessions, set default values
+            model.addAttribute("averageCorrectStudy", 0);
+            model.addAttribute("averageIncorrectStudy", 0);
+            model.addAttribute("latestCorrectStudy", 0);
+            model.addAttribute("latestIncorrectStudy", 0);
         }
 
-        return "progress"; // Display progress.html
-    }
+        // Fetch quiz progress and apply the same logic
+        List<Progress> quizProgress = progressService.getQuizProgressByStudentId(studentId);
 
+        if (!quizProgress.isEmpty()) {
+            int totalCorrectQuiz = quizProgress.stream().mapToInt(Progress::getCorrectAnswers).sum();
+            int totalIncorrectQuiz = quizProgress.stream().mapToInt(Progress::getIncorrectAnswers).sum();
+            int totalQuizSessions = quizProgress.size();
+
+            model.addAttribute("averageCorrectQuiz", totalCorrectQuiz / totalQuizSessions);
+            model.addAttribute("averageIncorrectQuiz", totalIncorrectQuiz / totalQuizSessions);
+
+            // Fetch latest quiz progress
+            Progress latestQuizProgress = quizProgress.get(quizProgress.size() - 1);
+            model.addAttribute("latestCorrectQuiz", latestQuizProgress.getCorrectAnswers());
+            model.addAttribute("latestIncorrectQuiz", latestQuizProgress.getIncorrectAnswers());
+        } else {
+            // No quiz sessions, set default values
+            model.addAttribute("averageCorrectQuiz", 0);
+            model.addAttribute("averageIncorrectQuiz", 0);
+            model.addAttribute("latestCorrectQuiz", 0);
+            model.addAttribute("latestIncorrectQuiz", 0);
+        }
+
+        return "progress";
+    }
 
     @GetMapping("/quiz/{id}")
     public String takeQuiz(@PathVariable String id, Model model) {
