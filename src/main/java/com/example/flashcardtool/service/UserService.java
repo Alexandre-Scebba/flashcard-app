@@ -123,15 +123,20 @@ public class UserService {
     }
 
     public List<User> findAllStudents() {
+        Map<String, String> ean = new HashMap<>();
+        ean.put("#roles", "roles"); // Alias for the reserved keyword 'roles', cant use roles since its ddb keyword
+
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":role", new AttributeValue().withS("ROLE_STUDENT"));
 
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                .withFilterExpression("contains(roles, :role)")
+                .withFilterExpression("contains(#roles, :role)")
+                .withExpressionAttributeNames(ean)
                 .withExpressionAttributeValues(eav);
 
         return dynamoDBMapper.scan(User.class, scanExpression);
     }
+
 
     public Optional<User> findById(String studentId) {
         return userRepository.getUserById(studentId);
