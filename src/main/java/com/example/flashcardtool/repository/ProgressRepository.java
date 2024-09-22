@@ -23,9 +23,8 @@ public class ProgressRepository {
         return dynamoDBMapper.scan(Progress.class, new DynamoDBScanExpression());
     }
 
-    // Find progress by student ID (returns a list)
+    // Find progress by student ID (returns a list of both study and quiz)
     public List<Progress> findByStudentId(String studentId) {
-        // Prepare the scan expression to find all entries with the matching studentId
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":studentId", new AttributeValue().withS(studentId));
 
@@ -36,7 +35,7 @@ public class ProgressRepository {
         return dynamoDBMapper.scan(Progress.class, scanExpression);
     }
 
-    // Find progress by student ID and type (study or quiz) (deneme yap )
+    // Find progress by student ID and type (study or quiz)
     public List<Progress> findByStudentIdAndType(String studentId, String type) {
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":studentId", new AttributeValue().withS(studentId));
@@ -51,9 +50,9 @@ public class ProgressRepository {
         return dynamoDBMapper.scan(Progress.class, scanExpression);
     }
 
-    // Find progress by studentId and deckId (to prevent multiple records for the same deck)
+
+    // Find progress by studentId and deckId
     public Progress findByStudentIdAndDeckId(String studentId, String deckId) {
-        // Prepare the scan expression for both studentId and deckId
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":studentId", new AttributeValue().withS(studentId));
         eav.put(":deckId", new AttributeValue().withS(deckId));
@@ -63,8 +62,6 @@ public class ProgressRepository {
                 .withExpressionAttributeValues(eav);
 
         List<Progress> results = dynamoDBMapper.scan(Progress.class, scanExpression);
-
-        // Return the first result if any, or null if no match found
         return results.isEmpty() ? null : results.get(0);
     }
 

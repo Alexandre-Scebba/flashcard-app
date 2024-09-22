@@ -23,11 +23,14 @@ public class UserService {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
-    public void registerUser(String username, String password, String email,
-                             List<String> roles, String firstName, String lastName) throws UserAlreadyExistError {
-        if (userRepository.getUserByUsername(username).isPresent()) { // Updated method name
-            throw new UserAlreadyExistError("User already exists with username: " + username);
+    public static class UserAlreadyExistError extends RuntimeException {}
+    // Register a new user
+    public void registerUser(String username, String password, String email, List<String> roles, String firstName, String lastName) {
+
+        if (existsByUsername(username)) {
+            throw new UserAlreadyExistError();
         }
+
         User user = new User();
         String userId = UUID.randomUUID().toString();
         user.setId(userId);
@@ -40,10 +43,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public static class UserAlreadyExistError extends Exception {
-        public UserAlreadyExistError(String message) {
-            super(message);
-        }
+    public boolean existsByUsername(String username) {
+        return findByUsername(username).isPresent();
     }
 
     // Send password reset link
@@ -122,26 +123,30 @@ public class UserService {
     }
 
     public List<User> findAllStudents() {
+        Map<String, String> ean = new HashMap<>();
+        ean.put("#roles", "roles"); // Alias for the reserved keyword 'roles', cant use roles since its ddb keyword
+
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":role", new AttributeValue().withS("ROLE_STUDENT"));
 
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                .withFilterExpression("contains(roles, :role)")
+                .withFilterExpression("contains(#roles, :role)")
+                .withExpressionAttributeNames(ean)
                 .withExpressionAttributeValues(eav);
 
         return dynamoDBMapper.scan(User.class, scanExpression);
     }
 
+
     public Optional<User> findById(String studentId) {
         return userRepository.getUserById(studentId);
     }
-
 
     public void updateUser(User user) {
         userRepository.save(user);
     }
 
-    // Reset user password (Admin functionality) (kontrol et)
+    // Reset user password (Admin functionality)
     public void resetPassword(String id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
@@ -158,5 +163,6 @@ public class UserService {
             throw new RuntimeException("User not found");
         }
     }
+
 
 }

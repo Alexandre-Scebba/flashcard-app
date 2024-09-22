@@ -3,27 +3,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            margin-top: 50px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group label {
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+
+        .alert {
+            border-radius: 10px;
+        }
+
+        .footer-link {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <div th:if="${message}" class="alert alert-success mt-3">
-        <p th:text="${message}"></p>
-    </div>
-    <h2 class="mt-5">Login</h2>
-    <form th:action="@{/login}" method="post" class="mt-3">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" class="form-control" id="username" name="username" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-        <a th:href="@{/register}" class="text-decoration-none">Don't have an account?</a><br>
-        <a th:href="@{/forgetpassword}" class="text-decoration-none">forgot your password?</a>
+<div class="container d-flex justify-content-center">
+    <div class="col-md-6">
 
-    </form>
+        <div th:if="${message}" class="alert alert-success mt-3">
+            <p th:text="${message}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+
+        <h2 class="mt-5">Login</h2>
+        <form th:action="@{/login}" method="post" class="mt-3">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
+                    </div>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter a username"
+                           required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    </div>
+                    <input type="password" class="form-control" id="password" name="password"
+                           placeholder="Type your password" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <div class="footer-link">
+                <a th:href="@{/register}" class="text-decoration-none">Don't have an account?</a><br>
+                <a th:href="@{/forgetpassword}" class="text-decoration-none">forgot your password?</a>
+            </div>
+        </form>
+    </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
