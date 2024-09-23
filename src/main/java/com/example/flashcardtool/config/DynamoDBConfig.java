@@ -6,7 +6,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,12 +22,6 @@ import java.util.List;
 @Configuration
 public class DynamoDBConfig {
 
-    @Value("${aws.accessKeyId}")
-    private String accessKeyId;
-
-    @Value("${aws.secretKey}")
-    private String secretKey;
-
     @Bean
     @Primary
     @Qualifier("dynamoDBMapper")
@@ -38,11 +31,14 @@ public class DynamoDBConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        // Create credentials using the values from application.properties
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretKey);
+        // Retrieve AWS credentials from environment variables (e.g., Heroku config vars)
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(
+                System.getenv("AWS_ACCESS_KEY_ID"),        // Get from Heroku environment variables
+                System.getenv("AWS_SECRET_ACCESS_KEY")     // Get from Heroku environment variables
+        );
 
         return AmazonDynamoDBClientBuilder.standard()
-                .withRegion("us-east-1")
+                .withRegion(System.getenv("AWS_REGION"))   // Get region from Heroku environment variables
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
     }
