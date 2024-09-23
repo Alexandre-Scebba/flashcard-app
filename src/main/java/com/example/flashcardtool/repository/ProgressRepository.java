@@ -35,20 +35,6 @@ public class ProgressRepository {
         return dynamoDBMapper.scan(Progress.class, scanExpression);
     }
 
-    // Find progress by student ID and type (study or quiz)
-    public List<Progress> findByStudentIdAndType(String studentId, String type) {
-        Map<String, AttributeValue> eav = new HashMap<>();
-        eav.put(":studentId", new AttributeValue().withS(studentId));
-        eav.put(":typeVal", new AttributeValue().withS(type));
-
-        // Use an expression attribute name for the reserved keyword "type"
-        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                .withFilterExpression("#typeAlias = :typeVal and studentId = :studentId")
-                .withExpressionAttributeNames(Collections.singletonMap("#typeAlias", "type"))
-                .withExpressionAttributeValues(eav);
-
-        return dynamoDBMapper.scan(Progress.class, scanExpression);
-    }
 
 
     // Find progress by studentId and deckId

@@ -8,6 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.example.flashcardtool.dto.ProgressDTO;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -59,60 +61,47 @@ public class StudentController {
 
         // Fetch the latest progress data for the student
         String studentId = getAuthenticatedStudentId();
-        List<Progress> progressList = progressService.getStudyProgressByStudentId(studentId);  // Correct method call
+        List<Progress> progressList = progressService.getProgressByStudentId(studentId);
 
         if (!progressList.isEmpty()) {
-            Progress latestProgress = progressList.get(progressList.size() - 1); // Latest entry
-            model.addAttribute("studyTime", latestProgress.getStudyTime()); // In milliseconds
+            Progress latestProgress = progressList.get(progressList.size() - 1);
+            model.addAttribute("studyTime", latestProgress.getStudyTime());
             model.addAttribute("correctAnswers", latestProgress.getCorrectAnswers());
             model.addAttribute("incorrectAnswers", latestProgress.getIncorrectAnswers());
+
+            // Resolve deck names for recent activity
+            List<ProgressDTO> recentProgressDTOs = progressList.stream()
+                    .limit(3)
+                    .map(progress -> {
+                        Deck deck = deckService.getDeckById(progress.getDeckId()).orElse(new Deck());
+                        return new ProgressDTO(deck.getName(), progress.getStudyTime(), progress.getCorrectAnswers(), progress.getIncorrectAnswers());
+                    }).collect(Collectors.toList());
+
+            model.addAttribute("recentProgress", recentProgressDTOs);
         } else {
-            // Default values if no progress found
-            model.addAttribute("studyTime", 0);
-            model.addAttribute("correctAnswers", 0);
-            model.addAttribute("incorrectAnswers", 0);
+            model.addAttribute("recentProgress", Collections.emptyList());
         }
 
-        // Fetch the last 3 study sessions
-        List<Progress> recentProgressList = progressList.stream()
-                .sorted((p1, p2) -> p2.getId().compareTo(p1.getId())) // Sort by latest
-                .limit(3) // Limit to 3
-                .collect(Collectors.toList());
-
-        // Add recent progress with Deck names
-        List<ProgressDTO> recentProgressDTOs = recentProgressList.stream().map(progress -> {
-            Deck deck = deckService.getDeckById(progress.getDeckId()).orElse(null);
-            return new ProgressDTO(deck != null ? deck.getName() : "Unknown Deck", progress.getStudyTime());
-        }).collect(Collectors.toList());
-
-        model.addAttribute("recentProgress", recentProgressDTOs);
-
-        // Fetch the recent 3 decks from the student's library
+        // Fetch recent decks in the library
         Optional<User> user = userService.findByUsername(getAuthenticatedUsername());
         if (user.isPresent()) {
             String studentIdFromUser = user.get().getId();
-
             List<StudentLibrary> studentLibrary = studentLibraryService.getLibraryByStudent(studentIdFromUser);
-
-            // Convert to Deck objects
             List<Deck> libraryDecks = studentLibrary.stream()
                     .map(library -> deckService.getDeckById(library.getDeckId()).orElse(new Deck()))
                     .collect(Collectors.toList());
 
-            // Get the last 3 decks added to the library
-            List<Deck> recentDecks = libraryDecks.stream()
-                    .sorted((d1, d2) -> d2.getId().compareTo(d1.getId())) // Sort by latest added
-                    .limit(3) // Limit to 3 decks
-                    .collect(Collectors.toList());
-
-            model.addAttribute("recentDecks", recentDecks);
+            model.addAttribute("recentDecks", libraryDecks.stream()
+                    .sorted((d1, d2) -> d2.getId().compareTo(d1.getId()))
+                    .limit(3)
+                    .collect(Collectors.toList()));
         } else {
-            // No decks if user is not found
             model.addAttribute("recentDecks", Collections.emptyList());
         }
 
-        return "student-dashboard"; // Return the correct Thymeleaf view
+        return "student-dashboard";
     }
+
 
 
     @GetMapping("/decks")
@@ -300,57 +289,31 @@ public class StudentController {
 
     @GetMapping("/progress")
     public String viewProgress(Model model) {
-        setStudentName(model);
+        // add recent study and quiz data from DynamoDB database for chart and review
         String studentId = getAuthenticatedStudentId();
+        List<Progress> progressList = progressService.getProgressByStudentId(studentId);
 
-        // Fetch all progress for studies
-        List<Progress> studyProgress = progressService.getStudyProgressByStudentId(studentId);
+        // Fetch the latest progress data for the student
+        if (!progressList.isEmpty()) {
+            Progress latestProgress = progressList.get(progressList.size() - 1);
+            model.addAttribute("studyTime", latestProgress.getStudyTime());
+            model.addAttribute("correctAnswers", latestProgress.getCorrectAnswers());
+            model.addAttribute("incorrectAnswers", latestProgress.getIncorrectAnswers());
 
-        // Ensure there are study sessions before calculating the average
-        if (!studyProgress.isEmpty()) {
-            int totalCorrectStudy = studyProgress.stream().mapToInt(Progress::getCorrectAnswers).sum();
-            int totalIncorrectStudy = studyProgress.stream().mapToInt(Progress::getIncorrectAnswers).sum();
-            int totalStudySessions = studyProgress.size();
+            // Resolve deck names for recent activity
+            List<ProgressDTO> recentProgressDTOs = progressList.stream()
+                    .limit(3)
+                    .map(progress -> {
+                        Deck deck = deckService.getDeckById(progress.getDeckId()).orElse(new Deck());
+                        return new ProgressDTO(deck.getName(), progress.getStudyTime(), progress.getCorrectAnswers(), progress.getIncorrectAnswers());
+                    }).collect(Collectors.toList());
 
-            model.addAttribute("averageCorrectStudy", totalCorrectStudy / totalStudySessions);
-            model.addAttribute("averageIncorrectStudy", totalIncorrectStudy / totalStudySessions);
-
-            // Fetch latest study progress
-            Progress latestStudyProgress = studyProgress.get(studyProgress.size() - 1);
-            model.addAttribute("latestCorrectStudy", latestStudyProgress.getCorrectAnswers());
-            model.addAttribute("latestIncorrectStudy", latestStudyProgress.getIncorrectAnswers());
+            model.addAttribute("recentProgress", recentProgressDTOs);
         } else {
-            // No study sessions, set default values
-            model.addAttribute("averageCorrectStudy", 0);
-            model.addAttribute("averageIncorrectStudy", 0);
-            model.addAttribute("latestCorrectStudy", 0);
-            model.addAttribute("latestIncorrectStudy", 0);
+            model.addAttribute("recentProgress", Collections.emptyList());
         }
 
-        // Fetch quiz progress and apply the same logic
-        List<Progress> quizProgress = progressService.getQuizProgressByStudentId(studentId);
-
-        if (!quizProgress.isEmpty()) {
-            int totalCorrectQuiz = quizProgress.stream().mapToInt(Progress::getCorrectAnswers).sum();
-            int totalIncorrectQuiz = quizProgress.stream().mapToInt(Progress::getIncorrectAnswers).sum();
-            int totalQuizSessions = quizProgress.size();
-
-            model.addAttribute("averageCorrectQuiz", totalCorrectQuiz / totalQuizSessions);
-            model.addAttribute("averageIncorrectQuiz", totalIncorrectQuiz / totalQuizSessions);
-
-            // Fetch latest quiz progress
-            Progress latestQuizProgress = quizProgress.get(quizProgress.size() - 1);
-            model.addAttribute("latestCorrectQuiz", latestQuizProgress.getCorrectAnswers());
-            model.addAttribute("latestIncorrectQuiz", latestQuizProgress.getIncorrectAnswers());
-        } else {
-            // No quiz sessions, set default values
-            model.addAttribute("averageCorrectQuiz", 0);
-            model.addAttribute("averageIncorrectQuiz", 0);
-            model.addAttribute("latestCorrectQuiz", 0);
-            model.addAttribute("latestIncorrectQuiz", 0);
-        }
-
-        return "progress";
+        return "progress";  // Points to progress.html
     }
 
     @GetMapping("/quiz/{id}")

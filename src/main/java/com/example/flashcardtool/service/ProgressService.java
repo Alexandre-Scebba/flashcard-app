@@ -18,7 +18,7 @@ public class ProgressService {
     @Autowired
     private ProgressRepository progressRepository;
 
-    // Save progress for either a study or quiz session
+    // Save progress
     public void saveProgress(Progress progress) {
         // If the ID is null, generate a new one
         if (progress.getId() == null) {
@@ -31,12 +31,13 @@ public class ProgressService {
 
     // Fetch all study progress by student ID
     public List<Progress> getStudyProgressByStudentId(String studentId) {
-        return progressRepository.findByStudentIdAndType(studentId, "study");
+
+        return progressRepository.findByStudentId(studentId);
     }
 
     // Fetch all quiz progress by student ID
     public List<Progress> getQuizProgressByStudentId(String studentId) {
-        return progressRepository.findByStudentIdAndType(studentId, "quiz");
+        return progressRepository.findByStudentId(studentId);
     }
 
     // Fetch all progress for a student (both study and quiz)

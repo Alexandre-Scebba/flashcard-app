@@ -30,28 +30,35 @@
 
 <!-- Main Content -->
 <div class="container mt-4">
-    <h2 class="text-center">Your Progress</h2>
-    <p class="text-center">See your quiz scores and study progress here.</p>
+    <h2 class="text-center">Your Latest Progress</h2>
+    <p class="text-center">See your most recent study and quiz results here.</p>
 
-    <!-- Dropdown for graph selection -->
-    <div class="dropdown mb-3">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="graphDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            Select Graph
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="graphDropdown">
-            <li><a class="dropdown-item" href="#" onclick="showGraph('averageStudy')">Average Study Progress</a></li>
-            <li><a class="dropdown-item" href="#" onclick="showGraph('latestStudy')">Latest Study Progress</a></li>
-            <li><a class="dropdown-item" href="#" onclick="showGraph('averageQuiz')">Average Quiz Results</a></li>
-            <li><a class="dropdown-item" href="#" onclick="showGraph('latestQuiz')">Latest Quiz Results</a></li>
-        </ul>
+    <!-- Latest Study Progress -->
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="latestStudy" class="graph"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h4>Study Progress</h4>
+            <p><strong>Correct Answers:</strong> <span th:text="${correctAnswers}"></span><br></p>
+            <p><strong>Incorrect Answers:</strong> <span th:text="${incorrectAnswers}"></span></p>
+            <p><strong>Completion Time:</strong> <span th:text="${studyTime}"></span> minutes</p>
+        </div>
     </div>
 
-    <!-- Graph container -->
-    <div id="graphContainer">
-        <canvas id="averageStudy" class="graph" style="display:none;"></canvas>
-        <canvas id="latestStudy" class="graph" style="display:none;"></canvas>
-        <canvas id="averageQuiz" class="graph" style="display:none;"></canvas>
-        <canvas id="latestQuiz" class="graph" style="display:none;"></canvas>
+    <hr>
+
+    <!-- Latest Quiz Progress -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <canvas id="latestQuiz" class="graph"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h4>Quiz Progress</h4>
+            <p><strong>Correct Answers:</strong> <span th:text="${correctAnswers}"></span><br></p>
+            <p><strong>Incorrect Answers:</strong> <span th:text="${incorrectAnswers}"></span></p>
+            <p><strong>Completion Time:</strong> <span th:text="${studyTime}"></span> minutes</p>
+        </div>
     </div>
 </div>
 
@@ -65,41 +72,11 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Example chart data setup using Thymeleaf to pass dynamic values
+    // Retrieve dynamic data from Thymeleaf variables
+    const latestStudyData = [ [[${correctAnswers}]], [[${incorrectAnswers}]] ];
+    const latestQuizData = [ [[${correctAnswers}]], [[${incorrectAnswers}]] ];
 
-    // Get dynamic data for average study progress
-    const averageStudyData = [/*[[${averageCorrectStudy}]]*/, /*[[${averageIncorrectStudy}]]*/];
-
-    // Get dynamic data for latest study progress
-    const latestStudyData = [/*[[${latestCorrectStudy}]]*/, /*[[${latestIncorrectStudy}]]*/];
-
-    // Get dynamic data for average quiz progress
-    const averageQuizData = [/*[[${averageCorrectQuiz}]]*/, /*[[${averageIncorrectQuiz}]]*/];
-
-    // Get dynamic data for latest quiz progress
-    const latestQuizData = [/*[[${latestCorrectQuiz}]]*/, /*[[${latestIncorrectQuiz}]]*/];
-
-    // Show the selected graph
-    function showGraph(graphId) {
-        document.querySelectorAll('.graph').forEach((graph) => graph.style.display = 'none');
-        document.getElementById(graphId).style.display = 'block';
-    }
-
-    // Average Study Progress Graph
-    const averageStudyCtx = document.getElementById('averageStudy').getContext('2d');
-    new Chart(averageStudyCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Correct', 'Incorrect'],
-            datasets: [{
-                label: 'Average Study Progress',
-                data: averageStudyData, // Use Thymeleaf data
-                backgroundColor: ['#28a745', '#dc3545']
-            }]
-        }
-    });
-
-    // Latest Study Progress Graph
+    // Show the latest study progress
     const latestStudyCtx = document.getElementById('latestStudy').getContext('2d');
     new Chart(latestStudyCtx, {
         type: 'bar',
@@ -107,40 +84,41 @@
             labels: ['Correct', 'Incorrect'],
             datasets: [{
                 label: 'Latest Study Progress',
-                data: latestStudyData, // Use Thymeleaf data
+                data: latestStudyData,
                 backgroundColor: ['#28a745', '#dc3545']
             }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 
-    // Average Quiz Progress Graph
-    const averageQuizCtx = document.getElementById('averageQuiz').getContext('2d');
-    new Chart(averageQuizCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Correct', 'Incorrect'],
-            datasets: [{
-                label: 'Average Quiz Results',
-                data: averageQuizData, // Use Thymeleaf data
-                backgroundColor: ['#28a745', '#dc3545']
-            }]
-        }
-    });
-
-    // Latest Quiz Progress Graph
+    // Show the latest quiz progress
     const latestQuizCtx = document.getElementById('latestQuiz').getContext('2d');
     new Chart(latestQuizCtx, {
         type: 'bar',
         data: {
             labels: ['Correct', 'Incorrect'],
             datasets: [{
-                label: 'Latest Quiz Results',
-                data: latestQuizData, // Use Thymeleaf data
+                label: 'Latest Quiz Progress',
+                data: latestQuizData,
                 backgroundColor: ['#28a745', '#dc3545']
             }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 </script>
+
 
 </body>
 </html>

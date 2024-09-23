@@ -3,20 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dashboard</title>
+  <title>Progress Page</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Add custom styles -->
   <style>
-    .small-chart-container {
-      width: 3cm;
-      height: 3cm;
-      margin: auto;
+    body {
+      background-color: #f8f9fa;
     }
     canvas {
       display: block;
+      width: 100% !important;
+      height: auto !important;
+    }
+    .section-title {
+      color: #343a40;
+      margin-bottom: 20px;
+    }
+    .recent-activity, .performance-section, .my-decks {
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    .navbar-dark .navbar-nav .nav-link {
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .navbar-dark .navbar-nav .nav-link:hover {
+      color: #fff;
     }
   </style>
 </head>
@@ -49,31 +66,31 @@
 <!-- Main Content -->
 <div class="container mt-4">
   <h2 class="text-center">Welcome to Student Dashboard</h2>
-  <p class="text-center">Search for decks, view your progress, or access your library.</p>
+  <p class="text-center text-muted">Search for decks, view your progress, or access your library.</p>
 
   <!-- Search Bar -->
-  <form action="/student/search" method="get" class="d-flex mb-3">
-    <input class="form-control me-2" type="search" name="query" placeholder="Search Decks" aria-label="Search">
+  <form action="/student/search" method="get" class="d-flex justify-content-center mb-4">
+    <input class="form-control me-2 w-50" type="search" name="query" placeholder="Search Decks" aria-label="Search">
     <button class="btn btn-outline-success" type="submit">Search</button>
   </form>
+
   <!-- Section for Recent Activity -->
-  <div class="recent-activity mt-5">
-    <h3>Recent Activity</h3>
-    <ul>
-      <li th:each="progress : ${recentProgress}">
-        <p>
-          <strong>Deck Name:</strong> <span th:text="${progress.deckName}"></span><br>
-          <strong>Study Time:</strong> <span th:text="${#numbers.formatDecimal(progress.studyTime / 1000, 0, 0)} + ' seconds'"></span>
-        </p>
+  <div class="recent-activity">
+    <h3 class="section-title">Recent Activity</h3>
+    <ul class="list-group">
+      <li th:each="progress : ${recentProgress}" class="list-group-item">
+        <strong>Deck Name:</strong> <span th:text="${progress.deckName}"></span><br>
+        <strong>Study Time:</strong> <span th:text="${#numbers.formatDecimal(progress.studyTime / 1000, 0, 0)} + ' seconds'"></span><br>
+        <strong>Correct Answers:</strong> <span th:text="${progress.correctAnswers}"></span><br>
+        <strong>Incorrect Answers:</strong> <span th:text="${progress.incorrectAnswers}"></span>
       </li>
     </ul>
-    <p th:if="${#lists.isEmpty(recentProgress)}">No recent activity available.</p>
+    <p th:if="${#lists.isEmpty(recentProgress)}" class="text-muted">No recent activity available.</p>
   </div>
-</div>
-<div class="container mt-4">
+
   <!-- Performance Section -->
   <div class="performance-section mt-5 text-center">
-    <h3>Performance</h3>
+    <h3 class="section-title">Performance</h3>
     <div class="small-chart-container">
       <canvas id="dashboardProgressChart"></canvas>
     </div>
@@ -82,18 +99,17 @@
 
   <!-- List of Decks in the Library -->
   <div class="my-decks mt-5">
-    <h3>Your Library</h3>
-    <ul>
-      <li th:each="deck : ${recentDecks}">
-        <a th:href="@{/student/library}"> <span th:text="${deck.name}"></span></a>
+    <h3 class="section-title">Your Library</h3>
+    <ul class="list-group">
+      <li th:each="deck : ${recentDecks}" class="list-group-item">
+        <a th:href="@{/student/library}" class="text-decoration-none"> <span th:text="${deck.name}"></span></a>
       </li>
     </ul>
-    <!-- "View More" Button -->
     <a href="/student/library" class="btn btn-secondary mt-2">View More</a>
   </div>
 </div>
-</div>
-  <!-- Footer -->
+
+<!-- Footer -->
 <footer class="bg-dark text-white text-center py-3 mt-5">
   <p>2024-All Rights Reserved ©</p>
 </footer>
@@ -118,8 +134,8 @@
           beginAtZero: true
         }
       },
-      responsive: false, // Set to false to use the fixed size
-      maintainAspectRatio: false // Disable automatic resizing
+      responsive: true, // Set to true to make the chart responsive
+      maintainAspectRatio: false
     }
   });
 </script>
