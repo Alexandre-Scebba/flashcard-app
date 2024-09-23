@@ -1,36 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Assign Decks to Students</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Decks to Students</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
 <div class="container mt-5">
-  <h1>Assign Decks to Students</h1>
+    <h1>Assign Decks to Students</h1>
 
-  <form th:action="@{/teacher/deck-assign}" method="post">
-    <div class="mb-3">
-      <label for="deckId" class="form-label">Select Deck</label>
-      <select class="form-select" id="deckId" name="deckId" required>
-        <option th:each="deck : ${decks}" th:value="${deck.id}" th:text="${deck.name}"></option>
-      </select>
+    <!-- Flash message for successful assignment -->
+    <div th:if="${successMessage}" class="alert alert-success" role="alert">
+        <span th:text="${successMessage}"></span>
     </div>
 
-    <div class="mb-3">
-      <label for="studentId" class="form-label">Select Student</label>
-      <select class="form-select" id="studentId" name="studentId" required>
-        <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.firstName} + ' ' + ${student.lastName}"></option>
-      </select>
+    <form th:action="@{/teacher/deck-assign}" method="get">
+
+        <div class="mb-3">
+            <label for="studentId" class="form-label">Select Student</label>
+            <select class="form-select" id="studentId" name="studentId" required onchange="this.form.submit()">
+                <option value="">--Select a Student --</option>
+                <option th:each="student : ${students}"
+                        th:value="${student.id}"
+                        th:text="${student.firstName} + ' ' + ${student.lastName}"
+                        th:selected="${student.id == selectedStudentId}">
+                </option>
+            </select>
+        </div>
+    </form>
+
+    <!--  show deck assignments  -->
+    <ul>
+        <li th:each="assignedDeck : ${assignedDecks}" th:text="${assignedDeck.name}"></li>
+    </ul>
+
+    <!-- separate POST request form for assigning the deck -->
+
+    <form th:action="@{/teacher/deck-assign}" method="post">
+        <input type="hidden" name="studentId" th:value="${selectedStudentId}"/>
+
+
+        <div class="mb-3">
+            <label for="deckId" class="form-label">Select Deck</label>
+            <select class="form-select" id="deckId" name="deckId" required>
+                <option value="">--Select a Deck --</option>
+                <option th:each="deck : ${decks}" th:value="${deck.id}" th:text="${deck.name}"></option>
+            </select>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Assign Deck</button>
+        <h3>Assigned Decks</h3>
+    </form>
+
+    <div class="text-center mt-4">
+        <button th:onclick="|window.location.href='/teacher/dashboard'|" class="btn btn-secondary">Back</button>
     </div>
-
-    <button type="submit" class="btn btn-primary">Assign Deck</button>
-  </form>
-
- <div class="text-center mt-4">
-<button th:onclick="|window.location.href='/teacher/dashboard'|" class="btn btn-secondary">Back</button></div>
 </div>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>

@@ -11,6 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -58,15 +61,22 @@ public class TeacherController {
     }
 
     @PostMapping("/deck-assign")
-    public String assignDeck(@RequestParam String deckId, @RequestParam String studentId) {
+    public String assignDeck(@RequestParam String deckId, @RequestParam String studentId, RedirectAttributes redirectAttributes) {
         studentLibraryService.addLibrary(studentId, deckId);  // Assign deck to student
-        return "redirect:/teacher/deck-assign";  // Redirect back to the same page after assignment
-    }
+        redirectAttributes.addFlashAttribute("successMessage", "Deck assigned successfully!");
+        return "redirect:/teacher/deck-assign?studentId=" + studentId;    }
 
     @GetMapping("/deck-assign")
-    public String showAssignDeckForm(Model model) {
+    public String showAssignDeckForm(@RequestParam(value = "studentId", required = false) String studentId, Model model) {
         model.addAttribute("decks", deckService.getAllDecks());
         model.addAttribute("students", userService.findAllStudents());
+
+        if (studentId != null && !studentId.isEmpty()){
+            List<Deck> assignedDeck = studentLibraryService.getAssignedDecksForStudent(studentId);
+            model.addAttribute("assignedDecks", assignedDeck);
+            model.addAttribute("selectedStudentId", studentId);
+        }
+
         return "deck-assign";
     }
 
