@@ -28,8 +28,7 @@
           <a class="nav-link" th:href="@{/teacher/deck-assign}">Assign Decks</a>
         </li>
         <li class="nav-item">
-         <a class="nav-link" th:href="@{/logout}" th:onclick="'event.preventDefault(); document.getElementById(\'logout-form\').submit();'">Logout</a>
-          <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;"></form>
+          <a class="nav-link" th:href="@{/logout}">Logout</a>
         </li>
       </ul>
     </div>
