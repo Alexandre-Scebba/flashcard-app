@@ -23,29 +23,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> {})
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity, especially for multipart handling
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/forgetpassword", "/newpassword").permitAll() // Giriş gerektirmeyen sayfalar
-                        .requestMatchers("/teacher/**", "/decks/**").hasRole("TEACHER") // Öğretmen sayfaları
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // Admin sayfaları
-                        .requestMatchers("/student/**").hasRole("STUDENT") // Öğrenci sayfaları
-                        .anyRequest().authenticated() // Diğer tüm sayfalar için giriş gereksinimi
+                        .requestMatchers("/register", "/login", "/forgetpassword", "/newpassword").permitAll()
+                        .requestMatchers("/teacher/**", "/decks/**").hasRole("TEACHER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/student/**").hasRole("STUDENT")
+                        .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
-                        .loginPage("/login")  // Özel login sayfası
+                        .loginPage("/login")
                         .permitAll()
-                        .defaultSuccessUrl("/determineRedirect", true) // Giriş sonrası yönlendirme
-                        .failureUrl("/login?error=true") // auth fail redirect for flash-message logic
+                        .defaultSuccessUrl("/determineRedirect", true)
+                        .failureUrl("/login?error=true")
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .permitAll());
-
+                        .permitAll()
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/teacher/flashcards/create", "/upload/**").permitAll()  // Ensure file uploads are accessible
+                );
 
         return http.build();
     }
+
 
 }
