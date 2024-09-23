@@ -26,6 +26,9 @@
 
         .alert {
             border-radius: 10px;
+            padding: 10px;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
         .footer-link {
@@ -39,8 +42,8 @@
 <div class="container d-flex justify-content-center">
     <div class="col-md-6">
 
-        <div th:if="${message}" class="alert alert-success mt-3">
-            <p th:text="${message}"></p>
+        <div th:if="${successMessage}" class="alert alert-success mt-3">
+            <p th:text="${successMessage}"></p>
         </div>
 
         <div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert">

@@ -7,6 +7,7 @@ import com.example.flashcardtool.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -37,8 +38,12 @@ public class AdminController {
 
     // Delete a user
     @PostMapping("/users/delete/{id}")
-    public String deleteUser(@PathVariable String id) {
+    public String deleteUser(@PathVariable String id, RedirectAttributes redirectAttributes) {
         userService.deleteUser(id);
+
+        redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully.");
+
+
         return "redirect:/admin/users";  // Redirect to user management after deletion
     }
 
@@ -52,11 +57,14 @@ public class AdminController {
     }
 
     @PostMapping("/users/edit/{id}")
-    public String updateUser(@PathVariable String id, @RequestParam String role) {
+    public String updateUser(@PathVariable String id, @RequestParam String role, RedirectAttributes redirectAttributes) {
        User user = userService.findById(id).orElseThrow(() -> new RuntimeException("User note found"));  // Ensure the user ID is set
         user.getRoles().clear(); // clear existing role
         user.getRoles().add(role); // add new only after clearing so you can still log-in
         userService.updateUser(user);
+
+        redirectAttributes.addFlashAttribute("successMessage", "User info updated successfully");
+
         return "redirect:/admin/users";  // Redirect to user management after update
     }
 
