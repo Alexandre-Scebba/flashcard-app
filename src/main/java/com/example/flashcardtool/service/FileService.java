@@ -66,6 +66,7 @@ public class FileService {
                 .key(key)
                 .build(), Paths.get(convertedFile.getPath()));
 
+
         // Return the public URL of the file
         return "https://" + bucketName + ".s3.amazonaws.com/" + key;
     }
