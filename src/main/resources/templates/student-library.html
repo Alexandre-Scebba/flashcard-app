@@ -53,10 +53,10 @@
       <td th:text="${libraryDeck.description}"></td>
       <td>
         <!-- Study Deck -->
-        <a th:href="@{/student/study/{id}(id=${libraryDeck.id})}" class="btn btn-sm btn-primary">Study</a>
+        <a th:href="@{/student/study/{id}(id=${libraryDeck.id})}" class="btn btn-sm btn-primary">Take Quiz</a>
 
         <!-- Take Quiz -->
-        <a th:href="@{/student/quiz/{id}(id=${libraryDeck.id})}" class="btn btn-sm btn-warning">Take Quiz</a>
+        <a th:href="@{/student/quiz/{id}(id=${libraryDeck.id})}" class="btn btn-sm btn-warning">Study</a>
 
         <!-- Remove Deck from Library -->
         <form th:action="@{/student/library/remove(deckId=${libraryDeck.id})}" method="post" style="display:inline-block;">

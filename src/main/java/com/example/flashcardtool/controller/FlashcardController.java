@@ -59,25 +59,25 @@ public class FlashcardController {
 
         // Handle Front Image
         if (!frontImageFile.isEmpty()) {
-            String frontImageUrl = fileService.storeFile(frontImageFile);
+            String frontImageUrl = fileService.uploadToS3(frontImageFile); // Modify to upload to S3
             flashcard.setFrontImageUrl(frontImageUrl);
         }
 
         // Handle Back Image
         if (!backImageFile.isEmpty()) {
-            String backImageUrl = fileService.storeFile(backImageFile);
+            String backImageUrl = fileService.uploadToS3(backImageFile); // Modify to upload to S3
             flashcard.setBackImageUrl(backImageUrl);
         }
 
         // Handle Front Video
         if (!frontVideoFile.isEmpty()) {
-            String frontVideoUrl = fileService.storeFile(frontVideoFile);
+            String frontVideoUrl = fileService.uploadToS3(frontVideoFile); // Modify to upload to S3
             flashcard.setFrontVideoUrl(frontVideoUrl);
         }
 
         // Handle Back Video
         if (!backVideoFile.isEmpty()) {
-            String backVideoUrl = fileService.storeFile(backVideoFile);
+            String backVideoUrl = fileService.uploadToS3(backVideoFile); // Modify to upload to S3
             flashcard.setBackVideoUrl(backVideoUrl);
         }
 
@@ -98,6 +98,7 @@ public class FlashcardController {
 
         return "redirect:/teacher/flashcards/create?deckId=" + deckId;
     }
+
 
 
     @PostMapping("/delete/{id}")
