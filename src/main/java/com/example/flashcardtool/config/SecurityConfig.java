@@ -23,7 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> {})
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/login", "/forgetpassword", "/newpassword").permitAll() // Giriş gerektirmeyen sayfalar
                         .requestMatchers("/teacher/**", "/decks/**").hasRole("TEACHER") // Öğretmen sayfaları

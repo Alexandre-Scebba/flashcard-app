@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Flashcard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -31,34 +31,48 @@
     </div>
   </div>
 </nav>
+
 <div class="container mt-5">
   <h1>Edit Flashcard</h1>
 
   <!-- Flashcard Form -->
-  <form th:action="@{/teacher/flashcards/edit/{id}(id=${flashcard.id})}" th:object="${flashcard}" method="post">
+  <form th:action="@{/teacher/flashcards/edit/{id}(id=${flashcard.id})}" th:object="${flashcard}" method="post" enctype="multipart/form-data">
     <input type="hidden" th:field="*{deckId}"/>
 
     <!-- Front Content -->
     <label for="frontContent">Front Content</label>
     <input type="text" id="frontContent" th:field="*{frontContent}" placeholder="Enter front content" required class="form-control mb-2">
 
+    <!-- Front Image Upload -->
+    <label for="frontImage">Upload Front Image</label>
+    <input type="file" id="frontImage" name="frontImage" class="form-control mb-2" accept="image/*">
+
+    <!-- Front Video Upload -->
+    <label for="frontVideo">Upload Front Video</label>
+    <input type="file" id="frontVideo" name="frontVideo" class="form-control mb-2" accept="video/*">
+
     <!-- Back Content -->
     <label for="backContent">Back Content</label>
     <input type="text" id="backContent" th:field="*{backContent}" placeholder="Enter back content" required class="form-control mb-2">
 
-    <!-- Option 1 -->
+    <!-- Back Image Upload -->
+    <label for="backImage">Upload Back Image</label>
+    <input type="file" id="backImage" name="backImage" class="form-control mb-2" accept="image/*">
+
+    <!-- Back Video Upload -->
+    <label for="backVideo">Upload Back Video</label>
+    <input type="file" id="backVideo" name="backVideo" class="form-control mb-2" accept="video/*">
+
+    <!-- Options for the flashcard -->
     <label for="option1">Option 1</label>
     <input type="text" id="option1" th:field="*{option1}" placeholder="Enter option 1" required class="form-control mb-2">
 
-    <!-- Option 2 -->
     <label for="option2">Option 2</label>
     <input type="text" id="option2" th:field="*{option2}" placeholder="Enter option 2" required class="form-control mb-2">
 
-    <!-- Option 3 -->
     <label for="option3">Option 3</label>
     <input type="text" id="option3" th:field="*{option3}" placeholder="Enter option 3" required class="form-control mb-2">
 
-    <!-- Option 4 -->
     <label for="option4">Option 4</label>
     <input type="text" id="option4" th:field="*{option4}" placeholder="Enter option 4" required class="form-control mb-2">
 
@@ -66,10 +80,9 @@
     <button type="submit" class="btn btn-primary">Update Flashcard</button>
   </form>
 
-    <div class="text-center mt-4">
-        <button th:onclick="|window.location.href='@{/teacher/decks}'|" class="btn btn-success">Back</button>
-    </div>
-
+  <div class="text-center mt-4">
+    <button th:onclick="|window.location.href='@{/teacher/decks}'|" class="btn btn-success">Back</button>
+  </div>
 </div>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>

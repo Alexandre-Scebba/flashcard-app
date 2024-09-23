@@ -14,9 +14,11 @@ public class FlashcardService {
     private FlashcardRepository flashcardRepository;
 
     // Create a new flashcard
-    public Flashcard createFlashcard(String frontContent, String backContent, String deckId, String option1, String option2, String option3, String option4) {
+    public void createFlashcard(String frontContent, String backContent, String deckId,
+                                String option1, String option2, String option3, String option4,
+                                String frontImageUrl, String backImageUrl,
+                                String frontVideoUrl, String backVideoUrl) {
         Flashcard flashcard = new Flashcard();
-        flashcard.setId(UUID.randomUUID().toString());  // UUID ataması her zaman yapılabilir
         flashcard.setFrontContent(frontContent);
         flashcard.setBackContent(backContent);
         flashcard.setDeckId(deckId);
@@ -24,7 +26,12 @@ public class FlashcardService {
         flashcard.setOption2(option2);
         flashcard.setOption3(option3);
         flashcard.setOption4(option4);
-        return flashcardRepository.save(flashcard);  // Doğrudan save işlemi yapıyoruz
+        flashcard.setFrontImageUrl(frontImageUrl);
+        flashcard.setBackImageUrl(backImageUrl);
+        flashcard.setFrontVideoUrl(frontVideoUrl);
+        flashcard.setBackVideoUrl(backVideoUrl);
+
+        flashcardRepository.save(flashcard);  // Save the flashcard with the URLs
     }
 
     // Update an existing flashcard
@@ -83,4 +90,5 @@ public class FlashcardService {
         Collections.shuffle(options);
         return options;
     }
+
 }

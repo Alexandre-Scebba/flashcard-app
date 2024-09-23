@@ -7,7 +7,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom CSS for flip card effect -->
-
   <style>
     .flashcard-container {
       perspective: 1000px;
@@ -72,13 +71,37 @@
   <!-- Flashcard Flip Area -->
   <div class="flashcard-container">
     <div class="flashcard" id="flashcard">
-      <!-- Front side (Question) -->
+      <!-- Front of the Flashcard -->
       <div class="front">
         <p th:text="${flashcards[currentCard].frontContent}">Question goes here...</p>
+
+        <div th:if="${flashcards[currentCard].frontImageUrl !=null}">
+          <img th:src="${flashcards[currentCard].frontImageUrl}" alt="Front Image" class="img-fluid">
+          <p th:text="${flashcards[currentCard].frontImageUrl}"></p> <!-- Debugging: check the image URL -->
+        </div>
+
+        <div th:if="${flashcards[currentCard].frontVideoUrl}">
+          <video controls class="img-fluid">
+            <source th:src="${flashcards[currentCard].frontVideoUrl}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
       </div>
-      <!-- Back side (Answer) -->
+
+      <!-- Back of the Flashcard -->
       <div class="back">
         <p th:text="${flashcards[currentCard].backContent}">Answer goes here...</p>
+
+        <div th:if="${flashcards[currentCard].backImageUrl}">
+          <img th:src="${flashcards[currentCard].backImageUrl}" alt="Back Image" class="img-fluid">
+        </div>
+
+        <div th:if="${flashcards[currentCard].backVideoUrl}">
+          <video controls class="img-fluid">
+            <source th:src="${flashcards[currentCard].backVideoUrl}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
       </div>
     </div>
   </div>

@@ -4,9 +4,11 @@ import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.service.DeckService;
 import com.example.flashcardtool.service.FlashcardService;
+import com.example.flashcardtool.service.FileService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,16 +19,16 @@ public class FlashcardController {
 
     private final FlashcardService flashcardService;
     private final DeckService deckService;
+    private final FileService fileService; // Define fileService
 
-    public FlashcardController(FlashcardService flashcardService, DeckService deckService) {
+    public FlashcardController(FlashcardService flashcardService, DeckService deckService, FileService fileService) {
         this.flashcardService = flashcardService;
         this.deckService = deckService;
+        this.fileService = fileService; // Initialize fileService
     }
 
-    // Show the flashcard creation form for a specific deck
     @GetMapping("/create")
     public String showCreateFlashcardForm(@RequestParam("deckId") String deckId, Model model) {
-        // Retrieve the deck by ID
         Optional<Deck> optionalDeck = deckService.getDeckById(deckId);
 
         if (!optionalDeck.isPresent()) {
@@ -34,47 +36,105 @@ public class FlashcardController {
         }
 
         Deck deck = optionalDeck.get();
-
-        // Prepare the Flashcard for creation
         Flashcard flashcard = new Flashcard();
-        flashcard.setDeckId(deck.getId());  // Associate the flashcard with the deck ID
+        flashcard.setDeckId(deck.getId());
 
-        // Get all flashcards in this deck
         List<Flashcard> flashcards = flashcardService.getFlashcardsByDeckId(deck.getId());
 
-        // Add attributes to the model for rendering
         model.addAttribute("flashcard", flashcard);
-        model.addAttribute("flashcards", flashcards);  // Display already added flashcards
-        model.addAttribute("deck", deck);  // Pass the deck information for reference
+        model.addAttribute("flashcards", flashcards);
+        model.addAttribute("deck", deck);
 
-        return "flashcard-create";  // Ensure this template file exists
+        return "flashcard-create";
     }
 
-    // Process flashcard creation and return to the same page to add more flashcards
     @PostMapping("/create")
-    public String createFlashcard(@ModelAttribute Flashcard flashcard, @RequestParam("deckId") String deckId) {
-        flashcardService.createFlashcard(flashcard.getFrontContent(), flashcard.getBackContent(), deckId, flashcard.getOption1(), flashcard.getOption2(), flashcard.getOption3(), flashcard.getOption4());
-        return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Stay on flashcard creation page for the same deck
+    public String createFlashcard(
+            @ModelAttribute Flashcard flashcard,
+            @RequestParam("deckId") String deckId,
+            @RequestParam("frontImage") MultipartFile frontImageFile,
+            @RequestParam("backImage") MultipartFile backImageFile,
+            @RequestParam("frontVideo") MultipartFile frontVideoFile,
+            @RequestParam("backVideo") MultipartFile backVideoFile) {
+
+        // Handle Front Image
+        if (!frontImageFile.isEmpty()) {
+            String frontImageUrl = fileService.storeFile(frontImageFile);
+            flashcard.setFrontImageUrl(frontImageUrl);
+        }
+
+        // Handle Back Image
+        if (!backImageFile.isEmpty()) {
+            String backImageUrl = fileService.storeFile(backImageFile);
+            flashcard.setBackImageUrl(backImageUrl);
+        }
+
+        // Handle Front Video
+        if (!frontVideoFile.isEmpty()) {
+            String frontVideoUrl = fileService.storeFile(frontVideoFile);
+            flashcard.setFrontVideoUrl(frontVideoUrl);
+        }
+
+        // Handle Back Video
+        if (!backVideoFile.isEmpty()) {
+            String backVideoUrl = fileService.storeFile(backVideoFile);
+            flashcard.setBackVideoUrl(backVideoUrl);
+        }
+
+        // Create flashcard with the given content and media
+        flashcardService.createFlashcard(
+                flashcard.getFrontContent(),
+                flashcard.getBackContent(),
+                deckId,
+                flashcard.getOption1(),
+                flashcard.getOption2(),
+                flashcard.getOption3(),
+                flashcard.getOption4(),
+                flashcard.getFrontImageUrl(),
+                flashcard.getBackImageUrl(),
+                flashcard.getFrontVideoUrl(),
+                flashcard.getBackVideoUrl()
+        );
+
+        return "redirect:/teacher/flashcards/create?deckId=" + deckId;
     }
 
-    // Delete flashcard and stay on the same flashcard creation page
+
     @PostMapping("/delete/{id}")
     public String deleteFlashcard(@PathVariable String id, @RequestParam("deckId") String deckId) {
         flashcardService.deleteFlashcard(id);
-        return "redirect:/teacher/flashcards/create?deckId=" + deckId;  // Redirect to the flashcards for the current deck
+        return "redirect:/teacher/flashcards/create?deckId=" + deckId;
     }
 
-    // View all flashcards for a specific deck
     @GetMapping("/deck/{deckId}")
     public String listFlashcardsByDeck(@PathVariable String deckId, Model model) {
         model.addAttribute("flashcards", flashcardService.getFlashcardsByDeckId(deckId));
-        return "teacher/flashcard-list";  // Points to flashcard-list.html for the specific deck
+        return "teacher/flashcard-list";
     }
 
-    // View all flashcards (global list)
     @GetMapping
     public String listAllFlashcards(Model model) {
         model.addAttribute("flashcards", flashcardService.getAllFlashcards());
-        return "teacher/flashcard-list";  // Points to a global flashcard list
+        return "teacher/flashcard-list";
     }
+
+    @GetMapping("/study/{deckId}")
+    public String studyDeck(@PathVariable String deckId, Model model) {
+        Deck deck = deckService.getDeckById(deckId).orElseThrow(() -> new IllegalArgumentException("Deck not found"));
+        List<Flashcard> flashcards = flashcardService.getFlashcardsByDeckId(deckId);
+
+        // Debug logs
+        flashcards.forEach(card -> {
+            System.out.println("Flashcard ID: " + card.getId());
+            System.out.println("Front Image URL: " + card.getFrontImageUrl());
+            System.out.println("Back Image URL: " + card.getBackImageUrl());
+        });
+
+        model.addAttribute("deck", deck);
+        model.addAttribute("flashcards", flashcards);
+        model.addAttribute("currentCard", 0);
+
+        return "study-mode";
+    }
+
 }
