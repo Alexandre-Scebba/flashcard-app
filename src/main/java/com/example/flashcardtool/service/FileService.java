@@ -3,6 +3,7 @@ package com.example.flashcardtool.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -37,24 +38,23 @@ public class FileService {
 
     // Upload directly to S3
     public String uploadToS3(MultipartFile file) {
-        String key = "uploads/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String bucketName = "flascardsapp";
+        String key = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
         try {
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(key)
-                    .build();
-
-            // Upload file to S3
-            PutObjectResponse putObjectResponse = s3Client.putObject(putObjectRequest, software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
-
-            // Return the public URL of the uploaded file
+            File convertedFile = convertMultipartFileToFile(file);
+            s3Client.putObject(PutObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(key)
+                            .build(),
+                    RequestBody.fromFile(convertedFile));  // Ensure correct PutObject request
             return "https://" + bucketName + ".s3.amazonaws.com/" + key;
-
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace(); // Add detailed logging here
             throw new RuntimeException("Failed to upload file to S3", e);
         }
     }
+
 
     // Helper method to convert MultipartFile to File (if needed)
     private File convertMultipartFileToFile(MultipartFile file) throws IOException {
