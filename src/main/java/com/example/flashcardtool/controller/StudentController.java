@@ -233,8 +233,10 @@ public class StudentController {
         // Check if selected answer matches option1 (correct answer)
         if (selectedOption.equals(currentFlashcard.getOption1())) {
             correctAnswers++;
+            model.addAttribute("feedback", "Correct answer!");  // Flash message for correct answer
         } else {
             incorrectAnswers++;
+            model.addAttribute("feedback", "Wrong, try again.");  // Flash message for incorrect answer
         }
 
         // Move to the next card or finish if it's the last card
