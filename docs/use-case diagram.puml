@@ -1,0 +1,25 @@
+
+@startuml
+left to right direction
+
+actor Teacher as T
+actor Student as S
+actor Admin as A
+
+rectangle "Flashcard App" {
+  usecase "Create Deck" as UC1
+  usecase "Assign Deck to Student" as UC2
+  usecase "Study Deck" as UC3
+  usecase "View Progress" as UC4
+  usecase "Manage Users" as UC5
+  usecase "Reset Password" as UC6
+
+  T --> UC1
+  T --> UC2
+  S --> UC3
+  S --> UC4
+  A --> UC5
+  A --> UC6
+}
+
+@enduml

@@ -1,33 +1,48 @@
 @startuml
-class User {
-  +String id
-  +String username
-  +String role
-}
 
 class Deck {
-  +String id
-  +String name
-  +String description
-  +String userId
+  + String id
+  + String name
+  + String userId
+  + String description
+  + String assignedStudentId
 }
 
 class Flashcard {
-  +String id
-  +String deckId
-  +String frontContent
-  +String backContent
-  +String[] options
+  + String id
+  + String frontContent
+  + String backContent
+  + String deckId
+}
+
+class Progress {
+  + String studentId
+  + String deckId
+  + int correctAnswers
+  + int incorrectAnswers
 }
 
 class StudentLibrary {
-  +String id
-  +String studentId
-  +String deckId
+  + String studentId
+  + String deckId
 }
 
-User "1" --> "many" Deck : creates
-Deck "1" --> "many" Flashcard : contains
-User "many" --> "many" StudentLibrary : owns
-StudentLibrary "many" --> "1" Deck : assigned
+class User {
+  + String id
+  + String username
+  + String password
+  + String email
+  + List<String> roles
+  + List<String> assignedDeckIds
+  + Map<String, String> deckAssignments
+  + String passwordResetToken
+}
+
+User "1" --> "*" Deck : "creates"
+Deck "1" --> "*" Flashcard : "contains"
+User "1" --> "*" StudentLibrary : "has assignments"
+StudentLibrary "*" --> "1" Deck : "assigned decks"
+User "1" --> "*" Progress : "tracks progress"
+Progress "*" --> "1" Deck
+
 @enduml
