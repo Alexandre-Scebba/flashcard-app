@@ -1,0 +1,33 @@
+@startuml
+class User {
+  +String id
+  +String username
+  +String role
+}
+
+class Deck {
+  +String id
+  +String name
+  +String description
+  +String userId
+}
+
+class Flashcard {
+  +String id
+  +String deckId
+  +String frontContent
+  +String backContent
+  +String[] options
+}
+
+class StudentLibrary {
+  +String id
+  +String studentId
+  +String deckId
+}
+
+User "1" --> "many" Deck : creates
+Deck "1" --> "many" Flashcard : contains
+User "many" --> "many" StudentLibrary : owns
+StudentLibrary "many" --> "1" Deck : assigned
+@enduml
