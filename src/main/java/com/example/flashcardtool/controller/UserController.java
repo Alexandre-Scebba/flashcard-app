@@ -91,9 +91,9 @@ public class UserController {
             String role = authority.getAuthority();
 
             if (role.equals("ROLE_ADMIN")) {
-                return "redirect:/admin/admin-dashboard";  // Admin dashboard'a yönlendir
+                return "redirect:/admin/users";  // Admin dashboard'a yönlendir
             } else if (role.equals("ROLE_TEACHER")) {
-                return "redirect:/teacher/dashboard";  // Öğretmen deck management sayfasına yönlendir
+                return "redirect:/teacher/decks";  // Öğretmen deck management sayfasına yönlendir
             } else if (role.equals("ROLE_STUDENT")) {
                 return "redirect:/student/student-dashboard";  // Öğrenci çalışma sayfasına yönlendir
             }

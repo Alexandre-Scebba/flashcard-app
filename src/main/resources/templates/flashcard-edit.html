@@ -42,29 +42,6 @@
   <form th:action="@{/teacher/flashcards/edit/{id}(id=${flashcard.id})}" th:object="${flashcard}" method="post" enctype="multipart/form-data">
     <input type="hidden" th:field="*{deckId}"/>
 
-    <!-- Front Content -->
-    <label for="frontContent">Front Content</label>
-    <input type="text" id="frontContent" th:field="*{frontContent}" placeholder="Enter front content" required class="form-control mb-2">
-
-    <!-- Front Image Upload -->
-    <label for="frontImage">Upload Front Image</label>
-    <input type="file" id="frontImage" name="frontImage" class="form-control mb-2" accept="image/*">
-
-    <!-- Front Video Upload -->
-    <label for="frontVideo">Upload Front Video</label>
-    <input type="file" id="frontVideo" name="frontVideo" class="form-control mb-2" accept="video/*">
-
-    <!-- Back Content -->
-    <label for="backContent">Back Content</label>
-    <input type="text" id="backContent" th:field="*{backContent}" placeholder="Enter back content" required class="form-control mb-2">
-
-    <!-- Back Image Upload -->
-    <label for="backImage">Upload Back Image</label>
-    <input type="file" id="backImage" name="backImage" class="form-control mb-2" accept="image/*">
-
-    <!-- Back Video Upload -->
-    <label for="backVideo">Upload Back Video</label>
-    <input type="file" id="backVideo" name="backVideo" class="form-control mb-2" accept="video/*">
 
     <!-- Options for the flashcard -->
     <label for="option1">Option 1</label>
