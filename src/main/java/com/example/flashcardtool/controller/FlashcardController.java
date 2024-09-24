@@ -4,11 +4,9 @@ import com.example.flashcardtool.model.Deck;
 import com.example.flashcardtool.model.Flashcard;
 import com.example.flashcardtool.service.DeckService;
 import com.example.flashcardtool.service.FlashcardService;
-import com.example.flashcardtool.service.FileService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,12 +17,10 @@ public class FlashcardController {
 
     private final FlashcardService flashcardService;
     private final DeckService deckService;
-    private final FileService fileService; // Define fileService
 
-    public FlashcardController(FlashcardService flashcardService, DeckService deckService, FileService fileService) {
+    public FlashcardController(FlashcardService flashcardService, DeckService deckService) {
         this.flashcardService = flashcardService;
         this.deckService = deckService;
-        this.fileService = fileService; // Initialize fileService
     }
 
     @GetMapping("/create")
@@ -51,37 +47,9 @@ public class FlashcardController {
     @PostMapping("/create")
     public String createFlashcard(
             @ModelAttribute Flashcard flashcard,
-            @RequestParam("deckId") String deckId,
-            @RequestParam("frontImage") MultipartFile frontImageFile,
-            @RequestParam("backImage") MultipartFile backImageFile,
-            @RequestParam("frontVideo") MultipartFile frontVideoFile,
-            @RequestParam("backVideo") MultipartFile backVideoFile) {
+            @RequestParam("deckId") String deckId) {
 
-        // Handle Front Image
-        if (!frontImageFile.isEmpty()) {
-            String frontImageUrl = fileService.uploadToS3(frontImageFile); // Modify to upload to S3
-            flashcard.setFrontImageUrl(frontImageUrl);
-        }
-
-        // Handle Back Image
-        if (!backImageFile.isEmpty()) {
-            String backImageUrl = fileService.uploadToS3(backImageFile); // Modify to upload to S3
-            flashcard.setBackImageUrl(backImageUrl);
-        }
-
-        // Handle Front Video
-        if (!frontVideoFile.isEmpty()) {
-            String frontVideoUrl = fileService.uploadToS3(frontVideoFile); // Modify to upload to S3
-            flashcard.setFrontVideoUrl(frontVideoUrl);
-        }
-
-        // Handle Back Video
-        if (!backVideoFile.isEmpty()) {
-            String backVideoUrl = fileService.uploadToS3(backVideoFile); // Modify to upload to S3
-            flashcard.setBackVideoUrl(backVideoUrl);
-        }
-
-        // Create flashcard with the given content and media
+        // Create flashcard without media content
         flashcardService.createFlashcard(
                 flashcard.getFrontContent(),
                 flashcard.getBackContent(),
@@ -89,17 +57,12 @@ public class FlashcardController {
                 flashcard.getOption1(),
                 flashcard.getOption2(),
                 flashcard.getOption3(),
-                flashcard.getOption4(),
-                flashcard.getFrontImageUrl(),
-                flashcard.getBackImageUrl(),
-                flashcard.getFrontVideoUrl(),
-                flashcard.getBackVideoUrl()
+                flashcard.getOption4()
+
         );
 
         return "redirect:/teacher/flashcards/create?deckId=" + deckId;
     }
-
-
 
     @PostMapping("/delete/{id}")
     public String deleteFlashcard(@PathVariable String id, @RequestParam("deckId") String deckId) {
@@ -137,5 +100,4 @@ public class FlashcardController {
 
         return "study-mode";
     }
-
 }

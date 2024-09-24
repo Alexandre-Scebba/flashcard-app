@@ -13,11 +13,9 @@ public class FlashcardService {
     @Autowired
     private FlashcardRepository flashcardRepository;
 
-    // Create a new flashcard
+    // Create a new flashcard (without media URLs)
     public void createFlashcard(String frontContent, String backContent, String deckId,
-                                String option1, String option2, String option3, String option4,
-                                String frontImageUrl, String backImageUrl,
-                                String frontVideoUrl, String backVideoUrl) {
+                                String option1, String option2, String option3, String option4) {
         Flashcard flashcard = new Flashcard();
         flashcard.setFrontContent(frontContent);
         flashcard.setBackContent(backContent);
@@ -26,12 +24,9 @@ public class FlashcardService {
         flashcard.setOption2(option2);
         flashcard.setOption3(option3);
         flashcard.setOption4(option4);
-        flashcard.setFrontImageUrl(frontImageUrl);
-        flashcard.setBackImageUrl(backImageUrl);
-        flashcard.setFrontVideoUrl(frontVideoUrl);
-        flashcard.setBackVideoUrl(backVideoUrl);
 
-        flashcardRepository.save(flashcard);  // Save the flashcard with the URLs
+        // Save flashcard without media URLs
+        flashcardRepository.save(flashcard);
     }
 
     // Update an existing flashcard
