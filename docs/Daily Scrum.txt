@@ -19,8 +19,51 @@ Each member writes down answers to 3 questions in the following format:
    -
 
 --- --- --- ---   --- --- --- ---   --- --- --- ---
-
 --------------------Scrum meeting #...[ENTER NUMBER]
+<< Sept-[DD]-2024 >>  --Alexandre--
+1. What I have done / not done since last Scrum?
+
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+<< Sept-[DD]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+   -
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -
+3. Where do I need assistance? What do I need to figure out?
+   -
+
+--- --- --- ---   --- --- --- ---   --- --- --- ---
+
+--------------------Scrum meeting #...[10]
+<< Sept-[23]-2024 >>  --Alexandre--
+1. What I have done / not done since last Scrum?
+    -set up heroku
+    -added remaining flash messages
+    -added js for card flip animation
+    -fixed admin role control radio button,
+        and forced role to clear in AdminController before reassigning, duplicate was giving login error.
+
+2. What I plan to do from this scrum to next? (next 24 hours)
+    -fix login and register pages
+    -remove redundant admin dash, go straight to edit-user page
+    -style the study-complete html
+    -try to implement password reset for users once admin resets to default
+    -split quiz mode and study mode as planned in design
+3. Where do I need assistance? What do I need to figure out?
+   -t
+
+<< Sept-[23]-2024 >>  --Mehmet--
+1. What I have done / not done since last Scrum?
+   -
+2. What I plan to do from this scrum to next? (next 24 hours)
+   -
+3. Where do I need assistance? What do I need to figure out?
+   -
+--------------------Scrum meeting #...[9]
 << Sept-[22]-2024 >>  --Alexandre--
 1. What I have done / not done since last Scrum?
    - added admin dash, view/edit users, crud/role changes
