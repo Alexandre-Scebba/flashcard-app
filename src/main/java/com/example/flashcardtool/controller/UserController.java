@@ -46,37 +46,35 @@ public class UserController {
                                @RequestParam String firstName,
                                @RequestParam String lastName,
                                RedirectAttributes redirectAttributes) {
-//        System.out.println("Registering user: " + username);
-//        userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
-//        redirectAttributes.addFlashAttribute("message", "User registered successfully");
-//        System.out.println("User registered successfully.");
-//        return "redirect:/login";
+
+        // check if passwords match
         if (!password.equals(passwordConfirmation)) {
             redirectAttributes.addFlashAttribute("errorMessage", "Passwords do not match.");
             return "redirect:/register";
         }
 
-        try {
-            userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
-            redirectAttributes.addFlashAttribute("successMessage", "Successfully Registered");  // Success message
-            log.info("successfully registered");
-            return "redirect:/login";
-        } catch (UserService.UserAlreadyExistError error) {
-            log.error(error.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "User Already Exists, try a new name");  // Error message
-            return "redirect:/register";
-        } catch (Exception error) {
-            log.error(error.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error");
+        // call the password validation method here
+        if (!isValidPassword(password)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Password must be at least 8 characters long, contain an uppercase letter, a special character, and a number.");
             return "redirect:/register";
         }
-//        if (result.equals("User registered successfully")) {
-//            redirectAttributes.addFlashAttribute("message", result);  // Success message
-//            return "redirect:/login";
-//        } else {
-//            redirectAttributes.addFlashAttribute("errorMessage", result);  // Error message
-//            return "redirect:/register";
-//        }
+
+        try {
+            // proceed with registration if validation passes
+            userService.registerUser(username, password, email, Collections.singletonList(role), firstName, lastName);
+            redirectAttributes.addFlashAttribute("successMessage", "Successfully Registered");
+            return "redirect:/login";
+        } catch (Exception e) {
+            // handle registration errors
+            redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred.");
+            return "redirect:/register";
+        }
+    }
+
+
+    private boolean isValidPassword(String password) {
+        String regex = "^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$";
+        return password.matches(regex);
     }
 
     @GetMapping("/determineRedirect")
