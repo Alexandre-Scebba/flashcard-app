@@ -1,0 +1,16 @@
+password,roles,lastName,username,id,email,assignedDeckIds,firstName,deckAssignments,passwordResetToken
+$2a$10$dSPFu9zd3vltnKjApLfZvuVOmwCHufWl0AUed87IG1Bnn3YpFntaW,"[{""S"":""ROLE_ADMIN""}]",admin,admin,97113c93-935e-4b18-bdbf-b824ffc2b434,admin@admin.com,[],admin,{},
+$2a$10$EYNNQroxw6Rqj8cdYxbFpe940WJqLiK1y/a6E2JdpsmhZ7GOB6f8a,"[{""S"":""ROLE_STUDENT""}]",studenttest,studenttest,4ac35d92-5084-48af-9bdf-9d8bc8c5477d,a@gmail.com,[],studenttest,{},
+$2a$10$FnPLeuMqnNjMH1TNUhECb.0KnH50dm/g5ufQBcWN9tLEs50JuNnXi,"[{""S"":""ROLE_ADMIN""}]",admin1,admin1,7d23459e-2edb-44c1-a4dd-bfd174954ded,a@gmail.com,[],admin1,{},
+$2a$10$0CiVJBXXSO.1TpG4CldrYuVhqPLcikx68Ct..h.vxqTv0zmmstQk6,"[{""S"":""ROLE_STUDENT""}]",gumuslu,zeynep1980,08d87b25-94fe-4263-a223-a927ae1a5259,zeynep@gmail.com,[],zeynep,{},
+$2a$10$7DhXL6mnrQutU2W8qu8tSuRS1kSeEc26/jIlI9aoZ8z2T8xUUSCs2,"[{""S"":""ROLE_ADMIN""}]",admin3,admin3,7dde2678-3dcd-4752-9f12-35b9c7dda743,a@gmail.com,[],admin3,{},
+$2a$10$0Lvx7ZgvuKwBIyY3xMr7OeM9H4qOrIuSLa597JrRfAkow5i07C/pe,"[{""S"":""ROLE_ADMIN""}]",student7,student7,fef4e48d-4e23-405f-a2ab-b9552cacbeed,a@gmail.com,[],student7,{},
+$2a$10$N7N8QAEdX4Sm0PBjw9V/ZOByORRxmKcmx5eVqHjZCpKEgR5s/JEIO,"[{""S"":""ROLE_STUDENT""}]",student,student,f98fd7c3-8386-405a-aa04-33a9f05c08de,student@student.com,[],student,{},a762275b-8396-4a94-98eb-3569e3c904c1
+$2a$10$3nxl5ayccIfAEA3KPArEZuJQbeAYy.PN4gitD9WUkISZU5ts2.1HO,"[{""S"":""ROLE_STUDENT""}]",doe,johndoethemanthemyththelegend,8623ecc0-a3a6-487d-a5c1-b25c55e82f1b,test@gmai,[],john,{},27dd1c67-e62b-4533-912c-d51dd1d47188
+$2a$10$Q.XKRla6C7HKxcWR5PKIvO05W4RlSb0v/NAvtGV.f1tALX7W8wMDy,"[{""S"":""ROLE_STUDENT""}]",ogrenci1,ogrenci1,ca090124-cd5d-4938-a656-8eea4d9e8370,ogrenci1@gmail.com,[],ogrenci1,{},
+$2a$10$NEubLTWEtXa622AOD6Lws.qci0FaN68T00MeqQeEzK.B5eJXRX8W2,"[{""S"":""ROLE_STUDENT""}]",dfg,dfg,8f97dc84-e9f0-4356-ac52-cb783a383271,dfg@g.com,[],dfg,{},
+$2a$10$lXHHEqWaILtL13oj2nhyJOhxNn3HteU.Fs6rvHDq4Ij256NL1OxkS,"[{""S"":""ROLE_TEACHER""}]",teacher5,teacher5,345d9aa0-a85f-414c-a147-664d651c0b5f,a@gmail.com,[],teacher5,{},
+$2a$10$ULLtmdfQAdaQ1PboEd85reoSVNaXJbBvogffoz0UiNBxBrlx0gNqe,"[{""S"":""ROLE_STUDENT""}]",Farenzza,ffilsai,455d7443-f68e-4d68-8698-44e34bd0f9e0,nomail@email.com,[],Farrah,{},66db63ab-57d3-4636-960b-cda04210f337
+$2a$10$IeaUD6HKjrWjZvM2yQiI1eZbN9xpo1zBvxE09KHmBrdNZ0dWnLWKW,"[{""S"":""ROLE_STUDENT""}]",zeynep,zeynep1907,80c24008-fb73-4541-af3a-fa83fc565494,zeynep@gmail.com,[],zeynep,{},
+$2a$10$NAmDZTDYM83j2/ZnHP4zieEpEtkAnciIIheP2lkxDIrQNM1M0BUY2,"[{""S"":""ROLE_STUDENT""}]",studtest6,studtest6,4627e041-c807-4f80-a435-a5849a836ea0,a@gmail.com,[],studtest6,{},
+$2a$10$ioREiktvIJfiFZZtXhpoYeQ8t3/KOwMM4mIQzkRIIgBLIb.J95hPC,"[{""S"":""ROLE_TEACHER""}]",teacher2,teacher2,78b07e87-2a0c-44ed-8c98-b869d40b0443,a@gmail.com,[],teacher2,{},
