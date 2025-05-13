@@ -18,8 +18,10 @@ Une plateforme de flashcards sécurisée et AWS-intégrée, avec inscription/con
 
 * **Tableau de bord / Édition deck & carte :**
   ![image](https://github.com/user-attachments/assets/3e22313e-8d79-4abc-aa9f-f135f42bb9d8)
+  
 * **Mode quiz :**
   ![image](https://github.com/user-attachments/assets/cad7d895-77f6-47b7-a4df-390b45c49f9f)
+  
 * **Gestion des decks :**
   ![image](https://github.com/user-attachments/assets/54302dc9-505c-4b92-9a2d-7a2e3121282f)
 
@@ -48,8 +50,10 @@ A secure, AWS-backed flashcard platform supporting user signup/login, CRUD on de
 
 * **Dashboard / Edit Deck & Card:**
   ![image](https://github.com/user-attachments/assets/3e22313e-8d79-4abc-aa9f-f135f42bb9d8)
+  
 * **Quiz Mode:**
   ![image](https://github.com/user-attachments/assets/cad7d895-77f6-47b7-a4df-390b45c49f9f)
+  
 * **Deck Management:**
   ![image](https://github.com/user-attachments/assets/54302dc9-505c-4b92-9a2d-7a2e3121282f)
 
