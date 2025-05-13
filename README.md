@@ -28,6 +28,8 @@ Une plateforme de flashcards sécurisée et AWS-intégrée, avec inscription/con
 * Déployé sur Heroku (offre gratuite)
 * Open-source sous licence MIT
 -------------------------------------------------
+###ENG:
+
 ### Flashcard Study Tool
 
 **Stack:**
