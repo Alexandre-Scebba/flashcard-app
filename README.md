@@ -15,11 +15,17 @@ A digital platform for creating, studying, and quizzing flashcards—complete wi
 Built to support CRUD operations on decks and cards, secure user signup/login flows, and optional email reminders for study sessions.
 
 **Screenshots:**  
-- **Screenshot—Dashboard:**
-![image](https://github.com/user-attachments/assets/c835ae56-5155-4a6c-aed4-6a5a1d9db1c7)
+- **Screenshot—Deck/Card Edit:**
+![image](https://github.com/user-attachments/assets/3e22313e-8d79-4abc-aa9f-f135f42bb9d8)
 
-- **Screenshot—Card Edit:**
-![image](https://github.com/user-attachments/assets/c11ac398-2965-4694-9dce-dff438f9f3a1)
+
+- **Screenshot—Quiz Mode:**
+![image](https://github.com/user-attachments/assets/cad7d895-77f6-47b7-a4df-390b45c49f9f)
+
+
+- **Screenshot—Deck Management:**
+![image](https://github.com/user-attachments/assets/54302dc9-505c-4b92-9a2d-7a2e3121282f)
+
 
 
 **Public Notes:**  
@@ -43,11 +49,17 @@ Une plateforme numérique pour créer, étudier et tester des flashcards — ave
 Conçue pour prendre en charge les opérations CRUD sur les decks et les cartes, les flux d’inscription/connexion sécurisés, et des rappels par e-mail optionnels pour les sessions d’étude.
 
 **Captures d’écran :**  
-- **Capture — Tableau de bord :**  
-  ![image](https://github.com/user-attachments/assets/c835ae56-5155-4a6c-aed4-6a5a1d9db1c7)  
+- **Capture — Édition de deck/carte :**  
+  ![image](https://github.com/user-attachments/assets/3e22313e-8d79-4abc-aa9f-f135f42bb9d8)
+  
 
-- **Capture — Édition de carte :**  
-  ![image](https://github.com/user-attachments/assets/c11ac398-2965-4694-9dce-dff438f9f3a1)  
+- **Capture — Mode quiz :**  
+  ![image](https://github.com/user-attachments/assets/cad7d895-77f6-47b7-a4df-390b45c49f9f)
+  
+
+- **Capture — Gestion des decks :**  
+  ![image](https://github.com/user-attachments/assets/54302dc9-505c-4b92-9a2d-7a2e3121282f)
+  
 
 **Informations publiques :**  
 - Déployé sur Heroku (offre gratuite) pour un accès rapide à la démo.  
